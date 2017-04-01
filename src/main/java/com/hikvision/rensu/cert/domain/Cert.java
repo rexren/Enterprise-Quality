@@ -17,7 +17,6 @@ public class Cert {
      * 维护人员
      */
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
     private String maintenaner;
 
     /**
