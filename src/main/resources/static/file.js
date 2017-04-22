@@ -1,1 +1,3 @@
-alert("happy");
+var hello = "hello world";
+
+alert(hello);
