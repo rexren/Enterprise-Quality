@@ -9,9 +9,7 @@
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"/>
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"/>
+
     <!-- Theme style -->
     <link rel="stylesheet" href="dist/css/AdminLTE.min.css"/>
     <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
@@ -86,10 +84,10 @@
                                 <tbody>
                                 <#list certs as cert>
                                 <tr>
-                                    <td>1</td>
+                                    <td>${cert_index + 1}</td>
                                     <td>${cert.productType}</td>
                                     <td>${cert.name}</td>
-                                    <td>${cert.createAt?string("yyyy-MM-dd")}</td>
+                                    <td>${cert.awardDate?string("yyyy-MM-dd")}</td>
                                     <td>${cert.docSerial}</td>
                                     <td><a href="${cert.certUrl}" target="_blank">${cert.certUrl}</a></td>
                                     <td><a>点击查看详情</a></td>

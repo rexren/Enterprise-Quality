@@ -8,67 +8,81 @@ import java.util.Date;
  * 形式检测
  * Created by rensu on 17/3/25.
  */
+@Entity
 public class TypeInspection implements Serializable{
 
     private static final long serialVersionUID = -1L;
 
+    @Id
+    @GeneratedValue
     private Long id;
 
     /**
      * 维护人员
      */
+    @Column
     private String maintenaner;
 
     /**
      * 产品型号
      */
+    @Column(nullable = false)
     private String productType;
 
 
     /**
      * 软件名称
      */
+    @Column(nullable = false)
     private String name;
 
     /**
      * 软件版本
      */
+    @Column
     private String version;
 
 
     /**
      * 测试/检验类型
      */
+    @Column
     private String testType;
 
     /**
      * 受检单位
      */
+    @Column
     private String company;
 
     /**
      * 测试依据
      */
+    @Column
     private String basis;
 
     /**
      * 颁发日期
      */
+    @Column(nullable = false)
     private Date awardDate;
 
     /**
      * 文件编号
      */
+    @Column(nullable = false)
     private String docSerial;
 
     /**
      * 证书系统链接
      */
+    @Column
     private String certUrl;
 
     /**
      * 认证机构
      */
+    @Column(nullable = false)
     private String testOrgnization;
 
     /**
@@ -79,22 +93,24 @@ public class TypeInspection implements Serializable{
     /**
      * 创建时间
      */
+    @Column
     private Date createAt;
 
 
     /**
      * 更新时间
      */
+    @Column
     private Date updateAt;
 
     private TypeInspection(){
     }
 
-    public TypeInspection(String productType, String name, Date createAt, String docSerial, String certUrl){
+    public TypeInspection(String productType, String name, Date awardDate, String docSerial, String certUrl) {
         this.id = 1L;
         this.productType = productType;
         this.name = name;
-        this.createAt = createAt;
+        this.awardDate = awardDate;
         this.docSerial = docSerial;
         this.certUrl = certUrl;
     }

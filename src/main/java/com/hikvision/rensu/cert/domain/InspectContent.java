@@ -1,6 +1,7 @@
 package com.hikvision.rensu.cert.domain;
 
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
  * 行检项目索引
  * Created by rensu on 17/3/28.
  */
+@Entity
 public class InspectContent {
     /**
      * 自增序号

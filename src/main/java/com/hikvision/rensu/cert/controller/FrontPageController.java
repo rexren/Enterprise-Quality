@@ -16,14 +16,26 @@ public class FrontPageController {
     private TypeInspectionService typeInspectionService;
 
     @RequestMapping("/")
-    public String indexPage(Model model) {
-        model.addAttribute("certs", typeInspectionService.getInspections());
-        model.addAttribute("name", "陈晓琳");
-        return "index";
+    public String indexPage() {
+        return "redirect:/cert";
     }
 
-    @RequestMapping("/admin")
-    public String adminPage() {
-        return "admin";
+    @RequestMapping("/cert")
+    public String certPage(Model model) {
+        model.addAttribute("certs", typeInspectionService.getInspections());
+        model.addAttribute("name", "陈晓琳");
+        return "cert";
+    }
+
+    @RequestMapping("/copyright")
+    public String copyrightPage(Model model) {
+        model.addAttribute("name", "陈晓琳");
+        return "copyright";
+    }
+
+    @RequestMapping("/ccc")
+    public String CCCPage(Model model) {
+        model.addAttribute("name", "陈晓琳");
+        return "ccc";
     }
 }
