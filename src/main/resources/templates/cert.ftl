@@ -9,7 +9,10 @@
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
     <!-- Font Awesome -->
-
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"/>
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"/>
     <!-- Theme style -->
     <link rel="stylesheet" href="dist/css/AdminLTE.min.css"/>
     <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
@@ -31,6 +34,7 @@
 
 <#include "./common/header.ftl">
 <#include "./common/sidebar.ftl">
+<#include "./common/new-cert.ftl">
 
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -59,7 +63,8 @@
                                     </div>
 
                                     <div class="input-group-btn">
-                                        <button type="add" class="btn btn-default"><i class="fa fa-plus-square"></i>
+                                        <button id="add-new-cert" type="add" class="btn btn-default"><i
+                                                class="fa fa-plus-square"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -115,5 +120,8 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/app.min.js"></script>
+
+<script src="pages/cert.js"></script>
+
 </body>
 </html>
