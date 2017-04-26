@@ -6,7 +6,7 @@
                 <img src="dist/img/avatar2.png" class="img-circle" alt="User Image"/>
             </div>
             <div class="pull-left info">
-                <p>${name}</p>
+                <p>陈晓琳</p>
                 <a href="#"><i class="fa fa-circle text-success"></i>美丽的小秘书</a>
             </div>
         </div>

@@ -864,6 +864,7 @@
 
   //TIMEPICKER PLUGIN DEFINITION
   $.fn.timepicker = function(option) {
+    console.log("12345")
     var args = Array.apply(null, arguments);
     args.shift();
     return this.each(function() {

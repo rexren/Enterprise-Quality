@@ -21,6 +21,8 @@
     -->
     <link rel="stylesheet" href="dist/css/skins/skin-blue.min.css"/>
 
+    <link rel="stylesheet" href="plugins/bootstrap-timepicker-smalot/bootstrap-datetimepicker.min.css"/>
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries-->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]-->
@@ -92,7 +94,7 @@
                                     <td>${cert_index + 1}</td>
                                     <td>${cert.productType}</td>
                                     <td>${cert.name}</td>
-                                    <td>${cert.awardDate?string("yyyy-MM-dd")}</td>
+                                    <td>${cert.awardDate?string("yyyy-mm-dd")}</td>
                                     <td>${cert.docSerial}</td>
                                     <td><a href="${cert.certUrl}" target="_blank">${cert.certUrl}</a></td>
                                     <td><a>点击查看详情</a></td>
@@ -107,8 +109,10 @@
             </div>
         </section>
 
-
     </div>
+
+
+</div>
 </div>
 <!-- ./wrapper -->
 
@@ -120,6 +124,12 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/app.min.js"></script>
+<!-- date time picker -->
+<script src="plugins/bootstrap-timepicker-smalot/bootstrap-datetimepicker.js"></script>
+<!-- date time picker local-->
+<#--
+<script src="plugins/bootstrap-timepicker-smalot/locales/bootstrap-datetimepicker.en.js" charset="UTF-8"></script>
+-->
 
 <script src="pages/cert.js"></script>
 

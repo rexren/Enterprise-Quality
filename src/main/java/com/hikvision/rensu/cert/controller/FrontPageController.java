@@ -1,10 +1,15 @@
 package com.hikvision.rensu.cert.controller;
 
+import com.hikvision.rensu.cert.domain.TypeInspection;
+import com.hikvision.rensu.cert.domain.TypeInspectionFrom;
 import com.hikvision.rensu.cert.service.TypeInspectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Date;
 
 /**
  * Created by rensu on 17/4/1.
@@ -37,5 +42,12 @@ public class FrontPageController {
     public String CCCPage(Model model) {
         model.addAttribute("name", "陈晓琳");
         return "ccc";
+    }
+
+    @PostMapping(value = "/cert/create")
+    public String createCert(TypeInspectionFrom typeInspection) {
+        TypeInspection ty = typeInspection.transfrom();
+        typeInspectionService.save(ty);
+        return "redirect:/cert";
     }
 }

@@ -1,88 +1,71 @@
 package com.hikvision.rensu.cert.domain;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
- * 形式检测
- * Created by rensu on 17/3/25.
+ * Created by rensu on 17/4/25.
+ * 创建type inspection 表单
  */
-@Entity
-public class TypeInspection implements Serializable{
-
+public class TypeInspectionFrom {
     private static final long serialVersionUID = -1L;
 
-    @Id
-    @GeneratedValue
     private Long id;
 
     /**
      * 维护人员
      */
-    @Column
     private String maintenaner;
 
     /**
      * 产品型号
      */
-    @Column(nullable = false)
     private String productType;
-
 
     /**
      * 软件名称
      */
-    @Column(nullable = false)
     private String name;
 
     /**
      * 软件版本
      */
-    @Column
     private String version;
 
 
     /**
      * 测试/检验类型
      */
-    @Column
     private String testType;
 
     /**
      * 受检单位
      */
-    @Column
     private String company;
 
     /**
      * 测试依据
      */
-    @Column
     private String basis;
 
     /**
      * 颁发日期
      */
-    @Column(nullable = false)
-    private Date awardDate;
+    private String awardDate;
 
     /**
      * 文件编号
      */
-    @Column(nullable = false)
     private String docSerial;
 
     /**
      * 证书系统链接
      */
-    @Column
     private String certUrl;
 
     /**
      * 认证机构
      */
-    @Column(nullable = false)
     private String testOrgnization;
 
     /**
@@ -90,22 +73,9 @@ public class TypeInspection implements Serializable{
      */
     private String remarks;
 
-    /**
-     * 创建时间
-     */
-    @Column
-    private Date createAt;
 
-
-    /**
-     * 更新时间
-     */
-    @Column
-    private Date updateAt;
-
-    public TypeInspection(){
+    private TypeInspectionFrom() {
     }
-
 
     public Long getId() {
         return id;
@@ -171,11 +141,11 @@ public class TypeInspection implements Serializable{
         this.basis = basis;
     }
 
-    public Date getAwardDate() {
+    public String getAwardDate() {
         return awardDate;
     }
 
-    public void setAwardDate(Date awardDate) {
+    public void setAwardDate(String awardDate) {
         this.awardDate = awardDate;
     }
 
@@ -211,21 +181,6 @@ public class TypeInspection implements Serializable{
         this.remarks = remarks;
     }
 
-    public Date getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
-
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
-    }
 
     @Override
     public String toString() {
@@ -243,8 +198,29 @@ public class TypeInspection implements Serializable{
                 ", certUrl='" + certUrl + '\'' +
                 ", testOrgnization='" + testOrgnization + '\'' +
                 ", remarks='" + remarks + '\'' +
-                ", createAt=" + createAt +
-                ", updateAt=" + updateAt +
                 '}';
+    }
+
+    public final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+    public TypeInspection transfrom() {
+        TypeInspection ti = new TypeInspection();
+        ti.setMaintenaner(this.maintenaner);
+        ti.setProductType(this.productType);
+        ti.setName(this.name);
+        ti.setVersion(this.version);
+        ti.setTestType(this.testType);
+        ti.setCompany(this.company);
+        ti.setBasis(this.basis);
+        try {
+            ti.setAwardDate(sdf.parse(this.awardDate));
+        }catch (ParseException e) {
+            e.printStackTrace();
+        }
+        ti.setDocSerial(this.docSerial);
+        ti.setCertUrl(this.certUrl);
+        ti.setTestOrgnization(this.testOrgnization);
+        ti.setRemarks(this.remarks);
+        return ti;
     }
 }
