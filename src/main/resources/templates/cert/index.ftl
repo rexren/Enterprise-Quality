@@ -14,14 +14,22 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"/>
     <!-- Theme style -->
+
+
+    <link rel="stylesheet" href="plugins/bootstrap-timepicker-smalot/bootstrap-datetimepicker.min.css"/>
+
+    <link rel="stylesheet" href="plugins/datatables/dataTables.bootstrap.min.css"/>
+
     <link rel="stylesheet" href="dist/css/AdminLTE.min.css"/>
+
+    <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
     <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
           page. However, you can choose any other skin. Make sure you
           apply the skin class to the body tag so the changes take effect.
     -->
     <link rel="stylesheet" href="dist/css/skins/skin-blue.min.css"/>
 
-    <link rel="stylesheet" href="plugins/bootstrap-timepicker-smalot/bootstrap-datetimepicker.min.css"/>
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries-->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -34,9 +42,9 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
-<#include "./common/header.ftl">
-<#include "./common/sidebar.ftl">
-<#include "./common/new-cert.ftl">
+<#include "../common/header.ftl">
+<#include "../common/sidebar.ftl">
+<#include "new-cert.ftl">
 
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -55,19 +63,19 @@
 
 
                             <div class="box-tools">
-                                <div class="input-group input-group-sm" style="width: 150px;">
+                                <div class="input-group input-group-sm" style="width: 400px;">
                                     <input type="text" name="table_search" class="form-control pull-right"
                                            placeholder="Search">
 
                                     <div class="input-group-btn">
-                                        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i>
+                                        <button class="btn btn-default"><i class="glyphicon glyphicon-search"></i>
                                         </button>
+
                                     </div>
 
                                     <div class="input-group-btn">
-                                        <button id="add-new-cert" type="add" class="btn btn-default"><i
-                                                class="fa fa-plus-square"></i>
-                                        </button>
+                                        <button id="add-new-cert" class="btn btn-default"><i
+                                                class="glyphicon glyphicon-plus"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +99,7 @@
                                 <tbody>
                                 <#list certs as cert>
                                 <tr>
-                                    <td>${cert_index + 1}</td>
+                                    <td>${cert.id}</td>
                                     <td>${cert.productType}</td>
                                     <td>${cert.name}</td>
                                     <td>${cert.awardDate?string("yyyy-mm-dd")}</td>
@@ -124,14 +132,50 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/app.min.js"></script>
+
+<script src="plugins/datatables/jquery.dataTables.min.js"></script>
+
+<script src="plugins/datatables/dataTables.bootstrap.min.js"></script>
+
 <!-- date time picker -->
 <script src="plugins/bootstrap-timepicker-smalot/bootstrap-datetimepicker.js"></script>
-<!-- date time picker local-->
-<#--
-<script src="plugins/bootstrap-timepicker-smalot/locales/bootstrap-datetimepicker.en.js" charset="UTF-8"></script>
--->
+<!-- this page js -->
+<script src="pages/cert/cert.js"></script>
 
-<script src="pages/cert.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#add-new-cert').click(function () {
+            $("#new-cert").modal("toggle");
+        });
+
+        $('.form_date').datetimepicker({
+            format: 'yyyy-mm-dd',
+            weekStart: 0,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: true
+        });
+
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        })
+
+    });
+
+
+</script>
+
 
 </body>
 </html>

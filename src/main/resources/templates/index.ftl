@@ -36,76 +36,9 @@
 
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>公检国标
-                <small>针对GB/28181的检测</small>
-            </h1>
-        </section>
-        <section class="content">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="box">
-
-                        <div class="box-header">
-                            <h3 class="box-title">公检国标</h3>
-
-
-                            <div class="box-tools">
-                                <div class="input-group input-group-sm" style="width: 150px;">
-                                    <input type="text" name="table_search" class="form-control pull-right"
-                                           placeholder="Search">
-
-                                    <div class="input-group-btn">
-                                        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i>
-                                        </button>
-                                    </div>
-
-                                    <div class="input-group-btn">
-                                        <button type="add" class="btn btn-default"><i class="fa fa-plus-square"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                            <table id="example2" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>型号</th>
-                                    <th>名称</th>
-                                    <th>颁发日期</th>
-                                    <th>文件编号</th>
-                                    <th>链接地址</th>
-                                    <th>详情</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <#list certs as cert>
-                                <tr>
-                                    <td>1</td>
-                                    <td>${cert.productType}</td>
-                                    <td>${cert.name}</td>
-                                    <td>${cert.createAt?string("yyyy-MM-dd")}</td>
-                                    <td>${cert.docSerial}</td>
-                                    <td><a href="${cert.certUrl}" target="_blank">${cert.certUrl}</a></td>
-                                    <td><a>点击查看详情</a></td>
-                                </tr>
-                                </#list>
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </section>
-
 
     </div>
+
 </div>
 <!-- ./wrapper -->
 
@@ -117,5 +50,6 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/app.min.js"></script>
+
 </body>
 </html>
