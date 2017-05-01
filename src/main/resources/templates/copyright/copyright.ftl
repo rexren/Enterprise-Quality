@@ -31,8 +31,8 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
-<#include "./common/header.ftl">
-<#include "./common/sidebar.ftl">
+<#include "../common/header.ftl">
+<#include "../common/sidebar.ftl">
 
     <div class="content-wrapper"></div>
 </div>

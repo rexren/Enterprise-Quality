@@ -7,7 +7,7 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
     <!-- Bootstrap 3.3.6 -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
     <!-- Font Awesome -->
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"/>
@@ -16,18 +16,18 @@
     <!-- Theme style -->
 
 
-    <link rel="stylesheet" href="plugins/bootstrap-timepicker-smalot/bootstrap-datetimepicker.min.css"/>
+    <link rel="stylesheet" href="/plugins/bootstrap-timepicker-smalot/bootstrap-datetimepicker.min.css"/>
 
-    <link rel="stylesheet" href="plugins/datatables/dataTables.bootstrap.min.css"/>
+    <link rel="stylesheet" href="/plugins/datatables/dataTables.bootstrap.css"/>
 
-    <link rel="stylesheet" href="dist/css/AdminLTE.min.css"/>
+    <link rel="stylesheet" href="/dist/css/AdminLTE.min.css"/>
 
-    <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="/dist/css/skins/_all-skins.min.css">
     <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
           page. However, you can choose any other skin. Make sure you
           apply the skin class to the body tag so the changes take effect.
     -->
-    <link rel="stylesheet" href="dist/css/skins/skin-blue.min.css"/>
+    <link rel="stylesheet" href="/dist/css/skins/skin-blue.min.css"/>
 
 
 
@@ -44,7 +44,7 @@
 
 <#include "../common/header.ftl">
 <#include "../common/sidebar.ftl">
-<#include "new-cert.ftl">
+<#include "./new-inspection.ftl">
 
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -74,7 +74,7 @@
                                     </div>
 
                                     <div class="input-group-btn">
-                                        <button id="add-new-cert" class="btn btn-default"><i
+                                        <button id="add-new-inspection" class="btn btn-default"><i
                                                 class="glyphicon glyphicon-plus"></i></button>
                                     </div>
                                 </div>
@@ -84,7 +84,7 @@
 
                         <!-- /.box-header -->
                         <div class="box-body">
-                            <table id="example2" class="table table-bordered table-hover">
+                            <table id="typeinsepction-table" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>#</th>
@@ -97,7 +97,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <#list certs as cert>
+                                <#list content as cert>
                                 <tr>
                                     <td>${cert.id}</td>
                                     <td>${cert.productType}</td>
@@ -127,28 +127,25 @@
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 2.2.3 -->
-<script src="plugins/jQuery/jquery-2.2.3.min.js"></script>
+<script src="/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
-<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
-<script src="dist/js/app.min.js"></script>
+<script src="/dist/js/app.min.js"></script>
 
-<script src="plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/plugins/datatables/jquery.dataTables.min.js"></script>
 
-<script src="plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script src="/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
 <!-- date time picker -->
-<script src="plugins/bootstrap-timepicker-smalot/bootstrap-datetimepicker.js"></script>
-<!-- this page js -->
-<script src="pages/cert/cert.js"></script>
-
+<script src="/plugins/bootstrap-timepicker-smalot/bootstrap-datetimepicker.js"></script>
 
 <script>
 
     $(document).ready(function () {
 
-        $('#add-new-cert').click(function () {
-            $("#new-cert").modal("toggle");
+        $('#add-new-inspection').click(function () {
+            $("#new-inspection").modal("toggle");
         });
 
         $('.form_date').datetimepicker({
@@ -162,7 +159,7 @@
             forceParse: true
         });
 
-        $('#example2').DataTable({
+        $('#typeinsepction-table').DataTable({
             "paging": true,
             "lengthChange": false,
             "searching": false,

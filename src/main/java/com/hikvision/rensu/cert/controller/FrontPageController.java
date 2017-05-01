@@ -1,13 +1,7 @@
 package com.hikvision.rensu.cert.controller;
 
-import com.hikvision.rensu.cert.domain.TypeInspection;
-import com.hikvision.rensu.cert.domain.TypeInspectionFrom;
-import com.hikvision.rensu.cert.service.TypeInspectionService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -16,21 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class FrontPageController {
 
-    @Autowired
-    private TypeInspectionService typeInspectionService;
 
     @RequestMapping("/")
     public String indexPage() {
-        return "redirect:/cert";
+        return "redirect:/inspect/index";
     }
 
-    @RequestMapping("/cert")
-    public String certPage(Model model) {
-        Page<TypeInspection> pages = typeInspectionService.getInspectionByPage(0, 30);
-        model.addAttribute("certs", pages.getContent());
-        model.addAttribute("page", pages);
-        return "cert/index";
-    }
 
     @RequestMapping("/copyright")
     public String copyrightPage(Model model) {
@@ -44,10 +29,5 @@ public class FrontPageController {
         return "ccc";
     }
 
-    @PostMapping(value = "/cert/create")
-    public String createCert(TypeInspectionFrom typeInspection) {
-        TypeInspection ty = typeInspection.transfrom();
-        typeInspectionService.save(ty);
-        return "redirect:/cert";
-    }
+
 }

@@ -1,4 +1,4 @@
-<div class="modal" id="new-cert">
+<div class="modal" id="new-inspection">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -6,7 +6,7 @@
                         class="sr-only">Close</span></button>
                 <h4 class="modal-title">新建</h4>
             </div>
-            <form role="form" action="cert/create" method="post">
+            <form role="form" action="inspection/create" method="post">
                 <div class="modal-body">
 
                     <div id="new-cert-form" class="box-body">
