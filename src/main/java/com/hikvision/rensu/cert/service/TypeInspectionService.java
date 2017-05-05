@@ -39,6 +39,6 @@ public class TypeInspectionService {
     }
 
     public TypeInspection get(Long id) {
-        return typeInspectionRepository.getOne(id);
+        return typeInspectionRepository.findOne(id);
     }
 }

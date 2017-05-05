@@ -1,6 +1,5 @@
 package com.hikvision.rensu.cert.controller;
 
-import com.hikvision.rensu.cert.domain.InspectContent;
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.service.InspectContentService;
 import com.hikvision.rensu.cert.service.TypeInspectionService;
@@ -8,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
@@ -45,18 +41,8 @@ public class InspectionController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{docSerial}")
-    public void saveInspection(TypeInspection typeInspection) {
+    public void saveInspection(@RequestBody TypeInspection typeInspection) {
         typeInspectionService.save(typeInspection);
-        return;
-    }
-
-    public void saveInspectionDetail(InspectContent content) {
-        inspectContentService.save(content);
-        return;
-    }
-
-    public InspectContent getInspectionDetail(Long id) {
-        return inspectContentService.get(id);
     }
 
 }

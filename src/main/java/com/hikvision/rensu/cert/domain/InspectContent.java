@@ -45,4 +45,62 @@ public class InspectContent {
      */
     private String caseDescription;
 
+    public InspectContent() {
+    }
+
+    public InspectContent(Long contendId, String caseId, String caseName, String caseType, String caseDescription) {
+        this.contendId = contendId;
+        this.caseId = caseId;
+        this.caseName = caseName;
+        this.caseType = caseType;
+        this.caseDescription = caseDescription;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getContendId() {
+        return contendId;
+    }
+
+    public void setContendId(Long contendId) {
+        this.contendId = contendId;
+    }
+
+    public String getCaseId() {
+        return caseId;
+    }
+
+    public void setCaseId(String caseId) {
+        this.caseId = caseId;
+    }
+
+    public String getCaseName() {
+        return caseName;
+    }
+
+    public void setCaseName(String caseName) {
+        this.caseName = caseName;
+    }
+
+    public String getCaseType() {
+        return caseType;
+    }
+
+    public void setCaseType(String caseType) {
+        this.caseType = caseType;
+    }
+
+    public String getCaseDescription() {
+        return caseDescription;
+    }
+
+    public void setCaseDescription(String caseDescription) {
+        this.caseDescription = caseDescription;
+    }
 }
