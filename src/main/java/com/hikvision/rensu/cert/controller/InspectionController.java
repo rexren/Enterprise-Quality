@@ -1,7 +1,6 @@
 package com.hikvision.rensu.cert.controller;
 
 import com.hikvision.rensu.cert.domain.TypeInspection;
-import com.hikvision.rensu.cert.service.InspectContentService;
 import com.hikvision.rensu.cert.service.TypeInspectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,9 +21,6 @@ public class InspectionController {
     @Autowired
     private TypeInspectionService typeInspectionService;
 
-    @Autowired
-    private InspectContentService inspectContentService;
-
     @RequestMapping(value = "", method = {GET, HEAD})
     public String viewIndex(Model model) {
         Page<TypeInspection> pages = typeInspectionService.getInspectionByPage(0, 30);
@@ -44,5 +40,6 @@ public class InspectionController {
     public void saveInspection(@RequestBody TypeInspection typeInspection) {
         typeInspectionService.save(typeInspection);
     }
+
 
 }
