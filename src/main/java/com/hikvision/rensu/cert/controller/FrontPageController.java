@@ -15,7 +15,7 @@ public class FrontPageController {
 
     @RequestMapping("/")
     public String indexPage() {
-        return "redirect:/inspect/index";
+    	return "redirect:/inspections/index";
     }
 
 

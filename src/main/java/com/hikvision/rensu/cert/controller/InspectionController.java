@@ -21,13 +21,13 @@ public class InspectionController {
     @Autowired
     private TypeInspectionService typeInspectionService;
 
-    @RequestMapping(value = "", method = {GET, HEAD})
+    @RequestMapping(value = "/index", method = {GET, HEAD})
     public String viewIndex(Model model) {
         Page<TypeInspection> pages = typeInspectionService.getInspectionByPage(0, 30);
         model.addAttribute("certs", pages.getContent());
         model.addAttribute("content", pages.getContent());
         model.addAttribute("total", pages.getTotalElements());
-        return "inspections/index";
+        return "inspection/index";
     }
 
     @RequestMapping("/{id}")

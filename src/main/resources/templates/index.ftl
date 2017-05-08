@@ -30,7 +30,6 @@
 
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
-<div>github collaboration test</div>
 <#include "./common/header.ftl">
 <#include "./common/sidebar.ftl">
 
