@@ -2,6 +2,7 @@ package com.hikvision.rensu.cert.controller;
 
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.service.TypeInspectionService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
+
+import java.util.List;
 
 /**
  * Created by rensu on 17/4/27.
@@ -41,5 +44,9 @@ public class InspectionController {
         typeInspectionService.save(typeInspection);
     }
 
-
+    @RequestMapping(value ="/list.action", method = RequestMethod.GET)
+    @ResponseBody
+    public Page<TypeInspection> getInspecionListByPage(int num) {
+        return typeInspectionService.getInspectionByPage(0, num);
+    }
 }

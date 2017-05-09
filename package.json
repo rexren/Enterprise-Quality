@@ -1,0 +1,30 @@
+{
+  "name": "enterprise-quality",
+  "version": "1.0.0",
+  "description": "公安事业部证书检索平台",
+  "maintainers": [
+    "rensu@hikvision.com"
+  ],
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rexren/Enterprise-Quality.git"
+  },
+  "keywords": [
+    "hikvision",
+    "enterprise",
+    "quality",
+    "cert"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rexren/Enterprise-Quality/issues"
+  },
+  "homepage": "https://github.com/rexren/Enterprise-Quality#readme"
+}
