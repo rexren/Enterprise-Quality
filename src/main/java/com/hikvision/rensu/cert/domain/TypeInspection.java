@@ -219,15 +219,19 @@ public class TypeInspection implements Serializable{
         this.createAt = createAt;
     }
 
+
+
     public Date getUpdateAt() {
-        return updateAt;
-    }
+		return updateAt;
+	}
 
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
-    }
 
-    @Override
+	public void setUpdateAt(Date updateAt) {
+		this.updateAt = updateAt;
+	}
+
+
+	@Override
     public String toString() {
         return "TypeInspection{" +
                 "id=" + id +

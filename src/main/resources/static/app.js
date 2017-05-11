@@ -23,6 +23,10 @@ angular.module('enterprise-quality',['ngRoute'])
     		templateUrl: 'html/ccc.html',
     		controller: 'CccCtrl'
     	})
+    	.when('/components/form',{
+    		templateUrl: 'html/components/form.html',
+    		controller: 'FormCtrl'
+    	})
     	.otherwise({
             redirectTo: '/inspections'
         })
