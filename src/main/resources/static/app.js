@@ -4,31 +4,28 @@ angular.module('enterprise-quality',['ngRoute'])
 .config(['$routeProvider', function($routeProvider){
     $routeProvider
     	.when('/',{
-    		template:'这是首页页面{{nnn}}',
-    		controller:'homeCtrl'
+    		templateUrl:'html/home.html',
+    		controller:'HomeCtrl'
     	})
     	.when('/inspections',{
     		templateUrl: 'html/inspections.html',
-    		controller: 'inspectionsCtrl'
+    		controller: 'InspectionsCtrl'
+    	})
+    	.when('/inspections/edit',{
+    		templateUrl: 'html/inspection-edit.html',
+    		controller: 'InspectionsEditCtrl'
     	})
     	.when('/copyright',{
     		templateUrl: 'html/copyright.html',
-    		controller: 'copyrightCtrl'
+    		controller: 'CopyrightCtrl'
     	})
     	.when('/ccc',{
     		templateUrl: 'html/ccc.html',
-    		controller: 'cccCtrl'
+    		controller: 'CccCtrl'
     	})
     	.otherwise({
             redirectTo: '/inspections'
         })
     }
 ])
-.controller('homeCtrl', ['$scope',function($scope) {
-	$scope.nnn='HOME';
-	console.log('homeCtrl scope');
-}])
-.controller('inspectionsCtrl', ['$scope',function($scope){
-    console.log('inspectionsCtrl scope');
-    $scope.name = "hhhhh";
-}]);
+;

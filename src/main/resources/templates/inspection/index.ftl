@@ -57,22 +57,17 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
-
                         <div class="box-header">
                             <h3 class="box-title">公检国标</h3>
-
 
                             <div class="box-tools">
                                 <div class="input-group input-group-sm" style="width: 400px;">
                                     <input type="text" name="table_search" class="form-control pull-right"
                                            placeholder="Search">
-
                                     <div class="input-group-btn">
                                         <button class="btn btn-default"><i class="glyphicon glyphicon-search"></i>
                                         </button>
-
                                     </div>
-
                                     <div class="input-group-btn">
                                         <button id="add-new-inspection" class="btn btn-default"><i
                                                 class="glyphicon glyphicon-plus"></i></button>
@@ -80,7 +75,6 @@
                                 </div>
                             </div>
                         </div>
-
 
                         <!-- /.box-header -->
                         <div class="box-body">
@@ -111,15 +105,11 @@
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
                 </div>
             </div>
         </section>
-
     </div>
-
-
 </div>
 </div>
 <!-- ./wrapper -->
