@@ -1,8 +1,17 @@
 'use strict';
 
 angular.module('enterprise-quality').service('InpectionService', function($http) {
-	// todo restful接口通信
     var service = {
+
+        getListByAjax: function (param) {
+            $http.get('/inspections/list.action',{params:param})
+                .success(function(res){
+                    console.log("success");
+            }).error(function(res, status, headers, config){
+                console.log("getListByAjax error");
+            })
+        },
+
         getList: function (param) {
             console.log(param);
             return [{

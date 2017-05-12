@@ -3,10 +3,13 @@ package com.hikvision.rensu.cert.controller;
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.service.TypeInspectionService;
 
+import freemarker.template.utility.NumberUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.NumberUtils;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -23,7 +26,7 @@ public class InspectionController {
 
     @Autowired
     private TypeInspectionService typeInspectionService;
-
+    
     @RequestMapping(value = "/index", method = {GET, HEAD})
     public String viewIndex(Model model) {
         Page<TypeInspection> pages = typeInspectionService.getInspectionByPage(0, 30);
@@ -46,7 +49,7 @@ public class InspectionController {
 
     @RequestMapping(value ="/list.action", method = RequestMethod.GET)
     @ResponseBody
-    public Page<TypeInspection> getInspecionListByPage(int num) {
-        return typeInspectionService.getInspectionByPage(0, num);
+    public Page<TypeInspection> getInspecionListByPage(Integer pageNum, Integer pageSize) {
+        return typeInspectionService.getInspectionByPage(pageNum, pageSize);
     }
 }

@@ -11,23 +11,43 @@ import java.util.Date;
 @Entity
 public class TypeInspection implements Serializable{
 
-    private static final long serialVersionUID = -1L;
+    private static long serialVersionUID = -1L;
 
     @Id
     @GeneratedValue
     private Long id;
 
     /**
-     * 维护人员
+     * 更新人员
      */
     @Column
-    private String maintenaner;
+    private String operator;
 
-    /**
+    public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+
+	public static void setSerialVersionUID(long serialVersionUID) {
+		TypeInspection.serialVersionUID = serialVersionUID;
+	}
+
+
+	public String getOrganization() {
+		return organization;
+	}
+
+
+	public void setOrganization(String organization) {
+		this.organization = organization;
+	}
+
+
+	/**
      * 产品型号
      */
     @Column(nullable = false)
-    private String productType;
+    private String model;
 
 
     /**
@@ -71,7 +91,7 @@ public class TypeInspection implements Serializable{
      * 文件编号
      */
     @Column(nullable = false)
-    private String docSerial;
+    private String docNo;
 
     /**
      * 证书系统链接
@@ -83,11 +103,26 @@ public class TypeInspection implements Serializable{
      * 认证机构
      */
     @Column(nullable = false)
-    private String testOrgnization;
+    private String organization;
 
-    /**
+    public String getDocNo() {
+		return docNo;
+	}
+
+
+	public void setDocNo(String docNo) {
+		this.docNo = docNo;
+	}
+
+
+	public static void setSerialversionuid(long serialversionuid) {
+		serialVersionUID = serialversionuid;
+	}
+
+	/**
      * 备注
      */
+    @Column
     private String remarks;
 
     /**
@@ -115,21 +150,30 @@ public class TypeInspection implements Serializable{
         this.id = id;
     }
 
-    public String getMaintenaner() {
-        return maintenaner;
-    }
+    public String getOperator() {
+		return operator;
+	}
 
-    public void setMaintenaner(String maintenaner) {
-        this.maintenaner = maintenaner;
-    }
 
-    public String getProductType() {
-        return productType;
-    }
+	public void setOperator(String operator) {
+		this.operator = operator;
+	}
 
-    public void setProductType(String productType) {
-        this.productType = productType;
-    }
+
+	public String getModel() {
+		return model;
+	}
+
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 
     public String getName() {
         return name;
@@ -179,28 +223,12 @@ public class TypeInspection implements Serializable{
         this.awardDate = awardDate;
     }
 
-    public String getDocSerial() {
-        return docSerial;
-    }
-
-    public void setDocSerial(String docSerial) {
-        this.docSerial = docSerial;
-    }
-
     public String getCertUrl() {
         return certUrl;
     }
 
     public void setCertUrl(String certUrl) {
         this.certUrl = certUrl;
-    }
-
-    public String getTestOrgnization() {
-        return testOrgnization;
-    }
-
-    public void setTestOrgnization(String testOrgnization) {
-        this.testOrgnization = testOrgnization;
     }
 
     public String getRemarks() {
@@ -235,17 +263,17 @@ public class TypeInspection implements Serializable{
     public String toString() {
         return "TypeInspection{" +
                 "id=" + id +
-                ", maintenaner='" + maintenaner + '\'' +
-                ", productType='" + productType + '\'' +
+                ", maintenaner='" + operator + '\'' +
+                ", productType='" + model + '\'' +
                 ", name='" + name + '\'' +
                 ", version='" + version + '\'' +
                 ", testType='" + testType + '\'' +
                 ", company='" + company + '\'' +
                 ", basis='" + basis + '\'' +
                 ", awardDate=" + awardDate +
-                ", docSerial='" + docSerial + '\'' +
+                ", docSerial='" + docNo + '\'' +
                 ", certUrl='" + certUrl + '\'' +
-                ", testOrgnization='" + testOrgnization + '\'' +
+                ", testOrganization='" + organization + '\'' +
                 ", remarks='" + remarks + '\'' +
                 ", createAt=" + createAt +
                 ", updateAt=" + updateAt +

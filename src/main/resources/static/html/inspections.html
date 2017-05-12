@@ -62,11 +62,11 @@
                             <td>{{item.basis}}</td>
                             <td>{{item.awardDate}}</td>
                             <td>{{item.docNo}}</td>
-                            <td><a ng-href="{{item.url}}">link</a></td>
+                            <td><a ng-href="{{item.certUrl}}">link</a></td>
                             <td>{{item.organization}}</td>
                             <td>{{item.remarks}}</td>
-                            <td>{{item.createDate}}</td>
-                            <td>{{item.updateDate}}</td>
+                            <td>{{item.createAt| date:'yyyy-MM-dd'}}</td>
+                            <td>{{item.updateAt| date:'yyyy-MM-dd'}}</td>
                             <td>{{item.operator}}</td>
                             <td><a>修改</a></td>
                         </tr>

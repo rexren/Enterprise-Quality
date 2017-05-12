@@ -205,8 +205,8 @@ public class TypeInspectionFrom {
 
     public TypeInspection transfrom() {
         TypeInspection ti = new TypeInspection();
-        ti.setMaintenaner(this.maintenaner);
-        ti.setProductType(this.productType);
+        ti.setOperator(this.maintenaner);
+        ti.setModel(this.productType);
         ti.setName(this.name);
         ti.setVersion(this.version);
         ti.setTestType(this.testType);
@@ -217,9 +217,9 @@ public class TypeInspectionFrom {
         }catch (ParseException e) {
             e.printStackTrace();
         }
-        ti.setDocSerial(this.docSerial);
+        ti.setDocNo(this.docSerial);
         ti.setCertUrl(this.certUrl);
-        ti.setTestOrgnization(this.testOrgnization);
+        ti.setOrganization(this.testOrgnization);
         ti.setRemarks(this.remarks);
         return ti;
     }

@@ -37,8 +37,11 @@ public class TypeInspectionService {
         this.inspectContentRepository = inspectContentRepository;
     }
 
-    public Page<TypeInspection> getInspectionByPage(int start, int size) {
-        Pageable page = new PageRequest(start, size);
+    public Page<TypeInspection> getInspectionByPage(Integer pageNum, Integer pageSize) {
+    	int pn = pageNum == null?1:pageNum.intValue();
+    	int ps = pageSize ==null?20:pageSize.intValue(); // 默认20条/页
+    	int start = (pn-1)*ps;
+        Pageable page = new PageRequest(start, ps);
         return typeInspectionRepository.findAll(page);
     }
 
@@ -121,7 +124,6 @@ public class TypeInspectionService {
                     for (int col = 0; col < cols; col++) {
                     }
                 }
-
                 inspectContentRepository.save(content);
             }
         } catch (InvalidFormatException e) {
