@@ -4,7 +4,8 @@ angular.module('enterprise-quality')
     .controller('InspectionsCtrl', ['$scope','$location','$http',
     	function($scope, $location, $http){
 
-    	getList(1, 20);
+    	// todo 先确定页码，再getList
+    	getList(1, 10);
     	
         function getList(page, size) {
             var param = {pageNum:page,pageSize:size};
@@ -14,12 +15,17 @@ angular.module('enterprise-quality')
                 $scope.list = res.content;
                 // todo $scope.pagination = data.pagination;
 	        }).error(function(res, status, headers, config){
-	            console.log("getListByAjax error");
+	            console.log("getListByAjax error: "+status);
 	        })
         }
-        
-        // back
-        $scope.addInspection = function(){
-        	$location.url('/inspections/edit');
+
+        $scope.edit = function(id){
+        	if(id){
+        		$location.url('/inspections/edit?id='+id);
+        	}
+        	// 新建
+        	else{
+            	$location.url('/inspections/edit');
+        	}
         }
     }]);

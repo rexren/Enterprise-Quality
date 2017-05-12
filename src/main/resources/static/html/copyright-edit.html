@@ -1,0 +1,169 @@
+<section class="content-header">
+    <h1>双证详情</h1>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">新建/编辑</h3>
+                    <div class="btn-group pull-right">
+                        <button type="submit" class="btn btn-info" ng-click="submit()">提交</button>
+                        <button class="btn btn-default" ng-click="back()">取消</button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal">
+                    <div class="box-body">
+
+                        <!--软件名称和简称-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">软件名称</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="输入软件名称" ng-model="formData.softwareName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">软件简称</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入软件简称" ng-model="formData.abbreviation">
+                            </div>
+                        </div>
+
+                        <!--软件著作权-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">软件著作权登记号</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入软件著作权登记号" ng-model="formData.crNo">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">签发日期</label>
+                            <div class="col-sm-3">
+                                <input type="date" name="crDate" class="form-control" ng-model="formData.crDate"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">软著文件链接</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入证书系统链接" ng-model="formData.crUrl">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">认证/测试机构</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入认证/测试机构" ng-model="formData.crOrganization">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">软件类型</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入软件类型" ng-model="formData.crSoftwareType">
+                            </div>
+                        </div>
+
+                        <!--软件产品登记书-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">软件产品登记书号</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入软件产品登记书号" ng-model="formData.rgNo">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">登记日期</label>
+                            <div class="col-sm-3">
+                                <input type="date" name="rgDate" class="form-control" ng-model="formData.rgDate"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">登记有效期</label>
+                            <div class="col-sm-3">
+                                <input type="date" name="rgExpiryDate" class="form-control" ng-model="formData.rgExpiryDate"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">软件产品登记证书链接</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入软件产品登记证书链接" ng-model="formData.rgUrl">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">认证/测试机构</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入认证/测试机构" ng-model="formData.rgOrganization">
+                            </div>
+                        </div>
+
+                        <!--软件评测报告-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">软件评测报告号</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入软件评测报告号" ng-model="formData.epNo">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">签发日期</label>
+                            <div class="col-sm-3">
+                                <input type="date" name="epDate" class="form-control" ng-model="formData.epDate"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">软件评测报告链接</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入软件评测报告的系统链接" ng-model="formData.epUrl">
+                            </div>
+                        </div>
+                        <!--软件评测报告认证/测试机构-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">认证/测试机构</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入软件评测报告认证/测试机构" ng-model="formData.epOrganization">
+                            </div>
+                        </div>
+
+                        <!--类别界定报告-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">类别界定报告号</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入类别界定报告号" ng-model="formData.cdNo">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">鉴定/界定日期</label>
+                            <div class="col-sm-3">
+                                <input type="date" name="epDate" class="form-control" ng-model="formData.cdDate"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">类别界定报告链接</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入类别界定报告的系统链接" ng-model="formData.cdUrl">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">认证/测试机构</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入类别界定报告认证/测试机构" ng-model="formData.cdOrganization">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">软件型号</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入软件型号" ng-model="formData.model">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">负责人</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入负责人姓名" ng-model="formData.charge">
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

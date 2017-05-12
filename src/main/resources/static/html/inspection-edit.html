@@ -6,36 +6,103 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
-            <div class="box-header with-border">
-              <h3 class="box-title">新建/编辑</h3>
-              <div class="btn-group pull-right">
-                <button type="submit" class="btn btn-info">提交</button>
-                <button type="submit" class="btn btn-default">取消</button>
-              </div>
+                <div class="box-header with-border">
+                    <h3 class="box-title">新建/编辑</h3>
+                    <div class="btn-group pull-right">
+                        <button type="submit" class="btn btn-info" ng-click="submit()">提交</button>
+                        <button class="btn btn-default" ng-click="back()">取消</button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal">
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">产品型号</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="输入产品型号" ng-model="formData.model">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">软件名称</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入软件名称" ng-model="formData.name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">软件版本</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入软件版本" ng-model="formData.version">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">测试/检验类别</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="委托/型式/单项检验" ng-model="formData.testType">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">受检单位</label>
+                            <div class="col-sm-8">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" value="杭州海康威视系统技术有限公司" ng-model="formData.company">杭州海康威视系统技术有限公司
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" value="杭州海康威视数字技术股份有限公司" ng-model="formData.company">杭州海康威视数字技术股份有限公司
+                                    </label>
+                                </div>
+                                </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">测试依据</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入测试依据" ng-model="formData.basis">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">颁发日期</label>
+                            <div class="col-sm-3">
+                                <input type="date" name="awardDate" class="form-control" ng-model="formData.awardDate"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">文件编号</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入文件编号" ng-model="formData.docNo" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">证书系统链接</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入证书系统链接" ng-model="formData.certUrl">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">认证/测试机构</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" placeholder="请输入认证/测试机构" ng-model="formData.organization">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">备注</label>
+                            <div class="col-sm-8">
+                                <textarea class="form-control" placeholder="any comments..." rows="5" ng-model="formData.remarks"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">检测报告</label>
+                            <div class="col-sm-8">
+                                <input type="file">
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <!-- /.box-header -->
-            <!-- form start -->
-            <form class="form-horizontal">
-              <div class="box-body">
-                <div class="form-group">
-                  <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
-
-                  <div class="col-sm-8">
-                    <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
-
-                  <div class="col-sm-8">
-                    <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
-                  </div>
-                </div>
-               
-              </div>
-         
-            </form>
-          </div>
         </div>
     </div>
 </section>

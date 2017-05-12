@@ -21,7 +21,7 @@
                                 </button>
                             </div>
                             <div class="input-group-btn">
-                                <button id="add-new-inspection" class="btn btn-default">
+                                <button id="add-new-inspection" class="btn btn-default" ng-click="editCopyright()">
                                     <i class="glyphicon glyphicon-plus"></i>
                                 </button>
                             </div>
@@ -38,26 +38,26 @@
                             <th>简称</th>
                             <!--软件著作权-->
                             <th>软著登记号</th>
-                            <th>签发日期</th>
+                            <!--<th>签发日期</th>-->
                             <th>链接</th>
-                            <th>认证机构</th>
-                            <th>软件类型</th>
+                            <!--<th>认证机构</th>-->
+                            <!--<th>软件类型</th>-->
                             <!--软件产品登记证书-->
                             <th>软件产品登记证书</th>
-                            <th>登记日期</th>
-                            <th>登记有效期</th>
+                            <!--<th>登记日期</th>-->
+                            <!--<th>登记有效期</th>-->
                             <th>链接</th>
-                            <th>认证机构</th>
+                            <!--<th>认证机构</th>-->
                             <!--软件测评报告-->
                             <th>软件测评报告号</th>
-                            <th>签发日期</th>
+                            <!--<th>签发日期</th>-->
                             <th>链接</th>
-                            <th>认证机构</th>
+                            <!--<th>认证机构</th>-->
                             <!--类别界定报告-->
                             <th>报告号</th>
-                            <th>鉴定日期</th>
+                            <!--<th>鉴定日期</th>-->
                             <th>链接</th>
-                            <th>认证机构</th>
+                            <!--<th>认证机构</th>-->
                             <!--其它-->
                             <th>软件型号</th>
                             <th>负责人</th>
@@ -74,26 +74,26 @@
                             <td>{{item.abbreviation}}</td>
                             <!--软件著作权-->
                             <td>{{item.crNo}}</td>
-                            <td>{{item.crDate}}</td>
-                            <td><a ng-href="crUrl">link</a></td>
-                            <td>{{item.crOrganization}}</td>
-                            <td>{{item.crSoftwareType}}</td>
+                            <!--<td>{{item.crDate}}</td>-->
+                            <td><a ng-href="{{item.crUrl}}" target="_blank">link</a></td>
+                            <!--<td>{{item.crOrganization}}</td>-->
+                            <!--<td>{{item.crSoftwareType}}</td>-->
                             <!--软件产品登记证书-->
                             <td>{{item.rgNo}}</td>
-                            <td>{{item.rgDate}}</td>
-                            <td>{{item.rgExpiryDate}}</td>
-                            <td><a ng-href="rgUrl">link</a></td>
-                            <td>{{item.rgOrganization}}</td>
+                            <!--<td>{{item.rgDate}}</td>-->
+                            <!--<td>{{item.rgExpiryDate}}</td>-->
+                            <td><a ng-href="{{item.rgUrl}}" target="_blank">link</a></td>
+                            <!--<td>{{item.rgOrganization}}</td>-->
                             <!--软件测评报告-->
                             <td>{{item.epNo}}</td>
-                            <td>{{item.epDate}}</td>
-                            <td><a ng-href="{{item.epUrl}}">link</a></td>
-                            <td>{{item.epOrganization}}</td>
+                            <!--<td>{{item.epDate}}</td>-->
+                            <td><a ng-href="{{item.epUrl}}" target="_blank">link</a></td>
+                            <!--<td>{{item.epOrganization}}</td>-->
                             <!--界定类别报告-->
                             <td>{{item.cdNo}}</td>
-                            <td>{{item.cdDate}}</td>
-                            <td><a ng-href="{{item.cdUrl}}">link</a></td>
-                            <td>{{item.cdOrganization}}</td>
+                            <!--<td>{{item.cdDate}}</td>-->
+                            <td><a ng-href="{{item.cdUrl}}" target="_blank">link</a></td>
+                            <!--<td>{{item.cdOrganization}}</td>-->
                             <!--其它-->
                             <td>{{item.model}}</td>
                             <td>{{item.charge}}</td>
