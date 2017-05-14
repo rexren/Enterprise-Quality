@@ -3,6 +3,10 @@
 angular.module('enterprise-quality')
     .controller('InspectionsCtrl', ['$scope','$location','$http',
     	function($scope, $location, $http){
+    	
+    	$scope.DoCtrlPagingAct = function(logText){
+    		console.log(logText);
+    	}
 
     	// todo 先确定页码，再getList
     	getList(1, 10);
