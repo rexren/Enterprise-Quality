@@ -38,15 +38,10 @@ public class TypeInspectionService {
     }
 
     public Page<TypeInspection> getInspectionByPage(Integer pageNum, Integer pageSize) {
-    	int pn = pageNum == null?1:pageNum.intValue();
+    	int pn = pageNum == null?0:pageNum.intValue()-1;
     	int ps = pageSize ==null?20:pageSize.intValue(); // 默认20条/页
-    	int start = (pn-1)*ps;
-        Pageable page = new PageRequest(start, ps);
+        Pageable page = new PageRequest(pn, ps);
         return typeInspectionRepository.findAll(page);
-    }
-
-    public List<TypeInspection> getInspections() {
-        return typeInspectionRepository.findAll();
     }
 
     public void save(TypeInspection typeInspection) {

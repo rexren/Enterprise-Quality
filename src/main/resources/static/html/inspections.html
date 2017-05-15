@@ -68,7 +68,7 @@
                             <td>{{item.createAt| date:'yyyy-MM-dd'}}</td>
                             <td>{{item.updateAt| date:'yyyy-MM-dd'}}</td>
                             <td>{{item.operator}}</td>
-                            <td><button class="btn btn-link" ng-click="edit(item.id)">修改</button> </td>
+                            <td><button class="btn btn-link" ng-click="edit(item)">修改</button> </td>
                         </tr>
                         </tbody>
                     </table>
@@ -77,16 +77,15 @@
 	            <div class="box-footer clearfix">
 		            <paging
 		                class="smallpagination pagination-sm no-margin pull-right"
-		                page="1" 
-		                page-size="10" 
-		                total="128"
-		                pg-href="index.html#/inspections/{{page}}"
-		                adjacent="2"
+		                page="pagination.page" 
+		                page-size="pagination.size" 
+		                total="pagination.totalElements"
+		                adjacent="1"
 		                dots="..."
 		                hide-if-empty="true"
 		                show-prev-next="true"
 		                show-first-last="true"
-		                paging-action="DoCtrlPagingAct('Paging Clicked')">
+		                paging-action="onPageChange(page)">
 		            </paging>  
 	            </div>
             

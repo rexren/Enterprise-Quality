@@ -36,9 +36,9 @@ public class InspectionController {
         return "inspection/index";
     }
 
-    @RequestMapping("/{id}")
+    @RequestMapping(value ="/detail.action", method = RequestMethod.GET)
     @ResponseBody
-    public TypeInspection getInspecion(@PathVariable Long id) {
+    public TypeInspection getInspecion(Long id) {
         return typeInspectionService.get(id);
     }
 

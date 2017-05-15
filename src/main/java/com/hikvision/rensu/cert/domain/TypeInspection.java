@@ -14,7 +14,7 @@ public class TypeInspection implements Serializable{
     private static long serialVersionUID = -1L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

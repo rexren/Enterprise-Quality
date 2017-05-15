@@ -67,14 +67,19 @@
                         </tbody>
                     </table>
                 </div>
-				<div class="box-footer clearfix">
-	              <ul class="pagination pagination-sm no-margin pull-right">
-	                <li><a href="">&laquo;</a></li>
-	                <li><a href="">1</a></li>
-	                <li><a href="">2</a></li>
-	                <li><a href="">3</a></li>
-	                <li><a href="">&raquo;</a></li>
-	              </ul>
+				 <div class="box-footer clearfix">
+		            <paging
+		                class="smallpagination pagination-sm no-margin pull-right"
+		                page="pagination.page" 
+		                page-size="pagination.size" 
+		                total="pagination.totalElements"
+		                adjacent="1"
+		                dots="..."
+		                hide-if-empty="true"
+		                show-prev-next="true"
+		                show-first-last="true"
+		                paging-action="onPageChange(page)">
+		            </paging>  
 	            </div>
             </div>
         </div>
