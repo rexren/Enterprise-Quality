@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('enterprise-quality',['ngRoute', 'ngResource', 'ur.file'])
+angular.module('enterprise-quality',['ngRoute'])
 .config(['$routeProvider', function($routeProvider){
     $routeProvider
     	.when('/',{
