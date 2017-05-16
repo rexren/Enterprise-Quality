@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
@@ -113,69 +114,25 @@ public class InspectionController {
     /*    
     test
     */	
-    @RequestMapping(value = "/uploadtest11.do")
-    @ResponseBody
-    public String upload11(@RequestParam(value = "test", required = false) MultipartFile test, HttpServletRequest request) {
+    @RequestMapping(value = "/uploadtest11.do", method = RequestMethod.POST)
+    public String upload11(@RequestParam(value="uploadedfile") MultipartFile uploadedfile) {
         System.out.println("开始");
-        if(request instanceof MultipartHttpServletRequest){
-        	MultiValueMap<String, MultipartFile> fileMap = ((MultipartHttpServletRequest)request).getMultiFileMap();
-        	if(null != fileMap){
-        		for(String key : fileMap.keySet()){
-					List<MultipartFile> files = fileMap.get(key);
-					System.out.println(files.size());
-        		}
-        	}
-        	
-        }
-        String fileName = test.getOriginalFilename(); 
+        if (null == uploadedfile || uploadedfile.isEmpty()) {
+			return "Please select the file to upload";
+		}
+        String fileName = uploadedfile.getOriginalFilename(); 
         System.out.println("文件名为： "+fileName);
         // 获取文件的后缀名
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         System.out.println("上传的后缀名为：" + suffixName);
         // 文件上传后的路径
-        String filePath = "E://test//";
-        // 解决中文问题，liunx下中文路径，图片显示问题
-        // fileName = UUID.randomUUID() + suffixName;
+        String filePath = "C://test//";
         File targetFile = new File(filePath + fileName);
         if(!targetFile.exists()){  
             targetFile.mkdirs();  
         }  
         try {  
-        	test.transferTo(targetFile);
-            return "上传成功";
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "上传失败";  
-        
-    }
-    
-    //文件上传相关代码
-    @RequestMapping(value = "/uploadtest1.do")
-    @ResponseBody
-    public String upload(@RequestParam("test") MultipartFile file) {
-        if (file.isEmpty()) {
-            return "文件为空";
-        }
-        // 获取文件名
-        String fileName = file.getOriginalFilename();
-        System.out.println("上传的文件名为：" + fileName);
-        // 获取文件的后缀名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        System.out.println("上传的后缀名为：" + suffixName);
-        // 文件上传后的路径
-        String filePath = "E://test//";
-        // 解决中文问题，liunx下中文路径，图片显示问题
-        // fileName = UUID.randomUUID() + suffixName;
-        File dest = new File(filePath + fileName);
-        // 检测是否存在目录
-        if (!dest.getParentFile().exists()) {
-            dest.getParentFile().mkdirs();
-        }
-        try {
-            file.transferTo(dest);
+        	uploadedfile.transferTo(targetFile);
             return "上传成功";
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -184,6 +141,4 @@ public class InspectionController {
         }
         return "上传失败";
     }
-
-    
 }
