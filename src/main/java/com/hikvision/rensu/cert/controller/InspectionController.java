@@ -42,6 +42,13 @@ public class InspectionController {
         return typeInspectionService.get(id);
     }
 
+    @RequestMapping(value ="/upload", method = RequestMethod.POST)
+    @ResponseBody
+    public void fileupload(Long docNo) {
+    	// docNo: document serial number
+        // file upload service
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/{docSerial}")
     public void saveInspection(@RequestBody TypeInspection typeInspection) {
         typeInspectionService.save(typeInspection);

@@ -34,4 +34,5 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
         	$location.url('/inspections/edit');
     	}
     }
+    
 }]);
