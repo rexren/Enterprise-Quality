@@ -56,7 +56,6 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl', ['$scope'
 		$scope.openFile=function(){
 	        var defer = $.Deferred();
 	         defer.progress(function(file){
-	        	console.log(file);
 	            $scope.file=file;
 	            $scope.fileName =file.name;
 	            $scope.$apply();
@@ -69,8 +68,6 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl', ['$scope'
 		
         $scope.submit = function () {
             var defer = $q.defer();
-            /*var params = {file:$scope.file};
-            params = angular.extend(params, $scope.formData);*/
             var fd = new FormData();
             fd.append('file',$scope.file);
             for(var i in $scope.formData){
@@ -79,16 +76,18 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl', ['$scope'
             $http({
                 method: 'POST',
                 url: '/inspections/save.do',
-                data: fd, // pass in data as strings
-                headers: {'Content-Type':undefined}
-            }).success(function(res) {
-            	console.log('submit success');
-                if (res.code === 200) {
-                    defer.resolve(res.data);
-                } else {
-                    defer.reject();
+                data: fd,
+                headers: {
+                	'Accept':'*/*',
+                	'Content-Type':undefined
                 }
-            }).error(function() {
+            }).success(function(res) {
+            	alert('Submit successfully ^_^');
+            	$location.url('/inspections');
+            }).error(function(res) {
+            	alert('Submit failure');
+            	console.log('Error msg:');
+            	console.log(res);
                 defer.reject();
             });
             return defer.promise;

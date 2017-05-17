@@ -1,10 +1,7 @@
 package com.hikvision.rensu.cert.controller;
 
-import com.hikvision.rensu.cert.domain.SearchContent;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Created by rensu on 17/4/1.
@@ -16,17 +13,5 @@ public class FrontPageController {
     public String indexPage() {
     	return "redirect:/index.html";
     }
-
-//    @RequestMapping("/copyright")
-//    public String copyrightPage(Model model) {
-//        model.addAttribute("name", "陈晓琳");
-//        return "copyright";
-//    }
-//
-//    @RequestMapping("/ccc")
-//    public String CCCPage(Model model) {
-//        model.addAttribute("name", "陈晓琳");
-//        return "ccc";
-//    }
 
 }

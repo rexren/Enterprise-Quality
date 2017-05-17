@@ -11,7 +11,11 @@ import java.util.Date;
 @Entity
 public class CccPage implements Serializable{
 
+	/**
+	 * 
+	 */
 	private static long serialVersionUID = -1L;
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
