@@ -5,7 +5,7 @@
 
 [API文档位置](http://api.hikvision.com.cn/dashboard/#!/project/v1ygHEESy)
 
-jvm启动后访问：[http://localhost:8080/index.html](http://localhost:8080/index.html)
+jvm启动后访问：[http://localhost:8080](http://localhost:8080)，自动跳转至http://localhost:8080/index.html
 
 ### 页面分类
 1. 登录页
