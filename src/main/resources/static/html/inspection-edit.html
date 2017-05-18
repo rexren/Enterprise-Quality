@@ -93,14 +93,19 @@
                             </div>
                         </div>
                         
-					    <div class="form-group" >
-				            <label class="col-sm-2 control-label">检测报告</label>
-				            <div class="col-sm-8">
-				                <button ng-click="openFile()">上传文件</button>
-				                <span ng-model="fileName">{{fileName?fileName:'请选择'}}</span>
-				                <p class="help-block">上传之前必须输入正确的文件编号！</p>
-				            </div>
-				        </div>
+                        <div class="form-group" >
+                            <label class="col-sm-2 control-label">检测报告</label>
+                            <div class="col-sm-8">
+                                <div class="fileinput fileinput-new">
+                                    <span class="btn btn-default btn-file" ng-click="openFile()">
+                                        <span>{{fileName?'选择文件':'重新上传'}}</span>
+                                    </span>
+                                    <span class="fileinput-filename">{{fileName?fileName:'请选择'}}</span>
+                                    <icon class="close" ng-if="fileName" style="float: none" ng-click="removeFile()">×</icon>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </form>
             </div>

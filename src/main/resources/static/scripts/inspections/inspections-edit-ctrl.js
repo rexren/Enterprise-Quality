@@ -28,8 +28,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl', ['$scope'
 	        	console.log(res);
 	        	var adate = Date.parse(Date(res.awardDate));
 	        	adate = adate>32503651200? new Date(adate) : new Date(adate*1000);
-	        	console.log('adate:'+adate);
-	            //todo 表单载入时读取文件
+
 	        	$scope.formData = {
 	    	        'model': res.model,
 	    	        'name': res.name,
@@ -92,6 +91,12 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl', ['$scope'
             });
             return defer.promise;
         };
+        
+
+        $scope.removeFile = function(){
+        	$scope.file = {};
+            $scope.fileName = '';
+		};
         
         // back
         $scope.back = function(){

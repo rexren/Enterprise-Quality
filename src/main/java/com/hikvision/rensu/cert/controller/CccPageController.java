@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hikvision.rensu.cert.domain.CccPage;
-import com.hikvision.rensu.cert.service.CCCPageService;
+import com.hikvision.rensu.cert.service.CccPageService;
 
 /**
  * Created by rensu on 17/5/1.
  */
 @Controller
 @RequestMapping("/ccc")
-public class CCCPageController {
+public class CccPageController {
 	
 	@Autowired
-    private CCCPageService cccPageService;
+    private CccPageService cccPageService;
 	
 	@RequestMapping(value ="/list.action", method = RequestMethod.GET)
     @ResponseBody

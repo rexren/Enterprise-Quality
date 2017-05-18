@@ -27,15 +27,11 @@ import java.util.List;
 @Transactional
 public class TypeInspectionService {
 
-    private final TypeInspectionRepository typeInspectionRepository;
+	@Autowired
+    private TypeInspectionRepository typeInspectionRepository;
 
-    private final InspectContentRepository inspectContentRepository;
-
-    @Autowired
-    public TypeInspectionService(TypeInspectionRepository typeInspectionRepository, InspectContentRepository inspectContentRepository) {
-        this.typeInspectionRepository = typeInspectionRepository;
-        this.inspectContentRepository = inspectContentRepository;
-    }
+	@Autowired
+    private InspectContentRepository inspectContentRepository;
 
     public Page<TypeInspection> getInspectionByPage(Integer pageNum, Integer pageSize) {
     	int pn = pageNum == null?0:pageNum.intValue()-1;

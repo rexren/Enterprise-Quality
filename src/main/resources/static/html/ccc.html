@@ -14,17 +14,11 @@
                         <div class="input-group input-group-sm" style="width: 400px;">
                             <input type="text" name="table_search" class="form-control pull-right"
                                    placeholder="Search">
-
-                            <div class="input-group-btn">
-                                <button class="btn btn-default">
-                                    <i class="glyphicon glyphicon-search"></i>
-                                </button>
-                            </div>
-                            <div class="input-group-btn">
-                                <button id="add-new-inspection" class="btn btn-default" ng-click="edit()">
-                                    <i class="glyphicon glyphicon-plus"></i>
-                                </button>
-                            </div>
+						<div class="input-group-btn">
+                            <button class="btn btn-default" ng-click="edit()">新增</button>
+                        </div>
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" ng-click="importList()">批量导入</button>
                         </div>
                     </div>
                 </div>
@@ -62,25 +56,17 @@
                             <td>{{item.createDate}}</td>
                             <td>{{item.updateDate}}</td>
                             <td>{{item.operator}}</td>
-                            <td><a>修改</a></td>
+                            <td><button class="btn btn-link" ng-click="edit(item)">修改</button> </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-				 <div class="box-footer clearfix">
-		            <paging
-		                class="smallpagination pagination-sm no-margin pull-right"
-		                page="pagination.page" 
-		                page-size="pagination.size" 
-		                total="pagination.totalElements"
-		                adjacent="1"
-		                dots="..."
-		                hide-if-empty="true"
-		                show-prev-next="true"
-		                show-first-last="true"
-		                paging-action="onPageChange(page)">
-		            </paging>  
-	            </div>
+                <div class="box-footer clearfix">
+                    <paging class="smallpagination pagination-sm no-margin pull-right" page="pagination.page" page-size="pagination.size"
+                            total="pagination.totalElements" adjacent="1" dots="..." hide-if-empty="true"
+                            show-prev-next="true" show-first-last="true" paging-action="onPageChange(page)">
+                    </paging>
+                </div>
             </div>
         </div>
     </div>

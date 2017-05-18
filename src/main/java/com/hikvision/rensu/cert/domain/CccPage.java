@@ -12,11 +12,13 @@ import java.util.Date;
 public class CccPage implements Serializable{
 
 	/**
-	 * 
+	 * serialVersionUID
 	 */
-	private static long serialVersionUID = -1L;
+	private static final long serialVersionUID = 1L;
 
-
+	/**
+	 * 自增Id
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -87,14 +89,6 @@ public class CccPage implements Serializable{
      */
     @Column
     private String operator;
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public static void setSerialversionuid(long serialversionuid) {
-		serialVersionUID = serialversionuid;
-	}
 
 	public Long getId() {
 		return id;

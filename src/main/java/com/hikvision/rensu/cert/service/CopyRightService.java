@@ -6,24 +6,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.hikvision.rensu.cert.domain.CccPage;
-import com.hikvision.rensu.cert.repository.CCCPageRepository;
+import com.hikvision.rensu.cert.domain.CopyRight;
+import com.hikvision.rensu.cert.repository.CopyRightRepository;
 
 @Service
-public class CCCPageService {
-	private final CCCPageRepository cccPageRepository;
-	
+public class CopyRightService {
 	@Autowired
-	public CCCPageService(CCCPageRepository cccPageRepository){
-		this.cccPageRepository = cccPageRepository;
-	}
+	private CopyRightRepository copyRightRepository;
 	
-	public Page<CccPage> getCCCListByPage(Integer pageNum, Integer pageSize){
+	public Page<CopyRight> getCopyRightByPage(Integer pageNum, Integer pageSize){
     	int pn = pageNum == null?0:pageNum.intValue()-1;
     	int ps = pageSize ==null?20:pageSize.intValue(); // 默认20条/页
         Pageable page = new PageRequest(pn, ps);
-        return cccPageRepository.findAll(page);
+        return copyRightRepository.findAll(page);
 	}
-	
-	
 }

@@ -27,19 +27,57 @@ public class InspectionController {
 
     @Autowired
     private TypeInspectionService typeInspectionService;
-
+   
+    /**
+     * 获取公检&国标文件列表页
+     */
     @RequestMapping(value ="/list.action", method = RequestMethod.GET)
     @ResponseBody
     public Page<TypeInspection> getInspecionListByPage(Integer pageNum, Integer pageSize) {
         return typeInspectionService.getInspectionByPage(pageNum, pageSize);
     }
     
+    /**
+     * 获取单条数据
+     */
     @RequestMapping(value ="/detail.action", method = RequestMethod.GET)
     @ResponseBody
     public TypeInspection getInspecion(Long id) {
         return typeInspectionService.get(id);
     }
-
+    
+    /**
+     * 导入公检&国标文件列表文件
+     */
+    @RequestMapping(value = "/upload.do", method = RequestMethod.POST)
+    @ResponseBody
+	public String saveInspectionList(@RequestBody MultipartFile file, HttpServletRequest request) {
+    	System.out.println("Start"+request.getParameter("company"));
+        String fileName = file.getOriginalFilename(); 
+        System.out.println("fileName:  "+file.getOriginalFilename());
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        System.out.println("suffixName: " + suffixName);
+        String uploadStatus = "";
+		if (null == file || file.isEmpty()) {
+			uploadStatus = "Please select the file to upload";
+		} else {
+			uploadStatus = file.getOriginalFilename() + " file upload success";
+			try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file.getInputStream()));) {
+				String line = null;
+				while (null != (line = bufferedReader.readLine())){
+					// System.out.println(line);
+					//TODO 解析文件，写入数据库
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return uploadStatus;
+    }
+    
+    /**
+     * 保存单条数据（包括详情文件）
+     */
     @RequestMapping(value = "/save.do", method = RequestMethod.POST)
     @ResponseBody
 	public String saveInspectionForm(@RequestBody MultipartFile file, HttpServletRequest request) {
@@ -55,8 +93,10 @@ public class InspectionController {
 			uploadStatus = file.getOriginalFilename() + " file upload success";
 			try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file.getInputStream()));) {
 				String line = null;
-				while (null != (line = bufferedReader.readLine())){}
+				while (null != (line = bufferedReader.readLine())){
 					// System.out.println(line);
+					//TODO 解析文件，写入数据库
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

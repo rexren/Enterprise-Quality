@@ -11,7 +11,10 @@ import java.util.Date;
 @Entity
 public class TypeInspection implements Serializable{
 
-    private static long serialVersionUID = -1L;
+    /**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +29,6 @@ public class TypeInspection implements Serializable{
     public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
-
-
-	public static void setSerialVersionUID(long serialVersionUID) {
-		TypeInspection.serialVersionUID = serialVersionUID;
-	}
-
 
 	public String getOrganization() {
 		return organization;
@@ -112,11 +109,6 @@ public class TypeInspection implements Serializable{
 
 	public void setDocNo(String docNo) {
 		this.docNo = docNo;
-	}
-
-
-	public static void setSerialversionuid(long serialversionuid) {
-		serialVersionUID = serialversionuid;
 	}
 
 	/**
