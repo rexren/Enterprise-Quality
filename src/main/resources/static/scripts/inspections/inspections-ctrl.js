@@ -16,7 +16,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
 
         function getList(page, size) {
             var param = {pageNum:page,pageSize:size};
-            $http.get('/inspections/list.action',{params:param}).success(function(res){
+            $http.get('/inspections/list.do',{params:param}).success(function(res){
                 $scope.list = res.content;
                 $scope.pagination.totalElements = res.totalElements;
             }).error(function(res, status, headers, config){

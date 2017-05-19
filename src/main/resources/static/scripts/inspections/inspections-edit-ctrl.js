@@ -1,8 +1,7 @@
 'use strict';
 
-angular.module('enterprise-quality').controller('InspectionsEditCtrl', ['$scope','$location','$http', '$q','FileUploadService',
+angular.module('enterprise-quality').controller('InspectionsEditCtrl', 
 	function($scope, $location, $http, $q, FileUploadService){
-
 	    $scope.formData = 
 	    {
 	        'model': '',
@@ -18,12 +17,12 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl', ['$scope'
 	        'remarks': '',
 	        'operator': ''
 	    };
-	    $scope.fileName = '未上传';
+	    $scope.fileName = '';
 	    
         var urlId = $location.search().id;
         if(urlId){
         	var param = {id: urlId};
-	        $http.get('/inspections/detail.action',{params:param}).success(function(res){
+	        $http.get('/inspections/detail.do',{params:param}).success(function(res){
 	        	console.log('success');
 	        	console.log(res);
 	        	var adate = Date.parse(Date(res.awardDate));
@@ -103,4 +102,4 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl', ['$scope'
             $location.url('/inspections');
         }
 
-    }]);
+    });

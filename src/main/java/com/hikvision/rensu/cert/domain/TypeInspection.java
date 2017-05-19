@@ -26,19 +26,6 @@ public class TypeInspection implements Serializable{
     @Column
     private String operator;
 
-    public static long getSerialVersionUID() {
-		return serialVersionUID;
-	}
-
-	public String getOrganization() {
-		return organization;
-	}
-
-
-	public void setOrganization(String organization) {
-		this.organization = organization;
-	}
-
 
 	/**
      * 产品型号
@@ -102,15 +89,6 @@ public class TypeInspection implements Serializable{
     @Column(nullable = false)
     private String organization;
 
-    public String getDocNo() {
-		return docNo;
-	}
-
-
-	public void setDocNo(String docNo) {
-		this.docNo = docNo;
-	}
-
 	/**
      * 备注
      */
@@ -129,6 +107,19 @@ public class TypeInspection implements Serializable{
      */
     @Column
     private Date updateAt;
+
+    public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public String getOrganization() {
+		return organization;
+	}
+
+
+	public void setOrganization(String organization) {
+		this.organization = organization;
+	}
 
     public TypeInspection(){
     }
@@ -222,7 +213,14 @@ public class TypeInspection implements Serializable{
     public void setCertUrl(String certUrl) {
         this.certUrl = certUrl;
     }
+    
+    public String getDocNo() {
+		return docNo;
+	}
 
+	public void setDocNo(String docNo) {
+		this.docNo = docNo;
+	}
     public String getRemarks() {
         return remarks;
     }
@@ -238,7 +236,6 @@ public class TypeInspection implements Serializable{
     public void setCreateAt(Date createAt) {
         this.createAt = createAt;
     }
-
 
 
     public Date getUpdateAt() {

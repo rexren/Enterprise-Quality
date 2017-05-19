@@ -44,7 +44,7 @@ public class TypeInspectionService {
         typeInspectionRepository.save(typeInspection);
     }
 
-    public TypeInspection get(Long id) {
+    public TypeInspection getTypeInspectionById(Long id) {
         return typeInspectionRepository.findOne(id);
     }
 
