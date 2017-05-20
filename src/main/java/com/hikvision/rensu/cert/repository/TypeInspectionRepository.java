@@ -1,8 +1,9 @@
 package com.hikvision.rensu.cert.repository;
 
-import com.hikvision.rensu.cert.domain.TypeInspection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.hikvision.rensu.cert.domain.TypeInspection;
 
 /**
  * Created by rensu on 2017/4/22.

@@ -3,7 +3,7 @@
 angular.module('enterprise-quality')
     .controller('CccEditCtrl', ['$scope','$location',
         function($scope, $location){
-            console.log('InspectionsEditCtrl');
+
             $scope.formData = {
                 'softwareName': '',
                 'abbreviation': '',

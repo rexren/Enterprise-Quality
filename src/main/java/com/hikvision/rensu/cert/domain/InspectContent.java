@@ -1,6 +1,7 @@
 package com.hikvision.rensu.cert.domain;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,36 +21,34 @@ public class InspectContent {
     private Long id;
 
     /**
-     * 序号
+     * 用例编号/序号
      */
-    private Long contendId;
-
-    /**
-     * 用例编号
-     */
+    @Column
     private String caseId;
 
     /**
      * 用例名称
      */
+    @Column
     private String caseName;
 
     /**
      * 用例类型
      */
+    @Column
     private String caseType;
 
 
     /**
      * 用例说明
      */
+    @Column
     private String caseDescription;
 
     public InspectContent() {
     }
 
-    public InspectContent(Long contendId, String caseId, String caseName, String caseType, String caseDescription) {
-        this.contendId = contendId;
+    public InspectContent( String caseId, String caseName, String caseType, String caseDescription) {
         this.caseId = caseId;
         this.caseName = caseName;
         this.caseType = caseType;
@@ -64,13 +63,6 @@ public class InspectContent {
         this.id = id;
     }
 
-    public Long getContendId() {
-        return contendId;
-    }
-
-    public void setContendId(Long contendId) {
-        this.contendId = contendId;
-    }
 
     public String getCaseId() {
         return caseId;

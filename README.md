@@ -37,7 +37,7 @@ http://127.0.0.1:9200/_plugin/head/
 
 ### 启动web服务
 
-jvm启动后访问：[http://localhost:8080/index.html](http://localhost:8080/index.html)
+jvm启动后访问：[http://localhost:8080](http://localhost:8080)，自动跳转至http://localhost:8080/index.html
 
 
 ##功能

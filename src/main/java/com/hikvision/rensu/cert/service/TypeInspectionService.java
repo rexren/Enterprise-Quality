@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.io.InputStream;
 
 /**
  * Created by rensu on 17/4/21.
@@ -27,37 +27,31 @@ import java.util.List;
 @Transactional
 public class TypeInspectionService {
 
-    private final TypeInspectionRepository typeInspectionRepository;
+	@Autowired
+    private TypeInspectionRepository typeInspectionRepository;
 
-    private final InspectContentRepository inspectContentRepository;
-
-    @Autowired
-    public TypeInspectionService(TypeInspectionRepository typeInspectionRepository, InspectContentRepository inspectContentRepository) {
-        this.typeInspectionRepository = typeInspectionRepository;
-        this.inspectContentRepository = inspectContentRepository;
-    }
+	@Autowired
+    private InspectContentRepository inspectContentRepository;
 
     public Page<TypeInspection> getInspectionByPage(Integer pageNum, Integer pageSize) {
-    	int pn = pageNum == null?1:pageNum.intValue();
+    	int pn = pageNum == null?0:pageNum.intValue()-1;
     	int ps = pageSize ==null?20:pageSize.intValue(); // 默认20条/页
-    	int start = (pn-1)*ps;
-        Pageable page = new PageRequest(start, ps);
+        Pageable page = new PageRequest(pn, ps);
         return typeInspectionRepository.findAll(page);
-    }
-
-    public List<TypeInspection> getInspections() {
-        return typeInspectionRepository.findAll();
     }
 
     public void save(TypeInspection typeInspection) {
         typeInspectionRepository.save(typeInspection);
     }
 
-    public TypeInspection get(Long id) {
+    public TypeInspection getTypeInspectionById(Long id) {
         return typeInspectionRepository.findOne(id);
     }
 
-    public void importTyepInspection(File xlsxFile) {
+	/**
+	 * 导入列表数据（推荐手工导入数据库）
+     */
+    public void importTyepInspection(InputStream xlsxFile) {
 
         try {
             // 获得工作簿
@@ -68,7 +62,6 @@ public class TypeInspectionService {
             for (int i = 0; i < sheetCount; i++) {
 
                 TypeInspection t = new TypeInspection();
-
 
                 Sheet sheet = workbook.getSheetAt(i);
                 // 获得行数
@@ -83,9 +76,10 @@ public class TypeInspectionService {
                 for (int row = 0; row < rows; row++) {
                     Row r = sheet.getRow(row);
                     for (int col = 0; col < cols; col++) {
+                    	//TODO 对每行数据r处理，存入TypeInspection t
                     }
                 }
-
+               
                 typeInspectionRepository.save(t);
             }
         } catch (InvalidFormatException e) {
@@ -95,8 +89,11 @@ public class TypeInspectionService {
         }
 
     }
-
-    public void importTypeContent(File xlsxFile) {
+    
+	/**
+	 * 保存检测报告数据表
+     */
+    public void importTypeContent(InputStream xlsxFile) {
 
         try {
             // 获得工作簿
@@ -122,6 +119,7 @@ public class TypeInspectionService {
                 for (int row = 0; row < rows; row++) {
                     Row r = sheet.getRow(row);
                     for (int col = 0; col < cols; col++) {
+                    	//data put into content
                     }
                 }
                 inspectContentRepository.save(content);
@@ -129,6 +127,7 @@ public class TypeInspectionService {
         } catch (InvalidFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
+        	//TODO 加密文件报错捕获
             e.printStackTrace();
         }
     }

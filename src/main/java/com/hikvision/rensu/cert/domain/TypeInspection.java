@@ -11,10 +11,13 @@ import java.util.Date;
 @Entity
 public class TypeInspection implements Serializable{
 
-    private static long serialVersionUID = -1L;
+    /**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
@@ -22,25 +25,6 @@ public class TypeInspection implements Serializable{
      */
     @Column
     private String operator;
-
-    public static long getSerialVersionUID() {
-		return serialVersionUID;
-	}
-
-
-	public static void setSerialVersionUID(long serialVersionUID) {
-		TypeInspection.serialVersionUID = serialVersionUID;
-	}
-
-
-	public String getOrganization() {
-		return organization;
-	}
-
-
-	public void setOrganization(String organization) {
-		this.organization = organization;
-	}
 
 
 	/**
@@ -105,20 +89,6 @@ public class TypeInspection implements Serializable{
     @Column(nullable = false)
     private String organization;
 
-    public String getDocNo() {
-		return docNo;
-	}
-
-
-	public void setDocNo(String docNo) {
-		this.docNo = docNo;
-	}
-
-
-	public static void setSerialversionuid(long serialversionuid) {
-		serialVersionUID = serialversionuid;
-	}
-
 	/**
      * 备注
      */
@@ -137,6 +107,19 @@ public class TypeInspection implements Serializable{
      */
     @Column
     private Date updateAt;
+
+    public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public String getOrganization() {
+		return organization;
+	}
+
+
+	public void setOrganization(String organization) {
+		this.organization = organization;
+	}
 
     public TypeInspection(){
     }
@@ -230,7 +213,14 @@ public class TypeInspection implements Serializable{
     public void setCertUrl(String certUrl) {
         this.certUrl = certUrl;
     }
+    
+    public String getDocNo() {
+		return docNo;
+	}
 
+	public void setDocNo(String docNo) {
+		this.docNo = docNo;
+	}
     public String getRemarks() {
         return remarks;
     }
@@ -246,7 +236,6 @@ public class TypeInspection implements Serializable{
     public void setCreateAt(Date createAt) {
         this.createAt = createAt;
     }
-
 
 
     public Date getUpdateAt() {
