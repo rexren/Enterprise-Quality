@@ -8,11 +8,29 @@
 ##调试准备
 ### 运行搜索引擎
 
-调试需要先启动elasticsearch 5.0, 建议使用docker方式启动
+调试需要先启动elasticsearch 2.4.5, 建议使用docker方式启动
 
-docker pull hub.c.163.com/library/elasticsearch
+下载
+``` bash
+docker pull hub.c.163.com/library/elasticsearch:2.4.5
+```
 
-docker run -d --name elas elasticsearch -p 9300:9300 -p 9200:9200 hub.c.163.com/library/elasticsearch
+这个版本没有安装head插件，所以先安装
+```Dockerfile
+FROM hub.c.163.com/library/elasticsearch:2.4.5
+
+WORKDIR /usr/share/elasticsearch
+
+RUN ./bin/plugin install mobz/elasticsearch-head
+
+EXPOSE 9200 9300
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["elasticsearch"]
+```
+运行docker
+``` bash
+docker run -d --name elas -p 9300:9300 -p 9200:9200  es
+```
 
 访问以下链接查看是否启动成功
 http://127.0.0.1:9200/_plugin/head/
@@ -52,3 +70,4 @@ jvm启动后访问：[http://localhost:8080/index.html](http://localhost:8080/in
 5. 能够显示更新信息
 6. 能够导入和解析检测项索引表的excel文档到数据库中
 7. 能够深度检索检测项内容
+
