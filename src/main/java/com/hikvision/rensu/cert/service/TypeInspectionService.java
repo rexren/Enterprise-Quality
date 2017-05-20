@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.io.InputStream;
 
 /**
  * Created by rensu on 17/4/21.
@@ -48,7 +48,10 @@ public class TypeInspectionService {
         return typeInspectionRepository.findOne(id);
     }
 
-    public void importTyepInspection(File xlsxFile) {
+	/**
+	 * 导入列表数据（推荐手工导入数据库）
+     */
+    public void importTyepInspection(InputStream xlsxFile) {
 
         try {
             // 获得工作簿
@@ -59,7 +62,6 @@ public class TypeInspectionService {
             for (int i = 0; i < sheetCount; i++) {
 
                 TypeInspection t = new TypeInspection();
-
 
                 Sheet sheet = workbook.getSheetAt(i);
                 // 获得行数
@@ -74,9 +76,10 @@ public class TypeInspectionService {
                 for (int row = 0; row < rows; row++) {
                     Row r = sheet.getRow(row);
                     for (int col = 0; col < cols; col++) {
+                    	//TODO 对每行数据r处理，存入TypeInspection t
                     }
                 }
-
+               
                 typeInspectionRepository.save(t);
             }
         } catch (InvalidFormatException e) {
@@ -86,8 +89,11 @@ public class TypeInspectionService {
         }
 
     }
-
-    public void importTypeContent(File xlsxFile) {
+    
+	/**
+	 * 保存检测报告数据表
+     */
+    public void importTypeContent(InputStream xlsxFile) {
 
         try {
             // 获得工作簿
@@ -113,6 +119,7 @@ public class TypeInspectionService {
                 for (int row = 0; row < rows; row++) {
                     Row r = sheet.getRow(row);
                     for (int col = 0; col < cols; col++) {
+                    	//data put into content
                     }
                 }
                 inspectContentRepository.save(content);
@@ -120,6 +127,7 @@ public class TypeInspectionService {
         } catch (InvalidFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
+        	//TODO 加密文件报错捕获
             e.printStackTrace();
         }
     }

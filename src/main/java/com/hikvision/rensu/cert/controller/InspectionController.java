@@ -1,7 +1,9 @@
 package com.hikvision.rensu.cert.controller;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.servlet.http.HttpServletRequest;
@@ -91,15 +93,15 @@ public class InspectionController {
 			uploadStatus = "Please select the file to upload";
 		} else {
 			uploadStatus = file.getOriginalFilename() + " file upload success";
-			try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file.getInputStream()));) {
-				String line = null;
-				while (null != (line = bufferedReader.readLine())){
-					// System.out.println(line);
-					//TODO 解析文件，写入数据库
-				}
+			InputStream xlxsFile = null;
+			try {
+				xlxsFile = file.getInputStream();
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			// 保存检测报告数据表
+			typeInspectionService.importTypeContent(xlxsFile);
 		}
 		return uploadStatus;
     }

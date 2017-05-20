@@ -21,13 +21,7 @@ public class InspectContent {
     private Long id;
 
     /**
-     * 序号
-     */
-    @Column
-    private Long contendId;
-
-    /**
-     * 用例编号
+     * 用例编号/序号
      */
     @Column
     private String caseId;
@@ -54,8 +48,7 @@ public class InspectContent {
     public InspectContent() {
     }
 
-    public InspectContent(Long contendId, String caseId, String caseName, String caseType, String caseDescription) {
-        this.contendId = contendId;
+    public InspectContent( String caseId, String caseName, String caseType, String caseDescription) {
         this.caseId = caseId;
         this.caseName = caseName;
         this.caseType = caseType;
@@ -70,13 +63,6 @@ public class InspectContent {
         this.id = id;
     }
 
-    public Long getContendId() {
-        return contendId;
-    }
-
-    public void setContendId(Long contendId) {
-        this.contendId = contendId;
-    }
 
     public String getCaseId() {
         return caseId;
