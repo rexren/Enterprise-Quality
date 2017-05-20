@@ -9,6 +9,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -27,15 +28,17 @@ import java.io.InputStream;
 @Transactional
 public class TypeInspectionService {
 
-	@Autowired
+    private final static Logger logger = LoggerFactory.getLogger(TypeInspectionService.class);
+
+    @Autowired
     private TypeInspectionRepository typeInspectionRepository;
 
-	@Autowired
+    @Autowired
     private InspectContentRepository inspectContentRepository;
 
     public Page<TypeInspection> getInspectionByPage(Integer pageNum, Integer pageSize) {
-    	int pn = pageNum == null?0:pageNum.intValue()-1;
-    	int ps = pageSize ==null?20:pageSize.intValue(); // 默认20条/页
+        int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
+        int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
         Pageable page = new PageRequest(pn, ps);
         return typeInspectionRepository.findAll(page);
     }
@@ -48,8 +51,8 @@ public class TypeInspectionService {
         return typeInspectionRepository.findOne(id);
     }
 
-	/**
-	 * 导入列表数据（推荐手工导入数据库）
+    /**
+     * 导入列表数据（推荐手工导入数据库）
      */
     public void importTyepInspection(InputStream xlsxFile) {
 
@@ -76,22 +79,23 @@ public class TypeInspectionService {
                 for (int row = 0; row < rows; row++) {
                     Row r = sheet.getRow(row);
                     for (int col = 0; col < cols; col++) {
-                    	//TODO 对每行数据r处理，存入TypeInspection t
+                        //TODO 对每行数据r处理，存入TypeInspection t
+                        //TODO: each loop we create a new object t, bad taste.
                     }
                 }
-               
+
                 typeInspectionRepository.save(t);
             }
         } catch (InvalidFormatException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
     }
-    
-	/**
-	 * 保存检测报告数据表
+
+    /**
+     * 保存检测报告数据表
      */
     public void importTypeContent(InputStream xlsxFile) {
 
@@ -119,7 +123,7 @@ public class TypeInspectionService {
                 for (int row = 0; row < rows; row++) {
                     Row r = sheet.getRow(row);
                     for (int col = 0; col < cols; col++) {
-                    	//data put into content
+                        //data put into content
                     }
                 }
                 inspectContentRepository.save(content);
@@ -127,7 +131,7 @@ public class TypeInspectionService {
         } catch (InvalidFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
-        	//TODO 加密文件报错捕获
+            //TODO 加密文件报错捕获
             e.printStackTrace();
         }
     }
