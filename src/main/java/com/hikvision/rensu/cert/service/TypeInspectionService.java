@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by rensu on 17/4/21.
@@ -53,6 +55,7 @@ public class TypeInspectionService {
 
     /**
      * 导入列表数据（推荐手工导入数据库）
+     * | 产品型号 | 软件名称 | 软件版本 |  测试／检验类别 | 受检单位 | 测试依据 | 颁发日期 | 文件编号 | 证书系统链接 | 认证／测试机构 | 备注
      */
     public void importTyepInspection(InputStream xlsxFile) {
 
@@ -61,31 +64,36 @@ public class TypeInspectionService {
             Workbook workbook = WorkbookFactory.create(xlsxFile);
             // 获得工作表个数
             int sheetCount = workbook.getNumberOfSheets();
-            // 遍历工作表
-            for (int i = 0; i < sheetCount; i++) {
 
-                TypeInspection t = new TypeInspection();
+            if (sheetCount > 5) {
+                //the <公安事业部相关产品资质汇总表sheet页超过5>
+                Sheet sheet = workbook.getSheetAt(1);
 
-                Sheet sheet = workbook.getSheetAt(i);
-                // 获得行数
-                int rows = sheet.getLastRowNum() + 1;
-                // 获得列数，先获得一行，在得到改行列数
-                Row tmp = sheet.getRow(0);
-                if (tmp == null) {
-                    continue;
-                }
-                int cols = tmp.getPhysicalNumberOfCells();
-                // 读取数据
+                int rows = sheet.getLastRowNum() - 2;
+                logger.debug("the total number of type inspection is {}.", rows);
+
+                List<TypeInspection> inspections = new ArrayList<>();
                 for (int row = 0; row < rows; row++) {
                     Row r = sheet.getRow(row);
-                    for (int col = 0; col < cols; col++) {
-                        //TODO 对每行数据r处理，存入TypeInspection t
-                        //TODO: each loop we create a new object t, bad taste.
-                    }
-                }
+                    TypeInspection t = new TypeInspection();
 
-                typeInspectionRepository.save(t);
+                    t.setModel(r.getCell(0).getStringCellValue());
+                    t.setName(r.getCell(1).getStringCellValue());
+                    t.setVersion(r.getCell(2).getStringCellValue());
+                    t.setTestType(r.getCell(3).getStringCellValue());
+                    t.setCompany(r.getCell(4).getStringCellValue());
+                    t.setBasis(r.getCell(5).getStringCellValue());
+                    t.setAwardDate(r.getCell(6).getDateCellValue());
+                    t.setDocNo(r.getCell(7).getStringCellValue());
+                    t.setCertUrl(r.getCell(8).getStringCellValue());
+                    t.setOrganization(r.getCell(9).getStringCellValue());
+                    t.setRemarks(r.getCell(10).getStringCellValue());
+
+                    inspections.add(t);
+                }
+                typeInspectionRepository.save(inspections);
             }
+
         } catch (InvalidFormatException e) {
             logger.error(e.getMessage());
         } catch (IOException e) {
