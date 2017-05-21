@@ -5,7 +5,7 @@
 
 [API文档位置](http://api.hikvision.com.cn/dashboard/#!/project/v1ygHEESy)
 
-##调试准备
+## 调试准备
 ### 运行搜索引擎
 
 调试需要先启动elasticsearch 2.4.5, 建议使用docker方式启动
@@ -40,7 +40,7 @@ http://127.0.0.1:9200/_plugin/head/
 jvm启动后访问：[http://localhost:8080](http://localhost:8080)，自动跳转至http://localhost:8080/index.html
 
 
-##功能
+## 功能
 ### 页面分类
 1. 登录页
 1. 更新说明 - 摘要列表页

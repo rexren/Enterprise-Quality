@@ -3,6 +3,7 @@ package com.hikvision.rensu.cert.domain;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 形式检测
@@ -20,6 +21,12 @@ public class TypeInspection implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+	 * 子表：具体检测项内容
+	 */
+    @OneToMany(mappedBy="owner")
+    private List<InspectContent> ContentsList;
+    
     /**
      * 更新人员
      */
