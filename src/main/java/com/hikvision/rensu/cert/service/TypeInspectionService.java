@@ -117,7 +117,6 @@ public class TypeInspectionService {
 
                 InspectContent content = new InspectContent();
 
-
                 Sheet sheet = workbook.getSheetAt(i);
                 // 获得行数
                 int rows = sheet.getLastRowNum() + 1;

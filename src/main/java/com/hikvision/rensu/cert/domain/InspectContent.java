@@ -137,5 +137,7 @@ public class InspectContent {
 		this.testResult = testResult;
 	}
 
+	public InspectContent(){
 
+	}
 }
