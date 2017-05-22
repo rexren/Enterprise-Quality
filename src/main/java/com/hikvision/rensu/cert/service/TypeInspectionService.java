@@ -21,7 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by rensu on 17/4/21.
@@ -56,8 +60,9 @@ public class TypeInspectionService {
     /**
      * 导入列表数据（推荐手工导入数据库）
      * | 产品型号 | 软件名称 | 软件版本 |  测试／检验类别 | 受检单位 | 测试依据 | 颁发日期 | 文件编号 | 证书系统链接 | 认证／测试机构 | 备注
+     * TODO 在controller层过滤列表类型为公检&国标
      */
-    public void importTyepInspection(InputStream xlsxFile) {
+    public void importInspectionList(InputStream xlsxFile) {
 
         try {
             // 获得工作簿
@@ -99,11 +104,60 @@ public class TypeInspectionService {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-
     }
-
+    
+    /**
+     * 新建单条TypeInspection
+     */
+    public void saveSingleTypeInspection(HttpServletRequest request) throws Exception{
+    	TypeInspection t = new TypeInspection();
+        long awardDateLong = Long.parseLong(request.getParameter("awardDate"))*1000;  
+        Date awardDate = (new Date(awardDateLong));
+        t.setModel(request.getParameter("model"));
+        t.setName(request.getParameter("name"));
+        t.setVersion(request.getParameter("version"));
+        t.setTestType(request.getParameter("testType"));
+        t.setCompany(request.getParameter("company"));
+        t.setBasis(request.getParameter("basis"));
+        t.setAwardDate(awardDate);
+        t.setDocNo(request.getParameter("docNo"));
+        t.setCertUrl(request.getParameter("certUrl"));
+        t.setOrganization(request.getParameter("organization"));
+        t.setRemarks(request.getParameter("remarks"));
+        t.setOperator(request.getParameter("operator"));
+        t.setCreateAt(new Date());  //create a new TypeInspection data
+        t.setUpdateAt(new Date());
+        t.setOperator("TESTER");  //TODO 获取当前用户
+        typeInspectionRepository.save(t);
+    }
+    
+    /**
+     * 更新单条TypeInspection
+     */
+    public void updateTypeInspection(HttpServletRequest request) throws Exception{
+    	TypeInspection t = new TypeInspection();
+        long awardDateLong = Long.parseLong(request.getParameter("awardDate"))*1000;  
+        Date awardDate = (new Date(awardDateLong));
+        t.setModel(request.getParameter("model"));
+        t.setName(request.getParameter("name"));
+        t.setVersion(request.getParameter("version"));
+        t.setTestType(request.getParameter("testType"));
+        t.setCompany(request.getParameter("company"));
+        t.setBasis(request.getParameter("basis"));
+        t.setAwardDate(awardDate);
+        t.setDocNo(request.getParameter("docNo"));
+        t.setCertUrl(request.getParameter("certUrl"));
+        t.setOrganization(request.getParameter("organization"));
+        t.setRemarks(request.getParameter("remarks"));
+        t.setOperator(request.getParameter("operator"));
+        t.setUpdateAt(new Date());
+        t.setOperator("TESTER");  //TODO 获取当前用户
+        typeInspectionRepository.updateTypeInspectionRepo(request.getParameter("id"), t);
+    }
+    	
     /**
      * 保存检测报告数据表
+     * TODO 解析excel，调用typeInspectionRepository.save(entity);
      */
     public void importTypeContent(InputStream xlsxFile) {
 
@@ -138,8 +192,8 @@ public class TypeInspectionService {
         } catch (InvalidFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            //TODO 加密文件报错捕获
-            e.printStackTrace();
+        	logger.error(e.getMessage());
         }
     }
+
 }

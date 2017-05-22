@@ -89,7 +89,6 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
 	     *  file upload
 	     */
         $scope.submit = function () {
-        	console.log('submit file');
             var defer = $q.defer();
             var fd = new FormData();
             fd.append('file',$scope.file);
@@ -102,7 +101,15 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
                 	'Content-Type':undefined
                 }
             }).success(function(res) {
-            	alert('Submit successfully ^_^');
+            	if(res.code<400 & res.code>=200){
+                	alert('Submit successfully');
+                } else{
+                	if(res.code == '501') {
+                		alert('错误：文件被加密，请上传未加密的文件');                		
+                	}else{
+                		alert('错误：文件格式有误！'); 
+                	}
+                } 
             	//TODO 刷新列表 getList(1, $scope.pagination.size);
             }).error(function(res) {
             	alert('Submit failure');

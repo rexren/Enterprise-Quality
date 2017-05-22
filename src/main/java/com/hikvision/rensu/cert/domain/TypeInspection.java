@@ -26,13 +26,6 @@ public class TypeInspection implements Serializable{
 	 */
     @OneToMany(mappedBy="owner")
     private List<InspectContent> ContentsList;
-    
-    /**
-     * 更新人员
-     */
-    @Column
-    private String operator;
-
 
 	/**
      * 产品型号
@@ -81,7 +74,7 @@ public class TypeInspection implements Serializable{
     /**
      * 文件编号
      */
-    @Column(nullable = false)
+    @Column(nullable = false, unique=true)
     private String docNo;
 
     /**
@@ -108,13 +101,18 @@ public class TypeInspection implements Serializable{
     @Column
     private Date createAt;
 
-
     /**
      * 更新时间
      */
     @Column
     private Date updateAt;
 
+    /**
+     * 更新人员
+     */
+    @Column
+    private String operator;
+    
     public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}

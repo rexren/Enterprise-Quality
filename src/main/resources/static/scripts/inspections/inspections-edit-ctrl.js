@@ -18,16 +18,14 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
 	        'operator': ''
 	    };
 	    $scope.fileName = '';
+	    var targetUrl='/inspections/save.do';
 	    
-        var urlId = $location.search().id;
-        if(urlId){
-        	var param = {id: urlId};
+        $scope.inspectionId = $location.search().id;
+        if($scope.inspectionId){
+        	var param = {id: $scope.inspectionId};
 	        $http.get('/inspections/detail.do',{params:param}).success(function(res){
-	        	console.log('success');
-	        	console.log(res);
 	        	var adate = Date.parse(Date(res.awardDate));
 	        	adate = adate>32503651200? new Date(adate) : new Date(adate*1000);
-
 	        	$scope.formData = {
 	    	        'model': res.model,
 	    	        'name': res.name,
@@ -45,9 +43,10 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
 		    }).error(function(res, status, headers, config){
 		        alert("getListByAjax error: "+status);
 		    })
+
+        	targetUrl='/inspections/update.do';
         }
 
-    	
 		/**  
 	     *  file upload handler
 	     */
@@ -65,22 +64,35 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
 	    }
 		
         $scope.submit = function () {
+        	var awardDateTimeStamp = Date.parse($scope.formData.awardDate)/1000;
             var defer = $q.defer();
             var fd = new FormData();
             fd.append('file',$scope.file);
+            if($scope.inspectionId){
+            	fd.append('id',$scope.inspectionId);
+            }
             for(var i in $scope.formData){
                 fd.append(i,$scope.formData[i]);
             }
+            fd.set('awardDate', awardDateTimeStamp);
             $http({
                 method: 'POST',
-                url: '/inspections/save.do',
+                url: targetUrl,
                 data: fd,
                 headers: {
                 	'Accept':'*/*',
                 	'Content-Type':undefined
                 }
             }).success(function(res) {
-            	alert('Submit successfully ^_^');
+            	if(res.code<400 & res.code>=200){
+                	alert('Submit successfully');
+                } else{
+                	if(res.code == '501') {
+                		alert('错误：文件被加密，请上传未加密的文件');                		
+                	}else{
+                		alert('错误：文件格式有误！'); 
+                	}
+                } 
             	$location.url('/inspections');
             }).error(function(res) {
             	alert('Submit failure');
