@@ -20,7 +20,7 @@ public class CccPageController {
 	@Autowired
     private CccPageService cccPageService;
 	
-	@RequestMapping(value ="/list.action", method = RequestMethod.GET)
+	@RequestMapping(value ="/list.do", method = RequestMethod.GET)
     @ResponseBody
     public Page<CccPage> getCCCListByPage(Integer pageNum, Integer pageSize) {
         return cccPageService.getCCCListByPage(pageNum, pageSize);

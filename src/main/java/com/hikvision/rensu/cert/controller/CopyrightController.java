@@ -46,35 +46,6 @@ public class CopyrightController {
     }
     
     /**
-     * 导入双证列表文件
-     */
-    @RequestMapping(value = "/upload.do", method = RequestMethod.POST)
-    @ResponseBody
-	public String saveCopyrightList(@RequestBody MultipartFile file, HttpServletRequest request) {
-    	System.out.println("Start"+request.getParameter("company"));
-        String fileName = file.getOriginalFilename(); 
-        System.out.println("fileName:  "+file.getOriginalFilename());
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        System.out.println("suffixName: " + suffixName);
-        String uploadStatus = "";
-		if (null == file || file.isEmpty()) {
-			uploadStatus = "Please select the file to upload";
-		} else {
-			uploadStatus = file.getOriginalFilename() + " file upload success";
-			try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file.getInputStream()));) {
-				String line = null;
-				while (null != (line = bufferedReader.readLine())){
-					// System.out.println(line);
-					//TODO 解析文件，写入数据库
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return uploadStatus;
-    }
-    
-    /**
      * 保存单条数据
      * TODO 自定义返回类型
      */

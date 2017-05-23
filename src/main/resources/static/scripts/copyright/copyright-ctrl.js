@@ -92,27 +92,7 @@ angular.module('enterprise-quality')
     	     */
             $scope.submit = function () {
             	console.log('submit file');
-                var defer = $q.defer();
-                var fd = new FormData();
-                fd.append('file',$scope.file);
-                $http({
-                    method: 'POST',
-                    url: '/copyright/upload.do',
-                    data: fd,
-                    headers: {
-                    	'Accept':'*/*',
-                    	'Content-Type':undefined
-                    }
-                }).success(function(res) {
-                	alert('Submit successfully ^_^');
-                	//TODO 刷新列表 getList(1, $scope.pagination.size);
-                }).error(function(res) {
-                	alert('Submit failure');
-                	console.log('Error msg:');
-                	console.log(res);
-                    defer.reject();
-                });
-                return defer.promise;
+            	// 导入excel文件 inspections/upload.do
             };
 
             $scope.removeFile = function(){

@@ -102,7 +102,10 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
                 }
             }).success(function(res) {
             	if(res.code<400 & res.code>=200){
-                	alert('Submit successfully');
+                	alert('上传成功');
+                	$scope.fileName = '';
+                	$scope.file = {};
+                	getList(1, $scope.pagination.size);
                 } else{
                 	if(res.code == '501') {
                 		alert('错误：文件被加密，请上传未加密的文件');                		

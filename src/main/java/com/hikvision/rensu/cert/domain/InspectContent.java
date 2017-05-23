@@ -32,14 +32,14 @@ public class InspectContent {
      * 外键：检测报告ID
      */
     @ManyToOne
-    @JoinColumn (name="inspection_id")
+    @JoinColumn (name="docNo")
     private TypeInspection owner;
     
     /**
      * 用例编号/序号
      */
     @Column
-    private String caseId;
+    private Long caseId;
 
     /**
      * 用例名称 /检测项目 /测试项目 /功能列表
@@ -85,11 +85,11 @@ public class InspectContent {
 		this.owner = owner;
 	}
 
-	public String getCaseId() {
+	public Long getCaseId() {
 		return caseId;
 	}
 
-	public void setCaseId(String caseId) {
+	public void setCaseId(Long caseId) {
 		this.caseId = caseId;
 	}
 
@@ -125,7 +125,7 @@ public class InspectContent {
 		this.testResult = testResult;
 	}
 
-	public InspectContent(Long id, TypeInspection owner, String caseId, String caseName, String caseDescription,
+	public InspectContent(Long id, TypeInspection owner, Long caseId, String caseName, String caseDescription,
 			String catalog, String testResult) {
 		super();
 		this.id = id;

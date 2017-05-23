@@ -4,7 +4,7 @@ angular.module('enterprise-quality')
 .controller('CccCtrl',['$scope','$location','$http',function($scope,$location,$http){
 
     $scope.importList = function () {
-        //导入excel文件
+        //导入excel文件 inspections/upload.do
         console.log('批量导入');
     };
     $scope.pagination = {
@@ -21,7 +21,7 @@ angular.module('enterprise-quality')
 
     function getList(page, size) {
         var param = {pageNum:page,pageSize:size};
-        $http.get('/ccc/list.action',{params:param}).success(function(res){
+        $http.get('/ccc/list.do',{params:param}).success(function(res){
             $scope.list = res.content;
             $scope.pagination.totalElements = res.totalElements;
         }).error(function(res, status){

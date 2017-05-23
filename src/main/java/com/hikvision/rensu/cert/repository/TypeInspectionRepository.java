@@ -1,5 +1,7 @@
 package com.hikvision.rensu.cert.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,10 +16,6 @@ import com.hikvision.rensu.cert.domain.TypeInspection;
 @Repository
 public interface TypeInspectionRepository extends JpaRepository<TypeInspection, Long> {
 	
-	/**
-	 * TODO Update Query need to be modified
-	 */
-	@Modifying(clearAutomatically = true)
-	@Query("update TypeInspection set TypeInspection =:item where t.id =:inspectionId")
-	public void updateTypeInspectionRepo(@Param("inspectionId") String id, @Param("item") TypeInspection t);
+	@Query("select t from TypeInspection t where t.docNo=:no")
+	public List<TypeInspection> findByDocNo(@Param("no")String docNo);
 }

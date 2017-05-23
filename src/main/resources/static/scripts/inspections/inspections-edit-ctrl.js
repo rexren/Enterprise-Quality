@@ -64,43 +64,53 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
 	    }
 		
         $scope.submit = function () {
-        	var awardDateTimeStamp = Date.parse($scope.formData.awardDate)/1000;
-            var defer = $q.defer();
-            var fd = new FormData();
-            fd.append('file',$scope.file);
-            if($scope.inspectionId){
-            	fd.append('id',$scope.inspectionId);
-            }
-            for(var i in $scope.formData){
-                fd.append(i,$scope.formData[i]);
-            }
-            fd.set('awardDate', awardDateTimeStamp);
-            $http({
-                method: 'POST',
-                url: targetUrl,
-                data: fd,
-                headers: {
-                	'Accept':'*/*',
-                	'Content-Type':undefined
+        	if($scope.formData.model==''){
+        		alert('请输入产品型号');
+        	} else if($scope.formData.name==''){
+        		alert('请输入软件名称');
+        	} else{
+                var defer = $q.defer();
+                var fd = new FormData();
+                fd.append('file',$scope.file);
+                if($scope.inspectionId){
+                	fd.append('id',$scope.inspectionId);
                 }
-            }).success(function(res) {
-            	if(res.code<400 & res.code>=200){
-                	alert('Submit successfully');
-                } else{
-                	if(res.code == '501') {
-                		alert('错误：文件被加密，请上传未加密的文件');                		
-                	}else{
-                		alert('错误：文件格式有误！'); 
-                	}
-                } 
-            	$location.url('/inspections');
-            }).error(function(res) {
-            	alert('Submit failure');
-            	console.log('Error msg:');
-            	console.log(res);
-                defer.reject();
-            });
-            return defer.promise;
+                for(var i in $scope.formData){
+                    fd.append(i,$scope.formData[i]);
+                }
+                if($scope.formData.awardDate == ''){
+            		fd.set('awardDate', 0);
+            	} else{
+                	var awardDateTimeStamp = Date.parse($scope.formData.awardDate)/1000;
+                    fd.set('awardDate', awardDateTimeStamp);
+            	}
+                $http({
+                    method: 'POST',
+                    url: targetUrl,
+                    data: fd,
+                    headers: {
+                    	'Accept':'*/*',
+                    	'Content-Type':undefined
+                    }
+                }).success(function(res) {
+                	if(res.code<400 & res.code>=200){
+                    	alert('Submit successfully');
+                    } else{
+                    	if(res.code == '501') {
+                    		alert('错误：文件被加密，请上传未加密的文件');                		
+                    	}else{
+                    		alert('错误：文件格式有误！'); 
+                    	}
+                    } 
+                	$location.url('/inspections');
+                }).error(function(res) {
+                	alert('Submit failure');
+                	console.log('Error msg:');
+                	console.log(res);
+                    defer.reject();
+                });
+                return defer.promise;
+        	}
         };
         
 

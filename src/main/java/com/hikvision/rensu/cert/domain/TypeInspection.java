@@ -25,7 +25,7 @@ public class TypeInspection implements Serializable{
 	 * 子表：具体检测项内容
 	 */
     @OneToMany(mappedBy="owner")
-    private List<InspectContent> ContentsList;
+    private List<InspectContent> contents;
 
 	/**
      * 产品型号
@@ -74,7 +74,7 @@ public class TypeInspection implements Serializable{
     /**
      * 文件编号
      */
-    @Column(nullable = false, unique=true)
+    @Column(nullable = false, unique = true)
     private String docNo;
 
     /**

@@ -3,10 +3,12 @@ package com.hikvision.rensu.cert.controller;
 
 import com.hikvision.rensu.cert.constant.RetCode;
 import com.hikvision.rensu.cert.domain.TypeInspection;
+import com.hikvision.rensu.cert.service.InspectContentService;
 import com.hikvision.rensu.cert.service.TypeInspectionService;
 
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
@@ -38,6 +40,9 @@ public class InspectionController {
 
     @Autowired
     private TypeInspectionService typeInspectionService;
+    
+    @Autowired
+    private InspectContentService inspectContentService;
 
     /**
      * 获取公检&国标文件列表页
@@ -58,81 +63,55 @@ public class InspectionController {
     }
 
     /**
-     * 导入公检&国标文件列表文件
-     * TODO: There has a problem: the excel contains all of the type, so we should extract a new class to save excel
+     * 导入列表文件
      */
     @RequestMapping(value = "/upload.do", method = RequestMethod.POST)
     @ResponseBody
-    public String saveInspectionList(@RequestBody MultipartFile file) {
-    	// Map<String, Object> res = new LinkedHashMap<String, Object>();
-        if (null == file || file.isEmpty()) {
-            //the file is not valid, so we drop it.
-            return "Please select the file to upload";
-        } else {
-        	String fileName = file.getOriginalFilename();
-            String suffixName = fileName.substring(fileName.lastIndexOf("."));
-            logger.debug("the upload file name is {}.", fileName + suffixName);
-
-            try {
-                //TODO: there must be some way to deal with exception.
-                typeInspectionService.importInspectionList(file.getInputStream());
-            } catch (IOException e) {
-                logger.error(e.getMessage());
-                return "";
-            }
-        }
-        return file.getOriginalFilename() + " file upload success";
-    }
-
-    /**
-     * 新建保存单条数据（包括报告详情文件）
-     * TODO 封装返回数据类型，调用typeInspectionService.save，过滤列表类型为公检&国标
-     */
-    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> saveInspectionForm(@RequestBody MultipartFile file, HttpServletRequest request) {
-        Map<String, Object> res = new LinkedHashMap<String, Object>();
-
-    	/**
-         * 保存TypeInspection表单数据
-         */
-        try {
-			typeInspectionService.saveSingleTypeInspection(request);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-        
-        /**
-         * 处理excel工作簿文件
-         */
+    public Map<String, Object> saveInspectionList(@RequestBody MultipartFile file) throws Exception {
+    	Map<String, Object> res = new LinkedHashMap<String, Object>();
+    	
         if (null == file || file.isEmpty()) {
         	res.put("code", RetCode.FILE_EMPTY_CODE);
         	res.put("status", "empty file");
         } else {
         	String fileName = file.getOriginalFilename();
-        	System.out.println("fileName:  " + file.getOriginalFilename());
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
-            System.out.println("suffixName: " + suffixName);
-            
-	    	/**
-	         * 读取文件流
-	         */
+            logger.debug("the upload file name is {}.", fileName + suffixName);
             InputStream xlsxFile = null;
             try {
             	xlsxFile = file.getInputStream();
             } catch (IOException e) {
+            	logger.error("",e);
                 res.put("error", e.getMessage());
             	res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
-            	logger.error("",e);
+            	return res;
             }
             
-            /**
+            /*
              * Test excel Encryption & handle exceptions
              */
             try {
-                // 获得工作簿
                 Workbook workbook = WorkbookFactory.create(xlsxFile);
-                //TODO 解析检测报告的excel文档
+                int sheetCount = workbook.getNumberOfSheets();
+                for(int i=0; i<sheetCount; i++){
+                	if(Pattern.compile("公检").matcher(workbook.getSheetName(i)).find()){
+                		System.out.println(workbook.getSheetName(i));
+                		Sheet sheet = workbook.getSheetAt(i);
+                		typeInspectionService.importInspectionList(sheet);
+                	} 
+                	else if(Pattern.compile("双证").matcher(workbook.getSheetName(i)).find()){
+                		System.out.println(workbook.getSheetName(i));
+                		//TODO 导入双证解析
+                	}
+                	else if(Pattern.compile("3C").matcher(workbook.getSheetName(i)).find()){
+                		System.out.println(workbook.getSheetName(i));
+                		//TODO 导入3C解析
+                	}
+                	else if(Pattern.compile("更新说明").matcher(workbook.getSheetName(i)).find()){
+                		System.out.println(workbook.getSheetName(i));
+                		//TODO 导入更新说明
+                	}
+                }
                 res.put("code", RetCode.SUCCESS_CODE);
             } catch (IOException e) {
             	String errMessage = e.getMessage();
@@ -144,10 +123,80 @@ public class InspectionController {
             	} else{
             		res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
             	}
+            	return res;
             } catch (EncryptedDocumentException | InvalidFormatException e) {
             	res.put("error", e.getMessage());
             	res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
             	logger.error("",e);
+            	return res;
+			}
+            
+        }
+        return res;
+    }
+
+    /**
+     * 新建保存单条数据（包括报告详情文件）
+     * @param file 表单文件 
+     * @param request 表单内容
+     * @return res Map->Json 返回状态
+     * @author langyicong
+     */
+    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> saveInspectionForm(@RequestBody MultipartFile file, HttpServletRequest request) {
+        Map<String, Object> res = new LinkedHashMap<String, Object>();
+
+    	/* save request form data to typeInspection table */
+        try {
+			typeInspectionService.saveSingleTypeInspection(request);
+		} catch (Exception e) {
+			logger.error("",e);
+			res.put("error", e.getMessage());
+        	res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
+        	return res;
+		}
+        
+        /* parse and save excel file */
+        if (null == file || file.isEmpty()) {
+        	res.put("code", RetCode.FILE_EMPTY_CODE);
+        	res.put("status", "empty file");
+        } else {
+        	String fileName = file.getOriginalFilename();
+            String suffixName = fileName.substring(fileName.lastIndexOf("."));
+            logger.debug("the upload file name is {}.", fileName + suffixName);
+            InputStream xlsxFile = null;
+            try {
+            	xlsxFile = file.getInputStream();
+            } catch (IOException e) {
+            	logger.error("",e);
+            	res.put("error", e.getMessage());
+            	res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
+            	return res;
+            }
+            
+            /* Test excel Encryption & handle exceptions */
+            try {
+                Workbook workbook = WorkbookFactory.create(xlsxFile);
+                // 解析详细检测报告索引文件
+                inspectContentService.saveInspectContents(workbook);
+                res.put("code", RetCode.SUCCESS_CODE);
+            } catch (IOException e) {
+            	String errMessage = e.getMessage();
+            	logger.error("",e);
+            	res.put("error", e.getMessage());
+            	String regExp = "EncryptionInfo";
+            	if(Pattern.compile(regExp).matcher(errMessage).find()){
+            		res.put("code", RetCode.FILE_ENCYPTED_ERROR_CODE);
+            	} else{
+            		res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
+            	}
+            	return res;
+            } catch (EncryptedDocumentException | InvalidFormatException e) {
+            	res.put("error", e.getMessage());
+            	res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
+            	logger.error("",e);
+            	return res;
 			} 
         }
         return res;
@@ -155,6 +204,7 @@ public class InspectionController {
 
     /**
      * 更新单条数据（包括报告详情文件）
+     * TODO delete and then insert
      */
     @RequestMapping(value = "/update.do", method = RequestMethod.POST)
     @ResponseBody
@@ -162,31 +212,23 @@ public class InspectionController {
     	//TODO request.getParameter("id") NOT NULL
     	Map<String, Object> res = new LinkedHashMap<String, Object>();
 
-    	/**
-         * use typeInspectionService
-         */
         try {
 			typeInspectionService.updateTypeInspection(request);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
         
-        /**
-         * 处理excel工作簿文件
-         */
+        /* parse and save excel file */
         if (null == file || file.isEmpty()) {
         	res.put("code", RetCode.FILE_EMPTY_CODE);
         	res.put("status", "empty file");
         } else {
         	//TODO 比较和更新excel工作簿文件
         	String fileName = file.getOriginalFilename();
-        	System.out.println("fileName:  " + file.getOriginalFilename());
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
-            System.out.println("suffixName: " + suffixName);
+            logger.debug("the upload file name is {}.", fileName + suffixName);
             
-	    	/**
-	         * 读取文件流
-	         */
+	    	/* 读取文件流*/
             InputStream xlsxFile = null;
             try {
             	xlsxFile = file.getInputStream();
@@ -200,7 +242,6 @@ public class InspectionController {
              * Test excel Encryption & handle exceptions
              */
             try {
-                // 获得工作簿
                 Workbook workbook = WorkbookFactory.create(xlsxFile);
                 //TODO 解析检测报告的excel文档
                 res.put("code", RetCode.SUCCESS_CODE);

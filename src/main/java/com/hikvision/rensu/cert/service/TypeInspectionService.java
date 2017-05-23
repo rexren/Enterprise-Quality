@@ -1,14 +1,11 @@
 package com.hikvision.rensu.cert.service;
 
-import com.hikvision.rensu.cert.domain.InspectContent;
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.repository.InspectContentRepository;
 import com.hikvision.rensu.cert.repository.TypeInspectionRepository;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -58,68 +50,88 @@ public class TypeInspectionService {
     }
 
     /**
-     * 导入列表数据（推荐手工导入数据库）
-     * | 产品型号 | 软件名称 | 软件版本 |  测试／检验类别 | 受检单位 | 测试依据 | 颁发日期 | 文件编号 | 证书系统链接 | 认证／测试机构 | 备注
-     * TODO 在controller层过滤列表类型为公检&国标
+     * 导入列表数据
+     * | 产品型号 | 软件名称 | 软件版本 | 测试／检验类别 | 受检单位 | 测试依据 | 颁发日期 | 文件编号 | 证书系统链接 | 认证／测试机构 | 备注
+     * @param sheet 【公检&国标】工作薄
+     * @return void
+     * @author langyicong
+     * @throws Exception
      */
-    public void importInspectionList(InputStream xlsxFile) {
+    //TODO define a class importInspectionListException extends Exception & test internal format of the sheet(eg. the first row cell values)
+    public void importInspectionList(Sheet sheet) throws Exception {
+        int rows = sheet.getLastRowNum() - 2;
+        logger.debug("the total number of type inspection is {}.", rows);
 
-        try {
-            // 获得工作簿
-            Workbook workbook = WorkbookFactory.create(xlsxFile);
-            // 获得工作表个数
-            int sheetCount = workbook.getNumberOfSheets();
+        for (int row = 2; row < rows; row++) {
+            Row r = sheet.getRow(row);
+            /* rows those are not empty */
+            if(r.getCell(0)!=null && r.getCell(0).getCellTypeEnum()!=CellType.BLANK 
+            		&& r.getCell(1).getCellTypeEnum()!=CellType.BLANK){
 
-            if (sheetCount > 5) {
-                //the <公安事业部相关产品资质汇总表sheet页超过5>
-                Sheet sheet = workbook.getSheetAt(1);
-
-                int rows = sheet.getLastRowNum() - 2;
-                logger.debug("the total number of type inspection is {}.", rows);
-
-                List<TypeInspection> inspections = new ArrayList<>();
-                for (int row = 0; row < rows; row++) {
-                    Row r = sheet.getRow(row);
-                    TypeInspection t = new TypeInspection();
-
+                if(r.getCell(7)!=null){
+                	/* test if DocNo is already in the database */
+            		if(r.getCell(7).getCellTypeEnum()!=CellType.STRING){
+            			r.getCell(7).setCellType(CellType.STRING);
+            		}
+            		List<TypeInspection> inspects = typeInspectionRepository.findByDocNo(r.getCell(7).getStringCellValue());
+            		if(inspects.size()>0){
+                		/* delete and insert new one */
+            			typeInspectionRepository.delete(inspects);
+                	}
+                	TypeInspection t = new TypeInspection();
                     t.setModel(r.getCell(0).getStringCellValue());
-                    t.setName(r.getCell(1).getStringCellValue());
-                    t.setVersion(r.getCell(2).getStringCellValue());
-                    t.setTestType(r.getCell(3).getStringCellValue());
-                    t.setCompany(r.getCell(4).getStringCellValue());
-                    t.setBasis(r.getCell(5).getStringCellValue());
-                    t.setAwardDate(r.getCell(6).getDateCellValue());
-                    t.setDocNo(r.getCell(7).getStringCellValue());
-                    t.setCertUrl(r.getCell(8).getStringCellValue());
-                    t.setOrganization(r.getCell(9).getStringCellValue());
-                    t.setRemarks(r.getCell(10).getStringCellValue());
-
-                    inspections.add(t);
-                }
-                typeInspectionRepository.save(inspections);
+                	t.setName(r.getCell(1).getStringCellValue());
+                	t.setVersion(r.getCell(2).getStringCellValue());
+                	t.setTestType(r.getCell(3).getStringCellValue());
+                	t.setCompany(r.getCell(4).getStringCellValue());
+                	t.setBasis(r.getCell(5).getStringCellValue());
+                	if(r.getCell(6)!=null){
+                		if(r.getCell(6).getCellTypeEnum()!=CellType.NUMERIC){
+                			r.getCell(6).setCellType(CellType.NUMERIC);
+                		}
+                		t.setAwardDate(r.getCell(6).getDateCellValue());
+                	} else{
+                		/* handle with empty cell error */
+                	}
+                	if(r.getCell(7)!=null){
+                		if(r.getCell(7).getCellTypeEnum()!=CellType.STRING){
+                			r.getCell(7).setCellType(CellType.STRING);
+                		}
+                		t.setDocNo(r.getCell(7).getStringCellValue());
+                	} else{
+                		/* handle with empty cell error */
+                	}
+                	t.setCertUrl(r.getCell(8).getStringCellValue());
+                	t.setOrganization(r.getCell(9).getStringCellValue());
+                	t.setRemarks(r.getCell(10).getStringCellValue());
+                	t.setCreateAt(new Date()); 
+                	t.setUpdateAt(new Date());
+                	t.setOperator("TESTER");  //TODO 获取当前用户
+                	typeInspectionRepository.save(t);
+            	} else{
+            		/* handle with empty cell error */
+            	}
+                
             }
-
-        } catch (InvalidFormatException e) {
-            logger.error(e.getMessage());
-        } catch (IOException e) {
-            logger.error(e.getMessage());
         }
     }
     
     /**
-     * 新建单条TypeInspection
+     * 从表单新建单条TypeInspection
      */
     public void saveSingleTypeInspection(HttpServletRequest request) throws Exception{
     	TypeInspection t = new TypeInspection();
-        long awardDateLong = Long.parseLong(request.getParameter("awardDate"))*1000;  
-        Date awardDate = (new Date(awardDateLong));
+    	if(request.getParameter("awardDate")!="0"){
+            long awardDateLong = Long.parseLong(request.getParameter("awardDate"))*1000;  
+            Date awardDate = (new Date(awardDateLong));
+            t.setAwardDate(awardDate);
+    	}
         t.setModel(request.getParameter("model"));
         t.setName(request.getParameter("name"));
         t.setVersion(request.getParameter("version"));
         t.setTestType(request.getParameter("testType"));
         t.setCompany(request.getParameter("company"));
         t.setBasis(request.getParameter("basis"));
-        t.setAwardDate(awardDate);
         t.setDocNo(request.getParameter("docNo"));
         t.setCertUrl(request.getParameter("certUrl"));
         t.setOrganization(request.getParameter("organization"));
@@ -152,13 +164,11 @@ public class TypeInspectionService {
         t.setOperator(request.getParameter("operator"));
         t.setUpdateAt(new Date());
         t.setOperator("TESTER");  //TODO 获取当前用户
-        typeInspectionRepository.updateTypeInspectionRepo(request.getParameter("id"), t);
+        //typeInspectionRepository.updateTypeInspectionRepo(request.getParameter("id"), t);
+        typeInspectionRepository.save(t);
     }
     	
-    /**
-     * 保存检测报告数据表
-     * TODO 解析excel，调用typeInspectionRepository.save(entity);
-     */
+    /*
     public void importTypeContent(InputStream xlsxFile) {
 
         try {
@@ -194,6 +204,6 @@ public class TypeInspectionService {
         } catch (IOException e) {
         	logger.error(e.getMessage());
         }
-    }
+    }*/
 
 }
