@@ -1,6 +1,8 @@
 package com.hikvision.rensu.cert.domain;
 
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +16,7 @@ import javax.persistence.ManyToOne;
  * Created by rensu on 17/3/28.
  */
 @Entity
-public class InspectContent {
+public class InspectContent implements Serializable{
 
 	/**
 	 * serialVersionUID
@@ -32,7 +34,7 @@ public class InspectContent {
      * 外键：检测报告ID
      */
     @ManyToOne
-    @JoinColumn (name="docNo")
+    @JoinColumn (name="inspectionId")
     private TypeInspection owner;
     
     /**
@@ -138,6 +140,6 @@ public class InspectContent {
 	}
 
 	public InspectContent(){
-
+		
 	}
 }

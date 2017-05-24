@@ -23,7 +23,10 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
                 alert("getListByAjax error: "+status);
             })
         }
-
+        
+        /** 
+         * 编辑单条数据
+         */
         $scope.edit = function(item){
             if(item){
                 $location.url('/inspections/edit?id='+item.id);
@@ -34,6 +37,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
             }
         };
 
+
         $scope.searchList = function () {
             //TODO 搜索列表结果展示
             console.log('TODO 搜索列表结果展示');
@@ -41,6 +45,9 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
         
         $scope.keywords = {};
         
+        /** 
+         * 高级搜索
+         */
         $scope.advancedSearch = function () {
             //TODO 高级搜索
             console.log('TODO 高级搜索弹窗');

@@ -2,6 +2,7 @@
     <h1>公检国标详细内容</h1>
 </section>
 
+<!-- 编辑页 -->
 <section class="content">
     <div class="row">
         <div class="col-md-12">
@@ -105,10 +106,38 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </form>
             </div>
         </div>
     </div>
+</section>
+
+<!-- 详情列表页 -->
+<section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title">{{formData.model}} {{formData.docNo}}</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered">
+                 <thead>
+                 <tr>
+                     <th>序号</th>
+                     <th>检测项目</th>
+                     <th>技术要求</th>
+                 </tr>
+                 </thead>
+                 <tbody ng-repeat="item in contentList track by $index">
+	                 <tr ng-repeat="decription in item.caseDecription track by $index">
+	                     <td ng-if="$index ==0" rowspan={{item.caseDecription.length+1}}>{{item.caseId}}</td>
+	                     <td ng-if="$index ==0" rowspan={{item.caseDecription.length+1}}>{{item.caseName}}</td>
+	                     <td >{{decription}}</td>
+	                 </tr>
+                 </tbody>
+             </table>
+         </div>
 </section>

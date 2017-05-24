@@ -2,6 +2,7 @@
 
 angular.module('enterprise-quality').controller('InspectionsEditCtrl', 
 	function($scope, $location, $http, $q, FileUploadService){
+		/*initialization*/
 	    $scope.formData = 
 	    {
 	        'model': '',
@@ -17,6 +18,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
 	        'remarks': '',
 	        'operator': ''
 	    };
+	    $scope.contentList = [];
 	    $scope.fileName = '';
 	    var targetUrl='/inspections/save.do';
 	    
@@ -39,13 +41,72 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
 	    	        'organization': res.organization,
 	    	        'remarks': res.remarks,
 	    	        'operator': res.operator
-	        	}
+	        	};
 		    }).error(function(res, status, headers, config){
 		        alert("getListByAjax error: "+status);
-		    })
-
+		    });
+	        
+/*	        //TODO '/inspections/contentTable.do'接口需完善
+	        $http.get('/inspections/contentTable.do',{params:param}).success(function(res){
+	        	$scope.contentList = res.contentList;
+	        }).error(function(res, status, headers, config){
+		        alert("getListByAjax error: "+status);
+		    });
+*/
         	targetUrl='/inspections/update.do';
         }
+        
+        /* mock*/
+        $scope.contentList = [{
+        	'caseId': 2,
+        	'caseName':'检验项目1',
+        	'caseDecription':[
+        		'检验项目1的技术要求1检验项目1的技术要求1检验项目1的技术要求1检验项目1的技术要求1',
+        		'检验项目1的技术要求2检验项目1的技术要求2检验项目1术要求2',
+        		'检验项目1的技术要求3检验项目1的技术要求3检验项目1的技术要求的技术要求3',
+        		'检验项目1的技术要求4检验项目1的技术要求4检验项目1的技术要求4检验项目1的技术要求4',
+        		'检验项目1的技术要求5检验项目1的技术要求5检验项目1的技术要求5检验项目1的技术要求5',
+        		],
+        	'catalog':'',
+        	'testResult':''
+        },{
+        	'caseId': 3,
+        	'caseName':'检验项目2',
+        	'caseDecription':[
+        		'检验项目2的技术要求1检验项目2的技术要求1检验项目2的技术要求1检验项目2的技术要求要求1',
+        		'检验项目2的技术要求2检验项目2的技术要求2检验项目2的技术要求2检验验项目2',
+        		'检验项目2的技术要求3检验项目2的技术要求3检验项目2的技术要求3检验项目2的技术2的技术要求3',
+        		'检验项目2的技术要求4检验项目2的技术要求4检验项目2的技术要求4检验项目2的技术要求4检验项目2的技术要求4',
+        		'检验项目2的技术要求5检验项目2的技术要求5检验项目2的技术要求5检验项目2的技术要求5检验项目2的技术要求5检验项目2的技术要求5',
+        		],
+        	'catalog':'',
+        	'testResult':''
+        },{
+        	'caseId': 4,
+        	'caseName':'检验项目3',
+        	'caseDecription':[
+        		'检验项目3的技术要求1',
+        		'检验项目3的技术要求2',
+        		'检验项目3的技术要求3',
+        		'检验项目3的技术要求4',
+        		'检验项目3的技术要求5',
+        		],
+        	'catalog':'',
+        	'testResult':''
+        },{
+        	'caseId': 4,
+        	'caseName':'检验项目3',
+        	'caseDecription':[
+        		'检验项目3的技术要求1',
+        		'检验项目3的技术要求2',
+        		'检验项目3的技术要求3',
+        		'检验项目3的技术要求4',
+        		'检验项目3的技术要求5',
+        		],
+        	'catalog':'',
+        	'testResult':''
+        }]
+        /* mock end*/
 
 		/**  
 	     *  file upload handler

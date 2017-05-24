@@ -31,7 +31,7 @@ public class InspectContentService {
 	 * @return void
 	 * @author langyicong
 	 */
-    public void saveInspectContents(Workbook workbook){
+    public void saveInspectContents(Workbook workbook) throws Exception{
  
         InspectContent content = new InspectContent();
 
@@ -48,6 +48,7 @@ public class InspectContentService {
                 InspectContent c = new InspectContent();
                 c.setCaseId((long) r.getCell(0).getNumericCellValue());
                 c.setCaseName(r.getCell(1).getStringCellValue());
+                //TODO 处理excel子行 
                 c.setCaseDescription(r.getCell(2).getStringCellValue());
                 c.setTestResult(r.getCell(3).getStringCellValue());
                 inspectContentRepository.save(c);

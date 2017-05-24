@@ -5,7 +5,7 @@
 </section>
 <section class="content">
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-md-12">
             <div class="box">
                 <div class="box-header">
                     <h3 class="box-title"></h3>
@@ -75,7 +75,9 @@
                             <td>{{item.createAt | date:'yyyy-MM-dd'}}</td>
                             <td>{{item.updateAt | date:'yyyy-MM-dd'}}</td>
                             <td>{{item.operator}}</td>
-                            <td><button class="btn btn-link" ng-click="edit(item)">修改</button> </td>
+                            <td>
+                            	<button class="btn btn-link" ng-click="edit(item)">修改</button>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

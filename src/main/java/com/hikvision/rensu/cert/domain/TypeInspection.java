@@ -33,7 +33,6 @@ public class TypeInspection implements Serializable{
     @Column(nullable = false)
     private String model;
 
-
     /**
      * 软件名称
      */
@@ -252,6 +251,14 @@ public class TypeInspection implements Serializable{
 		this.updateAt = updateAt;
 	}
 
+	
+	public List<InspectContent> getContents() {
+		return contents;
+	}
+
+	public void setContents(List<InspectContent> contents) {
+		this.contents = contents;
+	}
 
 	@Override
     public String toString() {
