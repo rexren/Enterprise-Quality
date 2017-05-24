@@ -36,6 +36,13 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
                 $location.url('/inspections/edit');
             }
         };
+        
+        /** 
+         * 查看详情
+         */
+        $scope.view = function(item){
+        	$location.url('/inspections/view?id='+item.id);
+        }
 
 
         $scope.searchList = function () {

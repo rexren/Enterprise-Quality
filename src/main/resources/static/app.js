@@ -15,6 +15,10 @@ angular.module('enterprise-quality',['ngRoute','ui.bootstrap'])
     		templateUrl: 'html/inspection-edit.html',
     		controller: 'InspectionsEditCtrl'
     	})
+    	.when('/inspections/view',{
+    		templateUrl: 'html/inspection-view.html',
+    		controller: 'InspectionsViewCtrl'
+    	})
         .when('/copyright',{
             templateUrl: 'html/copyright.html',
             controller: 'CopyrightCtrl'

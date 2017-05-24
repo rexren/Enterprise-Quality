@@ -1,18 +1,21 @@
 <section class="content-header">
-    <h1>公检国标详细内容</h1>
+	<h1>公检国标详细内容</h1>
 </section>
 
-<!-- 编辑页 -->
-<section class="content">
+<div class="row" style="margin: 0">
+	<div class="btn-group">
+	    <button class="btn {{viewType==1?'btn-primary':'btn-default'}}" ng-click="changeView(1)">检测摘要</button>
+	    <button class="btn {{viewType==2?'btn-primary':'btn-default'}}" ng-click="changeView(2)">检测报告</button>
+	</div>
+</div>
+                    
+<!-- 查看页 -->
+<section class="content" ng-if="viewType==1">
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <h3 class="box-title">{{inspectionId?"编辑":"新建"}}</h3>
-                    <div class="btn-group pull-right">
-                        <button type="submit" class="btn btn-info" ng-click="submit()">提交</button>
-                        <button class="btn btn-default" ng-click="back()">取消</button>
-                    </div>
+                    <h3 class="box-title">查看</h3>
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
@@ -111,4 +114,37 @@
             </div>
         </div>
     </div>
+</section>
+
+
+<!-- 详情列表页 -->
+<section class="content" ng-if="viewType==2">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-header with-border">
+					<h3 class="box-title">{{formData.model}} {{formData.docNo}}</h3>
+				</div>
+				<!-- /.box-header -->
+				<div class="box-body">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>序号</th>
+								<th>检测项目</th>
+								<th>技术要求</th>
+							</tr>
+						</thead>
+						<tbody ng-repeat="item in contentList track by $index">
+							<tr ng-repeat="description in item.caseDescription track by $index">
+								<td ng-if="$index ==0" rowspan={{item.caseDecription.length+1}}>{{item.caseId}}</td>
+								<td ng-if="$index ==0" rowspan={{item.caseDecription.length+1}}>{{item.caseName}}</td>
+								<td>{{description}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
