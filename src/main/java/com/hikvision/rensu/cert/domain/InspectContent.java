@@ -41,7 +41,7 @@ public class InspectContent implements Serializable{
      * 用例编号/序号
      */
     @Column
-    private Long caseId;
+    private String caseId;
 
     /**
      * 用例名称 /检测项目 /测试项目 /功能列表
@@ -75,10 +75,6 @@ public class InspectContent implements Serializable{
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public TypeInspection getOwner() {
 		return owner;
 	}
@@ -87,11 +83,11 @@ public class InspectContent implements Serializable{
 		this.owner = owner;
 	}
 
-	public Long getCaseId() {
+	public String getCaseId() {
 		return caseId;
 	}
 
-	public void setCaseId(Long caseId) {
+	public void setCaseId(String caseId) {
 		this.caseId = caseId;
 	}
 
@@ -127,7 +123,7 @@ public class InspectContent implements Serializable{
 		this.testResult = testResult;
 	}
 
-	public InspectContent(Long id, TypeInspection owner, Long caseId, String caseName, String caseDescription,
+	public InspectContent(Long id, TypeInspection owner, String caseId, String caseName, String caseDescription,
 			String catalog, String testResult) {
 		super();
 		this.id = id;

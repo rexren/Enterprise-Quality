@@ -1,14 +1,10 @@
 package com.hikvision.rensu.cert.service;
 
 import com.hikvision.rensu.cert.domain.InspectContent;
+import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.repository.InspectContentRepository;
-
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,42 +16,30 @@ public class InspectContentService {
 
     @Autowired
     private InspectContentRepository inspectContentRepository;
-
+    
     public InspectContent get(Long id) {
         return inspectContentRepository.findOne(id);
     }
     
-	/**
-	 * 解析详细检测报告索引文件
-	 * @param workbook excel工作薄
-	 * @return void
-	 * @author langyicong
-	 */
-    public void saveInspectContents(Workbook workbook) throws Exception{
- 
-        InspectContent content = new InspectContent();
-
-        Sheet sheet = workbook.getSheetAt(0);
-        int rows = sheet.getLastRowNum() - 2;
-        // 先获得一行，再获得列数
-        Row tmp = sheet.getRow(0);
-        // 第三行开始读取数据
-        for (int row = 3; row < rows; row++) {
-        	Row r = sheet.getRow(row);
-        	/* rows those are not empty */
-            if(r.getCell(0)!=null && r.getCell(0).getCellTypeEnum()!=CellType.BLANK 
-            		&& r.getCell(1).getCellTypeEnum()!=CellType.BLANK){
-                InspectContent c = new InspectContent();
-                c.setCaseId((long) r.getCell(0).getNumericCellValue());
-                c.setCaseName(r.getCell(1).getStringCellValue());
-                //TODO 处理excel子行 
-                c.setCaseDescription(r.getCell(2).getStringCellValue());
-                c.setTestResult(r.getCell(3).getStringCellValue());
-                inspectContentRepository.save(c);
-            }
-        }
-        inspectContentRepository.save(content);
-        
+    /**
+    * 与数据库中的contentList比较，如果已经存在，则删除后插入新数据
+    * @param contentList 检测报告内容的有序表（主控方列表）
+    * @param t 检测条目（被控方）
+    * @return void
+    */
+    public void importContentList(List<InspectContent> contentList, TypeInspection t) throws Exception {
+    	InspectContent c = new InspectContent();
+    	if(t.getContents()!=null){
+    		t.setContents(null);
+    	}
+    	for(int i=0; i<contentList.size(); i++){
+    		c = contentList.get(i);
+    		c.setOwner(t);
+    	}
+    	inspectContentRepository.save(contentList);
     }
     
+    public List<InspectContent> getContentsAll(Long inspectionId){
+		return inspectContentRepository.findContentsByFK(inspectionId);
+    }
 }

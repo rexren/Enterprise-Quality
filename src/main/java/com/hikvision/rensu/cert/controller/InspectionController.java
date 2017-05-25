@@ -1,6 +1,7 @@
 package com.hikvision.rensu.cert.controller;
 
 import com.hikvision.rensu.cert.constant.RetCode;
+import com.hikvision.rensu.cert.domain.InspectContent;
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.service.InspectContentService;
 import com.hikvision.rensu.cert.service.TypeInspectionService;
@@ -50,6 +51,7 @@ public class InspectionController {
 
 	/**
 	 * 获取公检&国标文件列表页
+	 * TODO 此处不需要获取子表内容
 	 */
 	@RequestMapping(value = "/list.do", method = RequestMethod.GET)
 	@ResponseBody
@@ -58,7 +60,7 @@ public class InspectionController {
 	}
 
 	/**
-	 * 获取单条数据
+	 * 获取单条数据（不包括列表）
 	 */
 	@RequestMapping(value = "/detail.do", method = RequestMethod.GET)
 	@ResponseBody
@@ -150,10 +152,9 @@ public class InspectionController {
 	 * 导入列表数据 | 产品型号 | 软件名称 | 软件版本 | 测试／检验类别 | 受检单位 | 测试依据 | 颁发日期 | 文件编号 |
 	 * 证书系统链接 | 认证／测试机构 | 备注
 	 * 
-	 * @param sheet
+	 * @param sheet:
 	 *            【公检&国标】工作薄
-	 * @return res
-	 * 			res:0更新成功， 1更新失败：列表为空，2更新失败:其他必填数据为空
+	 * @return res: 0更新成功， 1更新失败：列表为空，2更新失败:其他必填数据为空
 	 * @author langyicong
 	 * @throws Exception
 	 */
@@ -198,9 +199,9 @@ public class InspectionController {
 				t.setUpdateAt(new Date());
 				t.setOperator("TESTER"); // TODO 获取当前用户
 				inspections.add(t);
-			} 
+			}
 		}
-		if(inspections.size()>0){
+		if (inspections.size() > 0) {
 			typeInspectionService.importInspectionList(inspections);
 		}
 		return res;
@@ -220,10 +221,10 @@ public class InspectionController {
 	@ResponseBody
 	public Map<String, Object> saveInspectionForm(@RequestBody MultipartFile file, HttpServletRequest request) {
 		Map<String, Object> res = new LinkedHashMap<String, Object>();
-
+		TypeInspection t = new TypeInspection();
 		/* save request form data to typeInspection table */
 		try {
-			typeInspectionService.saveSingleTypeInspection(request);
+			t = typeInspectionService.saveSingleTypeInspection(request);
 		} catch (Exception e) {
 			logger.error("", e);
 			res.put("error", e.getMessage());
@@ -245,9 +246,20 @@ public class InspectionController {
 			try {
 				xlsxFile = file.getInputStream();
 				Workbook workbook = WorkbookFactory.create(xlsxFile);
-				// 解析详细检测报告索引文件
-				inspectContentService.saveInspectContents(workbook);
-				res.put("code", RetCode.SUCCESS_CODE);
+				Sheet contentSheet = workbook.getSheetAt(0);
+				int importRes = importContentSheet(contentSheet, t);
+				switch (importRes) {
+				case 0:
+					res.put("code", RetCode.SUCCESS_CODE);
+					break;
+				case 1:
+					res.put("code", RetCode.FILE_EMPTY_CODE);
+					res.put("status", "empty file");
+					break;
+				case 2:
+					res.put("code", RetCode.FILE_KEYWORD_ERROR_CODE);
+					break;
+				}
 			} catch (IOException e) {
 				String errMessage = e.getMessage();
 				logger.error("", e);
@@ -265,7 +277,6 @@ public class InspectionController {
 				logger.error("", e);
 				return res;
 			} catch (Exception e) {
-				e.printStackTrace();
 				res.put("error", e.getMessage());
 				res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
 				logger.error("", e);
@@ -275,7 +286,10 @@ public class InspectionController {
 					try {
 						xlsxFile.close();
 					} catch (IOException e) {
-						e.printStackTrace();
+						res.put("error", e.getMessage());
+						res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
+						logger.error("", e);
+						return res;
 					}
 				}
 			}
@@ -352,4 +366,93 @@ public class InspectionController {
 		return res;
 	}
 
+	/**
+	 * 导入检测报告
+	 * 
+	 * @param contentSheet:
+	 *            检测项索引表工作表
+	 * @return res: 0更新成功， 1更新失败：列表为空，2更新失败:缺少关键字
+	 * @author langyicong
+	 * @throws Exception
+	 */
+	// TODO 解析详细检测报告索引文件并且【保存到子表中】！
+	private int importContentSheet(Sheet contentSheet, TypeInspection t) throws Exception {
+		int res = 1;
+		int rows = contentSheet.getLastRowNum() - 2;
+		logger.debug("the total number of inspection content list is {}.", rows);
+		List<InspectContent> contentList = new ArrayList<>();
+
+		/* 寻找表头所在行&每个字段所在列 */
+		int headRow = -1, caseIdCol = -1, caseNameCol = -1, caseDescrCol = -1, testResultCol = -1;
+		for (int row = 0; row < rows; row++) {
+			Row r = contentSheet.getRow(row);
+			int cols = r.getPhysicalNumberOfCells();
+			for (int col = 0; col < cols; col++) {
+				if (r.getCell(col) != null) {
+					if (r.getCell(col).getCellTypeEnum() != CellType.STRING) {
+						r.getCell(col).setCellType(CellType.STRING);
+					}
+				}
+				String cellValue = r.getCell(col).getStringCellValue();
+				if (Pattern.compile("序.*号").matcher(cellValue).find()) {
+					headRow = row;
+					System.out.println(cellValue);
+					caseIdCol = col;
+				}
+				if (Pattern.compile("检测项目|检验项目|测试项目|用例名称|功能列表").matcher(cellValue).find()) {
+					System.out.println(cellValue);
+					caseNameCol = col;
+				}
+				if (Pattern.compile("(.*要求)|用例说明|功能描述").matcher(cellValue).find()) {
+					System.out.println(cellValue);
+					caseDescrCol = col;
+				}
+				if (Pattern.compile("测试结果").matcher(cellValue).find()) {
+					System.out.println(cellValue);
+					testResultCol = col;
+				}
+			}
+			if (row == headRow) {
+				break;
+			}
+		}
+
+		if (caseIdCol < 0 || caseNameCol < 0 || caseDescrCol < 0) {
+			res = 2;
+			return res;
+		}
+
+		String cachedCaseId = "";
+		String cachedCaseName = "";
+		for (int row = headRow; row < rows; row++) {
+			Row r = contentSheet.getRow(row);
+			/* for rows those are not empty */
+			if (r.getCell(caseDescrCol) != null && r.getCell(caseDescrCol).getCellTypeEnum() != CellType.BLANK) {
+				InspectContent c = new InspectContent();
+				if (r.getCell(caseIdCol) != null && r.getCell(caseIdCol).getCellTypeEnum() != CellType.BLANK) {
+					if (r.getCell(caseIdCol).getCellTypeEnum() != CellType.STRING) {
+						r.getCell(caseIdCol).setCellType(CellType.STRING);
+					}
+					cachedCaseId = r.getCell(caseIdCol).getStringCellValue();
+				} 
+				c.setCaseId(cachedCaseId);
+				
+				if (r.getCell(caseNameCol) != null && r.getCell(caseNameCol).getCellTypeEnum() != CellType.BLANK) {
+					cachedCaseName = r.getCell(caseNameCol).getStringCellValue();
+				} 
+				c.setCaseName(cachedCaseName);
+				
+				if (caseDescrCol >= 0) {
+					c.setCaseDescription(r.getCell(caseDescrCol).getStringCellValue());
+				}
+				if (testResultCol >= 0) {
+					c.setTestResult(r.getCell(testResultCol).getStringCellValue());
+				}
+				contentList.add(c);
+			}
+		}
+		inspectContentService.importContentList(contentList, t);
+		res = 0;
+		return res;
+	}
 }

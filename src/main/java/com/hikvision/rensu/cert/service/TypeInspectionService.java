@@ -1,11 +1,7 @@
 package com.hikvision.rensu.cert.service;
 
 import com.hikvision.rensu.cert.domain.TypeInspection;
-import com.hikvision.rensu.cert.repository.InspectContentRepository;
 import com.hikvision.rensu.cert.repository.TypeInspectionRepository;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +26,6 @@ public class TypeInspectionService {
 
     @Autowired
     private TypeInspectionRepository typeInspectionRepository;
-
-    @Autowired
-    private InspectContentRepository inspectContentRepository;
 
     public Page<TypeInspection> getInspectionByPage(Integer pageNum, Integer pageSize) {
         int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
@@ -72,7 +65,7 @@ public class TypeInspectionService {
     /**
      * 从表单新建单条TypeInspection
      */
-    public void saveSingleTypeInspection(HttpServletRequest request) throws Exception{
+    public TypeInspection saveSingleTypeInspection(HttpServletRequest request) throws Exception{
     	TypeInspection t = new TypeInspection();
     	if(request.getParameter("awardDate")!="0"){
             long awardDateLong = Long.parseLong(request.getParameter("awardDate"))*1000;  
@@ -93,7 +86,7 @@ public class TypeInspectionService {
         t.setCreateAt(new Date());  //create a new TypeInspection data
         t.setUpdateAt(new Date());
         t.setOperator("TESTER");  //TODO 获取当前用户
-        typeInspectionRepository.save(t);
+        return typeInspectionRepository.save(t);
     }
     
     /**

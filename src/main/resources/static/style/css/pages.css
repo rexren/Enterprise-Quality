@@ -2,3 +2,11 @@
 	display: inline-block;
 	vertical-align: middle;
 }
+
+.clear-bottom-border{
+	border-bottom: 0  !important;
+}
+
+.clear-top-border{
+	border-top: 0  !important;
+}

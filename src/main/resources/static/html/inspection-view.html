@@ -1,144 +1,106 @@
 <section class="content-header">
 	<h1>公检国标详细内容</h1>
+	<button class="btn btn btn-primary pull-right" ng-click="modify()">修改</button>
 </section>
 
-<div class="row" style="margin: 0">
-	<div class="btn-group">
-	    <button class="btn {{viewType==1?'btn-primary':'btn-default'}}" ng-click="changeView(1)">检测摘要</button>
-	    <button class="btn {{viewType==2?'btn-primary':'btn-default'}}" ng-click="changeView(2)">检测报告</button>
-	</div>
-</div>
-                    
+
 <!-- 查看页 -->
-<section class="content" ng-if="viewType==1">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-info">
-                <div class="box-header with-border">
-                    <h3 class="box-title">查看</h3>
-                </div>
-                <!-- /.box-header -->
-                <!-- form start -->
-                <form class="form-horizontal">
-                    <div class="box-body">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">产品型号</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" placeholder="输入产品型号" ng-model="formData.model">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">软件名称</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" placeholder="请输入软件名称" ng-model="formData.name">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">软件版本</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" placeholder="请输入软件版本" ng-model="formData.version">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">测试/检验类别</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" placeholder="委托/型式/单项检验" ng-model="formData.testType">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">受检单位</label>
-                            <div class="col-sm-8">
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" value="杭州海康威视系统技术有限公司" ng-model="formData.company">杭州海康威视系统技术有限公司
-                                    </label>
-                                </div>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" value="杭州海康威视数字技术股份有限公司" ng-model="formData.company">杭州海康威视数字技术股份有限公司
-                                    </label>
-                                </div>
-                                </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">测试依据</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" placeholder="请输入测试依据" ng-model="formData.basis">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">颁发日期</label>
-                            <div class="col-sm-3">
-                                <input type="date" name="awardDate" class="form-control" ng-model="formData.awardDate"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">文件编号</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" placeholder="请输入文件编号" ng-model="formData.docNo" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">证书系统链接</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" placeholder="请输入证书系统链接" ng-model="formData.certUrl">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">认证/测试机构</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" placeholder="请输入认证/测试机构" ng-model="formData.organization">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">备注</label>
-                            <div class="col-sm-8">
-                                <textarea class="form-control" placeholder="any comments..." rows="5" ng-model="formData.remarks"></textarea>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group" >
-                            <label class="col-sm-2 control-label">检测报告</label>
-                            <div class="col-sm-8">
-                                <div class="fileinput fileinput-new">
-                                    <span class="btn btn-default btn-file" ng-click="openFile()">
-                                        <span>{{fileName?'重新上传':'选择文件'}}</span>
-                                    </span>
-                                    <span class="fileinput-filename">{{fileName?fileName:'请选择'}}</span>
-                                    <icon class="close" ng-if="fileName" style="float: none" ng-click="removeFile()">×</icon>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</section>
+<section class="content">
 
+	<div class="row" style="margin: 0">
+		<div class="btn-group">
+			<button
+				class="btn btn-flat {{viewType==1?'btn-primary':'btn-default'}} clear-bottom-border"
+				ng-click="changeView(1)">检测摘要</button>
+			<button
+				class="btn btn-flat {{viewType==2?'btn-primary':'btn-default'}} clear-bottom-border"
+				ng-click="changeView(2)">检测报告</button>
+		</div>
+	</div>
 
-<!-- 详情列表页 -->
-<section class="content" ng-if="viewType==2">
-	<div class="row">
+	<div class="row" ng-if="viewType==1">
 		<div class="col-md-12">
-			<div class="box">
+			<div class="box box-solid">
 				<div class="box-header with-border">
-					<h3 class="box-title">{{formData.model}} {{formData.docNo}}</h3>
+					<h3 class="box-title">摘要</h3>
+					</div>
+
+				<div class="box-body">
+					<table class="table table-striped">
+						<tr>
+							<td>产品型号</td>
+							<td>{{digest.model}}</td>
+						</tr>
+						<tr>
+							<td>软件名称</td>
+							<td>{{digest.name}}</td>
+						</tr>
+						<tr>
+							<td>软件版本</td>
+							<td>{{digest.version}}</td>
+						</tr>
+						<tr>
+							<td>测试/检验类别</td>
+							<td>{{digest.testType}}</td>
+						</tr>
+						<tr>
+							<td>受检单位</td>
+							<td>{{digest.company}}</td>
+						</tr>
+						<tr>
+							<td>测试依据</td>
+							<td>{{digest.basis}}</td>
+						</tr>
+						<tr>
+							<td>颁发日期</td>
+							<td>{{digest.awardDate | date:'yyyy-MM-dd'}}</td>
+						</tr>
+						<tr>
+							<td>文件编号</td>
+							<td>
+								<a href="#{{currentLocation}}?id={{inspectionId}}" ng-click="changeView(2)">{{digest.docNo}}</a>
+							</td>
+						</tr>
+						<tr>
+							<td>证书系统链接</td>
+							<td>{{digest.certUrl}}</td>
+						</tr>
+						<tr>
+							<td>认证/测试机构</td>
+							<td>{{digest.organization}}</td>
+						</tr>
+						<tr>
+							<td>备注</td>
+							<td>{{digest.remarks}}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" ng-if="viewType==2">
+		<div class="col-md-12">
+			<div class="box box-solid">
+				<div class="box-header with-border">
+					<h3 class="box-title">{{digest.model}} {{digest.docNo}}</h3>
 				</div>
 				<!-- /.box-header -->
 				<div class="box-body">
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th>序号</th>
-								<th>检测项目</th>
-								<th>技术要求</th>
+								<!-- 从后台取得表头 -->
+								<th ng-repeat="item in contentHead track by $index">{{item}}</th>
 							</tr>
 						</thead>
-						<tbody ng-repeat="item in contentList track by $index">
-							<tr ng-repeat="description in item.caseDescription track by $index">
-								<td ng-if="$index ==0" rowspan={{item.caseDecription.length+1}}>{{item.caseId}}</td>
-								<td ng-if="$index ==0" rowspan={{item.caseDecription.length+1}}>{{item.caseName}}</td>
+
+						<tbody ng-repeat="item in contentList track by $index"
+							class="clear-top-border">
+							<tr
+								ng-repeat="description in item.caseDescription track by $index">
+								<td ng-if="$index == 0" rowspan={{item.caseDescription.length+1}}>{{item.caseId}}</td>
+								<td ng-if="$index == 0" rowspan={{item.caseDescription.length+1}}>{{item.caseName}}</td>
 								<td>{{description}}</td>
 							</tr>
 						</tbody>
@@ -147,4 +109,5 @@
 			</div>
 		</div>
 	</div>
+
 </section>
