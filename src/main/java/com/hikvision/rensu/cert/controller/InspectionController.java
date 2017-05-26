@@ -73,7 +73,7 @@ public class InspectionController {
 	 */
 	@RequestMapping(value = "/upload.do", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> saveInspectionList(@RequestBody MultipartFile file) throws Exception {
+	public Map<String, Object> saveInspectionList(@RequestBody MultipartFile file) {
 		Map<String, Object> res = new LinkedHashMap<String, Object>();
 
 		if (null == file || file.isEmpty()) {

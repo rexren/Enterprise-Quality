@@ -1,110 +1,97 @@
 <section class="content-header">
-	<h1>公检国标详细内容</h1>
-	<button class="btn btn btn-primary pull-right" ng-click="modify()">修改</button>
+	<h1>检测项索引表 - {{digest.model}} {{digest.docNo}}</h1>
+	<button class="btn btn-primary pull-right" ng-click="modify()">修改</button>
 </section>
 
 
 <!-- 查看页 -->
 <section class="content">
-
-	<div class="row" style="margin: 0">
-		<div class="btn-group">
-			<button
-				class="btn btn-flat {{viewType==1?'btn-primary':'btn-default'}} clear-bottom-border"
-				ng-click="changeView(1)">检测摘要</button>
-			<button
-				class="btn btn-flat {{viewType==2?'btn-primary':'btn-default'}} clear-bottom-border"
-				ng-click="changeView(2)">检测报告</button>
-		</div>
-	</div>
-
-	<div class="row" ng-if="viewType==1">
+	<div class="row">
 		<div class="col-md-12">
-			<div class="box box-solid">
-				<div class="box-header with-border">
-					<h3 class="box-title">摘要</h3>
-					</div>
-
-				<div class="box-body">
-					<table class="table table-striped">
-						<tr>
-							<td>产品型号</td>
-							<td>{{digest.model}}</td>
-						</tr>
-						<tr>
-							<td>软件名称</td>
-							<td>{{digest.name}}</td>
-						</tr>
-						<tr>
-							<td>软件版本</td>
-							<td>{{digest.version}}</td>
-						</tr>
-						<tr>
-							<td>测试/检验类别</td>
-							<td>{{digest.testType}}</td>
-						</tr>
-						<tr>
-							<td>受检单位</td>
-							<td>{{digest.company}}</td>
-						</tr>
-						<tr>
-							<td>测试依据</td>
-							<td>{{digest.basis}}</td>
-						</tr>
-						<tr>
-							<td>颁发日期</td>
-							<td>{{digest.awardDate | date:'yyyy-MM-dd'}}</td>
-						</tr>
-						<tr>
-							<td>文件编号</td>
-							<td>
-								<a href="#{{currentLocation}}?id={{inspectionId}}" ng-click="changeView(2)">{{digest.docNo}}</a>
-							</td>
-						</tr>
-						<tr>
-							<td>证书系统链接</td>
-							<td>{{digest.certUrl}}</td>
-						</tr>
-						<tr>
-							<td>认证/测试机构</td>
-							<td>{{digest.organization}}</td>
-						</tr>
-						<tr>
-							<td>备注</td>
-							<td>{{digest.remarks}}</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="row" ng-if="viewType==2">
-		<div class="col-md-12">
-			<div class="box box-solid">
-				<div class="box-header with-border">
-					<h3 class="box-title">{{digest.model}} {{digest.docNo}}</h3>
-				</div>
-				<!-- /.box-header -->
-				<div class="box-body">
-					<table class="table table-bordered">
-						<thead>
+			<!-- Custom Tabs -->
+			<div class="nav-tabs-custom">
+				<ul class="nav nav-tabs">
+					<li class="{{viewType==1?'active':''}}" ng-click="changeView(1)">
+						<a ng-href="#{{currentLocation}}?id={{inspectionId}}">检测摘要</a>
+					</li>
+					<li class="{{viewType==2?'active':''}}" ng-click="changeView(2)">
+						<a ng-href="#{{currentLocation}}?id={{inspectionId}}">检测报告</a>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane {{viewType==1?'active':''}}">
+						<table class="table table-striped">
 							<tr>
-								<!-- 从后台取得表头 -->
-								<th ng-repeat="item in contentHead track by $index">{{item}}</th>
+								<td>产品型号</td>
+								<td>{{digest.model}}</td>
 							</tr>
-						</thead>
+							<tr>
+								<td>软件名称</td>
+								<td>{{digest.name}}</td>
+							</tr>
+							<tr>
+								<td>软件版本</td>
+								<td>{{digest.version}}</td>
+							</tr>
+							<tr>
+								<td>测试/检验类别</td>
+								<td>{{digest.testType}}</td>
+							</tr>
+							<tr>
+								<td>受检单位</td>
+								<td>{{digest.company}}</td>
+							</tr>
+							<tr>
+								<td>测试依据</td>
+								<td>{{digest.basis}}</td>
+							</tr>
+							<tr>
+								<td>颁发日期</td>
+								<td>{{digest.awardDate | date:'yyyy-MM-dd'}}</td>
+							</tr>
+							<tr>
+								<td>文件编号</td>
+								<td><a href="#{{currentLocation}}?id={{inspectionId}}"
+									ng-click="changeView(2)">{{digest.docNo}}</a></td>
+							</tr>
+							<tr>
+								<td>证书系统链接</td>
+								<td>{{digest.certUrl}}</td>
+							</tr>
+							<tr>
+								<td>认证/测试机构</td>
+								<td>{{digest.organization}}</td>
+							</tr>
+							<tr>
+								<td>备注</td>
+								<td>{{digest.remarks}}</td>
+							</tr>
+						</table>
+					</div>
+					<div class="tab-pane {{viewType==2?'active':''}}">
+						<table class="table table-bordered" ng-if="contentList.length>0">
+							<thead>
+								<tr>
+									<th ng-repeat="item in contentHead track by $index">{{item}}</th>
+								</tr>
+							</thead>
 
-						<tbody ng-repeat="item in contentList track by $index"
-							class="clear-top-border">
-							<tr
-								ng-repeat="description in item.caseDescription track by $index">
-								<td ng-if="$index == 0" rowspan={{item.caseDescription.length+1}}>{{item.caseId}}</td>
-								<td ng-if="$index == 0" rowspan={{item.caseDescription.length+1}}>{{item.caseName}}</td>
-								<td>{{description}}</td>
-							</tr>
-						</tbody>
-					</table>
+							<tbody ng-repeat="item in contentList track by $index"
+								class="clear-top-border">
+								<tr
+									ng-repeat="description in item.caseDescription track by $index">
+									<td ng-if="$index == 0"
+										rowspan={{item.caseDescription.length+1}}>{{item.caseId}}</td>
+									<td ng-if="$index == 0"
+										rowspan={{item.caseDescription.length+1}}>{{item.caseName}}</td>
+									<td>{{description}}</td>
+								</tr>
+							</tbody>
+						</table>
+						<div ng-if="contentList.length==0">
+			                <p>检测项索引表未上传</p>
+			            </div>
+					</div>
 				</div>
 			</div>
 		</div>

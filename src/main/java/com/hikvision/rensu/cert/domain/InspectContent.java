@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * 行检项目索引
  * Created by rensu on 17/3/28.
@@ -35,6 +37,7 @@ public class InspectContent implements Serializable{
      */
     @ManyToOne
     @JoinColumn (name="inspectionId")
+    @JsonIgnore
     private TypeInspection owner;
     
     /**

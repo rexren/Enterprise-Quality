@@ -51,75 +51,34 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl',
 	    	        'remarks': res.remarks,
 	    	        'operator': res.operator
 	        	};
+	        	if(res.contents.length>0){
+	        		console.log(res.contents);
+	        		// rearrange contentList data to the template
+		        	$scope.contentHead  = [res.contents[0].caseId,res.contents[0].caseName,res.contents[0].caseDescription];
+		        	var cachedCaseId = "";
+		        	var cachedCaseName = "";
+		        	var cIndex = -1;
+		        	for(var i = 1;i<res.contents.length;i++){
+		        		if(cachedCaseId!=res.contents[i].caseId){
+		        			// 同一case
+		        			cachedCaseId = res.contents[i].caseId;
+		        			cachedCaseName = res.contents[i].caseName;
+		        			$scope.contentList.push({
+		        				'caseId':res.contents[i].caseId,
+		        				'caseName':res.contents[i].caseName,
+		        				'caseDescription': [res.contents[i].caseDescription]
+		        			});
+		        			cIndex++;
+		        		} else{
+		        			$scope.contentList[cIndex].caseDescription.push(res.contents[i].caseDescription);
+		        		}
+		        	}
+	        	}
 		    }).error(function(res, status, headers, config){
 		        alert("getListByAjax error: "+status);
 		    });
-	        
-	        $http.get('/reports/list.do',{params:param}).success(function(res){
-	        	//TODO '/inspections/contents.do'接口需完善
-	        	//TODO 赋值$scope.tableHead
-	        	//$scope.contentList = res;
-	        	console.log(res)
-	        	//TODO format contentList
-	        }).error(function(res, status, headers, config){
-	        	alert("getContentsByAjax error: "+status);
-	        });
-	        
         }
         
-        /* mock*/
-       /* $scope.contentHead = ['序号','检测项目','技术要求'];
-        $scope.contentList = [{
-        	'caseId': 2,
-        	'caseName':'检验项目1',
-        	'caseDescription':[
-        		'检验项目1的技术要求1检验项目1的技术要求1检验项目1的技术要求1检验项目1的技术要求1',
-        		'检验项目1的技术要求2检验项目1的技术要求2检验项目1术要求2',
-        		'检验项目1的技术要求3检验项目1的技术要求3检验项目1的技术要求的技术要求3',
-        		'检验项目1的技术要求4检验项目1的技术要求4检验项目1的技术要求4检验项目1的技术要求4',
-        		'检验项目1的技术要求5检验项目1的技术要求5检验项目1的技术要求5检验项目1的技术要求5',
-        		],
-        	'catalog':'',
-        	'testResult':''
-        },{
-        	'caseId': 3,
-        	'caseName':'检验项目2',
-        	'caseDescription':[
-        		'检验项目2的技术要求1检验项目2的技术要求1检验项目2的技术要求1检验项目2的技术要求要求1',
-        		'检验项目2的技术要求2检验项目2的技术要求2检验项目2的技术要求2检验验项目2',
-        		'检验项目2的技术要求3检验项目2的技术要求3检验项目2的技术要求3检验项目2的技术2的技术要求3',
-        		'检验项目2的技术要求4检验项目2的技术要求4检验项目2的技术要求4检验项目2的技术要求4检验项目2的技术要求4',
-        		'检验项目2的技术要求5检验项目2的技术要求5检验项目2的技术要求5检验项目2的技术要求5检验项目2的技术要求5检验项目2的技术要求5',
-        		],
-        	'catalog':'',
-        	'testResult':''
-        },{
-        	'caseId': 4,
-        	'caseName':'检验项目3',
-        	'caseDescription':[
-        		'检验项目3的技术要求1',
-        		'检验项目3的技术要求2',
-        		'检验项目3的技术要求3',
-        		'检验项目3的技术要求4',
-        		'检验项目3的技术要求5',
-        		],
-        	'catalog':'',
-        	'testResult':''
-        },{
-        	'caseId': 4,
-        	'caseName':'检验项目3',
-        	'caseDescription':[
-        		'检验项目3的技术要求1',
-        		'检验项目3的技术要求2',
-        		'检验项目3的技术要求3',
-        		'检验项目3的技术要求4',
-        		'检验项目3的技术要求5',
-        		],
-        	'catalog':'',
-        	'testResult':''
-        }];
-        console.log($scope.contentList);*/
-        /* mock end*/
 
         // back
         $scope.back = function(){
