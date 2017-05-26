@@ -75,8 +75,14 @@ public class TypeInspection implements Serializable{
      */
     @Column(nullable = false, unique = true)
     private String docNo;
-
+    
     /**
+     * 检测报告列表文件名
+     */
+    @Column
+    private String docFilename;
+
+	/**
      * 证书系统链接
      */
     @Column
@@ -225,6 +231,14 @@ public class TypeInspection implements Serializable{
 	public void setDocNo(String docNo) {
 		this.docNo = docNo;
 	}
+    public String getDocFilename() {
+		return docFilename;
+	}
+
+	public void setDocFilename(String docFilename) {
+		this.docFilename = docFilename;
+	}
+	
     public String getRemarks() {
         return remarks;
     }

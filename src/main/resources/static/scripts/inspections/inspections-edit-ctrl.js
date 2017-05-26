@@ -72,6 +72,8 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
                 alert('请输入产品型号');
             } else if ($scope.formData.name == '') {
                 alert('请输入软件名称');
+            }else if (!$scope.formData.awardDate || $scope.formData.awardDate == '') {
+                alert('请选择颁发日期');
             } else {
                 var defer = $q.defer();
                 var fd = new FormData();
@@ -82,12 +84,8 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
                 for (var i in $scope.formData) {
                     fd.append(i, $scope.formData[i]);
                 }
-                if ($scope.formData.awardDate == '') {
-                    fd.set('awardDate', 0);
-                } else {
-                    var awardDateTimeStamp = Date.parse($scope.formData.awardDate) / 1000;
-                    fd.set('awardDate', awardDateTimeStamp);
-                }
+            	var awardTimeStamp = Date.parse($scope.formData.awardDate) / 1000;
+            	fd.set('awardDate', awardTimeStamp);
                 $http({
                     method: 'POST',
                     url: targetUrl,
@@ -134,7 +132,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
 
         // back
         $scope.back = function() {
-            $location.url('/inspections');
+        	window.history.back();
         }
 
     });

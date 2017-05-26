@@ -19,6 +19,9 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
             $http.get('/inspections/list.do',{params:param}).success(function(res){
                 $scope.list = res.content;
                 $scope.pagination.totalElements = res.totalElements;
+                for(var i=0; i<$scope.list.length;i++){
+                    $scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].certUrl)? true : false;          
+                }
             }).error(function(res, status, headers, config){
                 alert("getListByAjax error: "+status);
             })
@@ -90,7 +93,6 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
 	         defer.progress(function(file){
 	            $scope.file=file;
 	            $scope.fileName =file.name;
-	            console.log($scope.fileName);
 	            $scope.$apply();
 	         });
 	        defer.params={

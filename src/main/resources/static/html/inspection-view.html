@@ -1,8 +1,6 @@
 <section class="content-header">
 	<h1>检测项索引表 - {{digest.model}} {{digest.docNo}}</h1>
-	<button class="btn btn-primary pull-right" ng-click="modify()">修改</button>
 </section>
-
 
 <!-- 查看页 -->
 <section class="content">
@@ -16,6 +14,11 @@
 					</li>
 					<li class="{{viewType==2?'active':''}}" ng-click="changeView(2)">
 						<a ng-href="#{{currentLocation}}?id={{inspectionId}}">检测报告</a>
+					</li>
+					<li class="pull-right">
+						<a ng-href="#/inspections/edit?id={{inspectionId}}" class="text-muted">
+							<i class="fa fa-edit"></i>
+						</a>
 					</li>
 				</ul>
 				<div class="tab-content">

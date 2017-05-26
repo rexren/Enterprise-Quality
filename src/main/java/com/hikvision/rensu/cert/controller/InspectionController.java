@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -69,7 +70,7 @@ public class InspectionController {
 	}
 
 	/**
-	 * 导入列表文件
+	 * 列表页(/inspections) 导入列表文件
 	 */
 	@RequestMapping(value = "/upload.do", method = RequestMethod.POST)
 	@ResponseBody
@@ -222,9 +223,12 @@ public class InspectionController {
 	public Map<String, Object> saveInspectionForm(@RequestBody MultipartFile file, HttpServletRequest request) {
 		Map<String, Object> res = new LinkedHashMap<String, Object>();
 		TypeInspection t = new TypeInspection();
+		
 		/* save request form data to typeInspection table */
 		try {
-			t = typeInspectionService.saveSingleTypeInspection(request);
+			t = setTypeInspectionProperties(request);
+			t.setCreateAt(new Date());  //create a new TypeInspection data
+			t = typeInspectionService.save(t);
 		} catch (Exception e) {
 			logger.error("", e);
 			res.put("error", e.getMessage());
@@ -246,6 +250,7 @@ public class InspectionController {
 			try {
 				xlsxFile = file.getInputStream();
 				Workbook workbook = WorkbookFactory.create(xlsxFile);
+				//TODO deal with multiple sheets (Exception)
 				Sheet contentSheet = workbook.getSheetAt(0);
 				int importRes = importContentSheet(contentSheet, t);
 				switch (importRes) {
@@ -298,18 +303,32 @@ public class InspectionController {
 	}
 
 	/**
-	 * 更新单条数据（包括报告详情文件） TODO delete and then insert
+	 * 更新单条数据（包括报告详情文件）
 	 */
 	@RequestMapping(value = "/update.do", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> updateInspection(@RequestBody MultipartFile file, HttpServletRequest request) {
-		// TODO request.getParameter("id") NOT NULL
-		Map<String, Object> res = new LinkedHashMap<String, Object>();
 
+		Map<String, Object> res = new LinkedHashMap<String, Object>();
+		
+		if(request.getParameter("id") == null){
+			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
+			res.put("error", "no entity to update, try to new one");
+			return res;
+		}
+		Long id = Long.parseLong(request.getParameter("id"));
+		typeInspectionService.getTypeInspectionById(id);
+		TypeInspection t = new TypeInspection();
+		
+		/* save request form data to typeInspection table */
 		try {
-			typeInspectionService.updateTypeInspection(request);
-		} catch (Exception e1) {
-			e1.printStackTrace();
+			t = setTypeInspectionProperties(request); //TODO always null?
+			//TODO 根据Long id更新TypeInspection条目
+		} catch (Exception e) {
+			logger.error("", e);
+			res.put("error", e.getMessage());
+			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
+			return res;
 		}
 
 		/* parse and save excel file */
@@ -317,23 +336,27 @@ public class InspectionController {
 			res.put("code", RetCode.FILE_EMPTY_CODE);
 			res.put("status", "empty file");
 		} else {
-			// TODO 比较和更新excel工作簿文件
-			String fileName = file.getOriginalFilename();
-			String suffixName = fileName.substring(fileName.lastIndexOf("."));
-			logger.debug("the upload file name is {}.", fileName + suffixName);
-
-			/* 读取文件流 */
 			InputStream xlsxFile = null;
-
-			/*
-			 * Test excel Encryption & handle exceptions
-			 */
+			/* Test excel Encryption & handle exceptions */
 			try {
 				xlsxFile = file.getInputStream();
 				Workbook workbook = WorkbookFactory.create(xlsxFile);
-				// TODO 解析检测报告的excel文档
-
-				res.put("code", RetCode.SUCCESS_CODE);
+				//TODO deal with multiple sheets (Exception)
+				Sheet contentSheet = workbook.getSheetAt(0);
+				inspectContentService.deleteByInspectionId(id);
+				int importRes = importContentSheet(contentSheet, t);
+				switch (importRes) {
+				case 0:
+					res.put("code", RetCode.SUCCESS_CODE);
+					break;
+				case 1:
+					res.put("code", RetCode.FILE_EMPTY_CODE);
+					res.put("status", "empty file");
+					break;
+				case 2:
+					res.put("code", RetCode.FILE_KEYWORD_ERROR_CODE);
+					break;
+				}
 			} catch (IOException e) {
 				String errMessage = e.getMessage();
 				logger.error("", e);
@@ -344,26 +367,73 @@ public class InspectionController {
 				} else {
 					res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
 				}
+				return res;
 			} catch (EncryptedDocumentException | InvalidFormatException e) {
 				res.put("error", e.getMessage());
 				res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
 				logger.error("", e);
+				return res;
 			} catch (Exception e) {
 				res.put("error", e.getMessage());
 				res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
 				logger.error("", e);
+				return res;
 			} finally {
 				if (xlsxFile != null) {
 					try {
 						xlsxFile.close();
 					} catch (IOException e) {
-						e.printStackTrace();
+						res.put("error", e.getMessage());
+						res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
+						logger.error("", e);
+						return res;
 					}
 				}
 			}
-
 		}
+		
 		return res;
+	}
+	
+	
+	/**
+	 * http请求体转为TypeInspection实体，不包括创建时间
+	 * @param request 前端提交的表单数据
+	 * @return t 转换后的TypeInspection实体，不包括创建时间
+	 */
+	private TypeInspection setTypeInspectionProperties(HttpServletRequest request) throws Exception{
+		TypeInspection t = new TypeInspection();
+		/* setAwardDate */
+		long awardDateLong = Long.parseLong(request.getParameter("awardDate"))*1000;  
+		Date awardDate = (new Date(awardDateLong));
+		t.setAwardDate(awardDate);
+		/* setDocFilename */
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;   
+		
+		//TODO file为null
+		try{
+			MultipartFile file = multipartRequest.getFile("file");   
+			String fileName = file.getOriginalFilename();
+			t.setDocFilename(fileName);
+		}catch (Exception e) {
+			// TODO: handle exception
+		}finally{
+			/* set other properties */
+			t.setModel(request.getParameter("model"));
+			t.setName(request.getParameter("name"));
+			t.setVersion(request.getParameter("version"));
+			t.setTestType(request.getParameter("testType"));
+			t.setCompany(request.getParameter("company"));
+			t.setBasis(request.getParameter("basis"));
+			t.setDocNo(request.getParameter("docNo"));
+			t.setCertUrl(request.getParameter("certUrl"));
+			t.setOrganization(request.getParameter("organization"));
+			t.setRemarks(request.getParameter("remarks"));
+			t.setOperator(request.getParameter("operator"));
+			t.setUpdateAt(new Date());
+			t.setOperator("TESTER");  //TODO 获取当前用户
+		}
+		return t;
 	}
 
 	/**
@@ -375,10 +445,9 @@ public class InspectionController {
 	 * @author langyicong
 	 * @throws Exception
 	 */
-	// TODO 解析详细检测报告索引文件并且【保存到子表中】！
 	private int importContentSheet(Sheet contentSheet, TypeInspection t) throws Exception {
 		int res = 1;
-		int rows = contentSheet.getLastRowNum() - 2;
+		int rows = contentSheet.getLastRowNum() + 1;
 		logger.debug("the total number of inspection content list is {}.", rows);
 		List<InspectContent> contentList = new ArrayList<>();
 
@@ -399,7 +468,7 @@ public class InspectionController {
 					System.out.println(cellValue);
 					caseIdCol = col;
 				}
-				if (Pattern.compile("检测项目|检验项目|测试项目|用例名称|功能列表").matcher(cellValue).find()) {
+				if (Pattern.compile("(.*项目)|用例名称|功能列表").matcher(cellValue).find()) {
 					System.out.println(cellValue);
 					caseNameCol = col;
 				}

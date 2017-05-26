@@ -3,6 +3,8 @@ package com.hikvision.rensu.cert.service;
 import com.hikvision.rensu.cert.domain.InspectContent;
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.repository.InspectContentRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,4 +44,15 @@ public class InspectContentService {
     public List<InspectContent> getContentsAll(Long inspectionId){
 		return inspectContentRepository.findContentsByFK(inspectionId);
     }
+    
+    /**
+     * 删除InspectContent表中符合inspectionId = id 的条目
+     * @param id
+     * @return void
+     */
+	public void deleteByInspectionId(Long id) {
+		List<InspectContent> list = new ArrayList<>();
+		list = inspectContentRepository.findContentsByFK(id);
+		inspectContentRepository.deleteInBatch(list);
+	}
 }
