@@ -57,24 +57,15 @@
 				</div>
 
 				<ul class="sidebar-menu">
-					<li class="header">检索分类</li>
-					<li><a href="#/inpections"> <i class="fa fa-th"></i> <span>公检国标</span>
-							<span class="pull-right-container"> <small
-								class="label pull-right bg-green">new</small>
-						</span>
-					</a></li>
-
-					<li><a href="#/copyright"> <i class="fa fa-files-o"></i> <span>双证</span>
-							<span class="pull-right-container"> <small
-								class="label pull-right bg-green">new</small>
-						</span>
-					</a></li>
-
-					<li><a href="#/ccc"> <i class="fa fa-edit"></i> <span>3C</span>
-							<span class="pull-right-container"> <small
-								class="label pull-right bg-green">new</small>
-						</span>
-					</a></li>
+					<li class="header" ng-bind="headerText"></li>
+					<li ng-repeat="m in menu track by $index" ng-click="change($index)" 
+						class="{{m.active?'active':''}}">
+						<a ng-href="#{{m.href}}"> 
+							<i class="fa {{icon}}"></i>
+							<span ng-bind="m.title"></span>
+						</a>
+					</li>
+				
 				</ul>
 			</section>
 		</aside>
