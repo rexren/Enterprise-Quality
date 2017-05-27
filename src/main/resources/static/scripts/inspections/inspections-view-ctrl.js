@@ -46,35 +46,41 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl',
 	    	        'basis': res.basis,
 	    	        'awardDate': adate,
 	    	        'docNo': res.docNo,
+	    	        'docFilename': res.docFilename,
 	    	        'certUrl': res.certUrl,
 	    	        'organization': res.organization,
 	    	        'remarks': res.remarks,
 	    	        'operator': res.operator
 	        	};
 	        	$scope.fileName = res.docFilename;
-	        	if(res.contents.length>0){
+	        	
+		    }).error(function(res, status, headers, config){
+		        alert("getListByAjax error: "+status);
+		    });
+
+		    $http.get('/inspections/contents.do',{params:param}).success(function(res){
+				if(res.length>0){
 	        		// rearrange contentList data to the template
-		        	$scope.contentHead  = [res.contents[0].caseId,res.contents[0].caseName,res.contents[0].caseDescription];
+		        	$scope.contentHead  = [res[0].caseId, res[0].caseName, res[0].caseDescription];
 		        	var cachedCaseId = "";
 		        	var cachedCaseName = "";
 		        	var cIndex = -1;
-		        	for(var i = 1;i<res.contents.length;i++){
-		        		if(cachedCaseId!=res.contents[i].caseId){
-		        			// 同一case
-		        			cachedCaseId = res.contents[i].caseId;
-		        			cachedCaseName = res.contents[i].caseName;
+		        	for(var i = 1;i<res.length;i++){
+		        		if(cachedCaseId!=res[i].caseId){
+		        			cachedCaseId = res[i].caseId;
+		        			cachedCaseName = res[i].caseName;
 		        			$scope.contentList.push({
-		        				'caseId':res.contents[i].caseId,
-		        				'caseName':res.contents[i].caseName,
-		        				'caseDescription': [res.contents[i].caseDescription]
+		        				'caseId':res[i].caseId,
+		        				'caseName':res[i].caseName,
+		        				'caseDescription': [res[i].caseDescription]
 		        			});
 		        			cIndex++;
 		        		} else{
-		        			$scope.contentList[cIndex].caseDescription.push(res.contents[i].caseDescription);
+		        			$scope.contentList[cIndex].caseDescription.push(res[i].caseDescription);
 		        		}
 		        	}
 	        	}
-		    }).error(function(res, status, headers, config){
+		   	}).error(function(res, status, headers, config){
 		        alert("getListByAjax error: "+status);
 		    });
         }

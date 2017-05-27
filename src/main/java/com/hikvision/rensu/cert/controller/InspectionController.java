@@ -1,7 +1,6 @@
 package com.hikvision.rensu.cert.controller;
 
 import com.hikvision.rensu.cert.constant.RetCode;
-import com.hikvision.rensu.cert.controller.util.ContentsComparator;
 import com.hikvision.rensu.cert.domain.InspectContent;
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.service.InspectContentService;
@@ -14,6 +13,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,7 +53,6 @@ public class InspectionController {
 
 	/**
 	 * 获取公检&国标文件列表页
-	 * TODO 此处不需要获取子表内容
 	 */
 	@RequestMapping(value = "/list.do", method = RequestMethod.GET)
 	@ResponseBody
@@ -63,17 +61,31 @@ public class InspectionController {
 	}
 
 	/**
-	 * 获取单条数据（不包括列表）
+	 * 获取单条型检数据（不包括列表）
+	 * @param id 型检id
+	 * @return t 型检数据
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/detail.do", method = RequestMethod.GET)
 	@ResponseBody
 	public TypeInspection getInspecion(Long id) {
 		TypeInspection t = typeInspectionService.getTypeInspectionById(id);
-		Collections.sort(t.getContents(), new ContentsComparator());
 		return t;
 	}
-
+	
+	/**
+	 * 获取单条型检数据的报告内容列表
+	 * @param id 型检id
+	 * @return contents 报告内容列表
+	 */
+	//@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/contents.do", method = RequestMethod.GET)
+	@ResponseBody
+	public List<InspectContent> getContents(Long id) {
+		List<InspectContent> contents = inspectContentService.getContentsAll(id);
+		//Collections.sort(contents, new ContentsComparator());
+		return contents;
+	}
+	
 	/**
 	 * 列表页(/inspections) 导入列表文件
 	 */
@@ -257,7 +269,8 @@ public class InspectionController {
 				Workbook workbook = WorkbookFactory.create(xlsxFile);
 				//TODO deal with multiple sheets (Exception)
 				Sheet contentSheet = workbook.getSheetAt(0);
-				int importRes = importContentSheet(contentSheet, t);
+				Long inspectionId = t.getId();
+				int importRes = importContentSheet(contentSheet, inspectionId);
 				switch (importRes) {
 				case 0:
 					res.put("code", RetCode.SUCCESS_CODE);
@@ -324,7 +337,7 @@ public class InspectionController {
 		}
 		Long id = Long.parseLong(request.getParameter("id"));
 		TypeInspection t = typeInspectionService.getTypeInspectionById(id);
-		if(t==null){
+		if(t == null){
 			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
 			res.put("error", "no entity to update, try to create one");
 			return res;
@@ -341,9 +354,12 @@ public class InspectionController {
 			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
 			return res;
 		}
+		Long inspectionId = t.getId();
 		String fname = request.getParameter("fileName");
-		System.out.println(fname);
-		//TODO if fname =="", 删库
+		//TODO 删库
+		if (StringUtils.isBlank(fname)){
+			inspectContentService.deleteByFK(inspectionId);
+		}
 		
 		/* parse and save excel file */
 		if (null == file || file.isEmpty()) {
@@ -357,7 +373,7 @@ public class InspectionController {
 				Workbook workbook = WorkbookFactory.create(xlsxFile);
 				//TODO deal with multiple sheets (Exception)
 				Sheet contentSheet = workbook.getSheetAt(0);
-				int importRes = importContentSheet(contentSheet, t);
+				int importRes = importContentSheet(contentSheet, inspectionId);
 				switch (importRes) {
 				case 0:
 					res.put("code", RetCode.SUCCESS_CODE);
@@ -410,8 +426,9 @@ public class InspectionController {
 	
 	
 	/**
-	 * http请求体转为TypeInspection实体，不包括创建时间
+	 * HttpServletRequest请求体属性存入TypeInspection实体，不包括创建时间
 	 * @param request 前端提交的表单数据
+	 * @param t 初始的TypeInspection实体，可为空（新建）或者含id（更新）
 	 * @return t 转换后的TypeInspection实体，不包括创建时间
 	 */
 	private TypeInspection setTypeInspectionProperties(HttpServletRequest request, TypeInspection t) throws Exception{
@@ -443,6 +460,7 @@ public class InspectionController {
 			t.setRemarks(request.getParameter("remarks"));
 			t.setOperator(request.getParameter("operator"));
 			t.setUpdateAt(new Date());
+			t.setDocFilename(request.getParameter("fileName"));
 			t.setOperator("TESTER");  //TODO 获取当前用户
 		}
 		return t;
@@ -452,12 +470,13 @@ public class InspectionController {
 	 * 导入检测报告
 	 * 
 	 * @param contentSheet:
-	 *            检测项索引表工作表
+	 *            <检测项索引表>工作表
+	 * @param inspectionId:  对应的型检id
 	 * @return res: 0更新成功， 1更新失败：列表为空，2更新失败:缺少关键字
 	 * @author langyicong
 	 * @throws Exception
 	 */
-	private int importContentSheet(Sheet contentSheet, TypeInspection t) throws Exception {
+	private int importContentSheet(Sheet contentSheet, Long inspectionId) throws Exception {
 		int res = 1;
 		int rows = contentSheet.getLastRowNum() + 1;
 		logger.debug("the total number of inspection content list is {}.", rows);
@@ -529,10 +548,11 @@ public class InspectionController {
 				if (testResultCol >= 0) {
 					c.setTestResult(r.getCell(testResultCol).getStringCellValue());
 				}
+				c.setInspectionId(inspectionId);
 				contentList.add(c);
 			}
 		}
-		inspectContentService.importContentList(contentList, t);
+		inspectContentService.importContentList(contentList, inspectionId);
 		res = 0;
 		return res;
 	}

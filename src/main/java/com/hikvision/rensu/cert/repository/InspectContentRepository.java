@@ -15,9 +15,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InspectContentRepository extends JpaRepository<InspectContent, Long> {
 
-	/*	TODO debug: org.springframework.http.converter.HttpMessageNotWritableException: 
-		Could not write content: Infinite recursion (StackOverflowError) */
-	@Query("select c from InspectContent c where c.owner.id=:fk")
-	public List<InspectContent> findContentsByFK(@Param("fk")Long inspectionId);
+	@Query("select c from InspectContent c where c.inspectionId=:inspectionId order by id")
+	public List<InspectContent> findContentsByFK(@Param("inspectionId")Long inspectionId);
 	
 }

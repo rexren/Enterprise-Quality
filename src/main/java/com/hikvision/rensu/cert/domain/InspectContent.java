@@ -35,10 +35,8 @@ public class InspectContent implements Serializable{
     /**
      * 外键：检测报告ID
      */
-    @ManyToOne
-    @JoinColumn (name="inspectionId")
-    @JsonIgnore
-    private TypeInspection owner;
+    @Column
+    private Long inspectionId;
     
     /**
      * 用例编号/序号
@@ -59,12 +57,6 @@ public class InspectContent implements Serializable{
     private String caseDescription;
 
     /**
-     * 测试分类（如可靠性测试、易用性测试、维护性测试等）
-     */
-    @Column
-    private String catalog;
-    
-    /**
      * 测试结果（选填）
      */
     @Column
@@ -74,16 +66,20 @@ public class InspectContent implements Serializable{
 		return serialVersionUID;
 	}
 
+	public Long getInspectionId() {
+		return inspectionId;
+	}
+
+	public void setInspectionId(Long inspectionId) {
+		this.inspectionId = inspectionId;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public Long getId() {
 		return id;
-	}
-
-	public TypeInspection getOwner() {
-		return owner;
-	}
-
-	public void setOwner(TypeInspection owner) {
-		this.owner = owner;
 	}
 
 	public String getCaseId() {
@@ -110,31 +106,11 @@ public class InspectContent implements Serializable{
 		this.caseDescription = caseDescription;
 	}
 
-	public String getCatalog() {
-		return catalog;
-	}
-
-	public void setCatalog(String catalog) {
-		this.catalog = catalog;
-	}
-
 	public String getTestResult() {
 		return testResult;
 	}
 
 	public void setTestResult(String testResult) {
-		this.testResult = testResult;
-	}
-
-	public InspectContent(Long id, TypeInspection owner, String caseId, String caseName, String caseDescription,
-			String catalog, String testResult) {
-		super();
-		this.id = id;
-		this.owner = owner;
-		this.caseId = caseId;
-		this.caseName = caseName;
-		this.caseDescription = caseDescription;
-		this.catalog = catalog;
 		this.testResult = testResult;
 	}
 

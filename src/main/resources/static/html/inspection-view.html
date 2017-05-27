@@ -54,8 +54,12 @@
 							</tr>
 							<tr>
 								<td>文件编号</td>
+								<td>{{digest.docNo}}</td>
+							</tr>
+							<tr>
+								<td>索引文件名</td>
 								<td><a href="#{{currentLocation}}?id={{inspectionId}}"
-									ng-click="changeView(2)">{{digest.docNo}}</a></td>
+									ng-click="changeView(2)">{{digest.docFilename}}</a></td>
 							</tr>
 							<tr>
 								<td>证书系统链接</td>
@@ -71,7 +75,9 @@
 							</tr>
 						</table>
 					</div>
+					
 					<div class="tab-pane {{viewType==2?'active':''}}">
+						<h4>{{fileName}}</h4>
 						<table class="table table-bordered" ng-if="contentList.length>0">
 							<thead>
 								<tr>
@@ -84,9 +90,9 @@
 								<tr
 									ng-repeat="description in item.caseDescription track by $index">
 									<td ng-if="$index == 0"
-										rowspan={{item.caseDescription.length+1}}>{{item.caseId}}</td>
+										rowspan={{item.caseDescription.length}}>{{item.caseId}}</td>
 									<td ng-if="$index == 0"
-										rowspan={{item.caseDescription.length+1}}>{{item.caseName}}</td>
+										rowspan={{item.caseDescription.length}}>{{item.caseName}}</td>
 									<td>{{description}}</td>
 								</tr>
 							</tbody>

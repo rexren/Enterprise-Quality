@@ -115,7 +115,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
                                 break;
                         }
                     }
-                    //$location.url('/inspections');
+                    $location.url('/inspections');
                 }).error(function(res) {
                     alert('Submit failure');
                     console.log('Error msg:');

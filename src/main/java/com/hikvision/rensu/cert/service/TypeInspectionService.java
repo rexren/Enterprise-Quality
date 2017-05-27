@@ -12,12 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import java.util.Date;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by rensu on 17/4/21.
@@ -37,7 +32,8 @@ public class TypeInspectionService {
         /* 按照更新时间降序排序（从先到后） */
         Sort s = new Sort(Direction.DESC, "UpdateAt");
         Pageable page = new PageRequest(pn, ps, s);
-        return typeInspectionRepository.findAll(page);
+        Page<TypeInspection> res = typeInspectionRepository.findAll(page);
+        return res;
     }
 
     public TypeInspection save(TypeInspection typeInspection) {
@@ -51,16 +47,6 @@ public class TypeInspectionService {
     public void deleteTypeInspection(TypeInspection t){
     	typeInspectionRepository.delete(t);
     }
-
-    /**
-    * 更新数据库条目
-    * @param inspections 带插入的List
-    * @return void
-    */
-	public TypeInspection updateTypeInspection(TypeInspection t, Long id) {
-		// TODO 先查询，再赋值属性
-		return null;
-	}
    
     /**
     * 与数据库中的Inspections比较，如果docNo已经存在，则删除后插入新数据，否则直接使用save方法

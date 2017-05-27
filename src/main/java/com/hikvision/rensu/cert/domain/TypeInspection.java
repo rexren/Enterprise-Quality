@@ -21,12 +21,6 @@ public class TypeInspection implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-	 * 子表：具体检测项内容
-	 */
-    @OneToMany(mappedBy="owner")
-    private List<InspectContent> contents;
-
 	/**
      * 产品型号
      */
@@ -265,33 +259,12 @@ public class TypeInspection implements Serializable{
 		this.updateAt = updateAt;
 	}
 
-	
-	public List<InspectContent> getContents() {
-		return contents;
-	}
-
-	public void setContents(List<InspectContent> contents) {
-		this.contents = contents;
-	}
-
 	@Override
-    public String toString() {
-        return "TypeInspection{" +
-                "id=" + id +
-                ", maintenaner='" + operator + '\'' +
-                ", productType='" + model + '\'' +
-                ", name='" + name + '\'' +
-                ", version='" + version + '\'' +
-                ", testType='" + testType + '\'' +
-                ", company='" + company + '\'' +
-                ", basis='" + basis + '\'' +
-                ", awardDate=" + awardDate +
-                ", docSerial='" + docNo + '\'' +
-                ", certUrl='" + certUrl + '\'' +
-                ", testOrganization='" + organization + '\'' +
-                ", remarks='" + remarks + '\'' +
-                ", createAt=" + createAt +
-                ", updateAt=" + updateAt +
-                '}';
-    }
+	public String toString() {
+		return "TypeInspection [id=" + id + ", model=" + model + ", name=" + name + ", version=" + version
+				+ ", testType=" + testType + ", company=" + company + ", basis=" + basis + ", awardDate=" + awardDate
+				+ ", docNo=" + docNo + ", docFilename=" + docFilename + ", certUrl=" + certUrl + ", organization="
+				+ organization + ", remarks=" + remarks + ", createAt=" + createAt + ", updateAt=" + updateAt
+				+ ", operator=" + operator + "]";
+	}
 }
