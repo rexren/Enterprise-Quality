@@ -57,6 +57,4 @@ public class InspectContentService {
     	}
     	inspectContentRepository.save(contentList);
     }
-
-    
 }

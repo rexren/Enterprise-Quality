@@ -2,6 +2,7 @@ package com.hikvision.rensu.cert.service;
 
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.repository.TypeInspectionRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by rensu on 17/4/21.
@@ -26,6 +29,9 @@ public class TypeInspectionService {
     @Autowired
     private TypeInspectionRepository typeInspectionRepository;
 
+    @Autowired
+    private InspectContentService inspectContentService;
+    
     public Page<TypeInspection> getInspectionByPage(Integer pageNum, Integer pageSize) {
         int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
         int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
@@ -63,5 +69,23 @@ public class TypeInspectionService {
     		typeInspectionRepository.save(inspections.get(i));
     	}
     }
+    
+    /**
+    * 存储 & （如果文件名为空）删子表
+    * @param contentList 待插入数据库的检测报告内容表（子表）
+    * @param inspectionId 检测条目（主表条目）的id
+    * @return void
+    */
+    @Transactional
+	public TypeInspection updateTypeInspection(HttpServletRequest request, TypeInspection t) {
+    	Long inspectionId = t.getId();
+    	String fname = request.getParameter("fileName");
+		if (StringUtils.isBlank(fname)){
+			t.setDocFilename("");
+			inspectContentService.deleteByFK(inspectionId);
+		}
+		return typeInspectionRepository.save(t);
+		
+	}
 
 }

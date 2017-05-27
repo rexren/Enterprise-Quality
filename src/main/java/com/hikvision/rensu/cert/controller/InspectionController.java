@@ -335,8 +335,8 @@ public class InspectionController {
 			res.put("error", "no id to update, try to create one");
 			return res;
 		}
-		Long id = Long.parseLong(request.getParameter("id"));
-		TypeInspection t = typeInspectionService.getTypeInspectionById(id);
+		Long inspectionId = Long.parseLong(request.getParameter("id"));
+		TypeInspection t = typeInspectionService.getTypeInspectionById(inspectionId);
 		if(t == null){
 			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
 			res.put("error", "no entity to update, try to create one");
@@ -346,19 +346,12 @@ public class InspectionController {
 		/* save request form data to typeInspection table */
 		try {
 			t = setTypeInspectionProperties(request,t);
-			//TODO test根据Long id更新TypeInspection条目
-			typeInspectionService.save(t);
+			t = typeInspectionService.updateTypeInspection(request, t);
 		} catch (Exception e) {
 			logger.error("", e);
 			res.put("error", e.getMessage());
 			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
 			return res;
-		}
-		Long inspectionId = t.getId();
-		String fname = request.getParameter("fileName");
-		//TODO 删库
-		if (StringUtils.isBlank(fname)){
-			inspectContentService.deleteByFK(inspectionId);
 		}
 		
 		/* parse and save excel file */
@@ -371,7 +364,6 @@ public class InspectionController {
 			try {
 				xlsxFile = file.getInputStream();
 				Workbook workbook = WorkbookFactory.create(xlsxFile);
-				//TODO deal with multiple sheets (Exception)
 				Sheet contentSheet = workbook.getSheetAt(0);
 				int importRes = importContentSheet(contentSheet, inspectionId);
 				switch (importRes) {
@@ -439,7 +431,6 @@ public class InspectionController {
 		/* setDocFilename */
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;   
 		
-		//TODO file为null
 		try{
 			MultipartFile file = multipartRequest.getFile("file");   
 			String fileName = file.getOriginalFilename();
@@ -460,7 +451,6 @@ public class InspectionController {
 			t.setRemarks(request.getParameter("remarks"));
 			t.setOperator(request.getParameter("operator"));
 			t.setUpdateAt(new Date());
-			t.setDocFilename(request.getParameter("fileName"));
 			t.setOperator("TESTER");  //TODO 获取当前用户
 		}
 		return t;
