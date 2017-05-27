@@ -44,6 +44,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
                     'remarks': res.remarks,
                     'operator': res.operator
                 };
+                $scope.fileName = res.docFilename;
             }).error(function(res, status, headers, config) {
                 alert("getListByAjax error: " + status);
             });
@@ -78,6 +79,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
                 var defer = $q.defer();
                 var fd = new FormData();
                 fd.append('file', $scope.file);
+                fd.append('fileName', $scope.fileName);
                 if ($scope.inspectionId) {
                     fd.append('id', $scope.inspectionId);
                 }

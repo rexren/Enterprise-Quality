@@ -51,8 +51,8 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl',
 	    	        'remarks': res.remarks,
 	    	        'operator': res.operator
 	        	};
+	        	$scope.fileName = res.docFilename;
 	        	if(res.contents.length>0){
-	        		console.log(res.contents);
 	        		// rearrange contentList data to the template
 		        	$scope.contentHead  = [res.contents[0].caseId,res.contents[0].caseName,res.contents[0].caseDescription];
 		        	var cachedCaseId = "";

@@ -1,6 +1,7 @@
 package com.hikvision.rensu.cert.controller;
 
 import com.hikvision.rensu.cert.constant.RetCode;
+import com.hikvision.rensu.cert.controller.util.ContentsComparator;
 import com.hikvision.rensu.cert.domain.InspectContent;
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.service.InspectContentService;
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -63,10 +65,13 @@ public class InspectionController {
 	/**
 	 * 获取单条数据（不包括列表）
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/detail.do", method = RequestMethod.GET)
 	@ResponseBody
 	public TypeInspection getInspecion(Long id) {
-		return typeInspectionService.getTypeInspectionById(id);
+		TypeInspection t = typeInspectionService.getTypeInspectionById(id);
+		Collections.sort(t.getContents(), new ContentsComparator());
+		return t;
 	}
 
 	/**
@@ -226,7 +231,7 @@ public class InspectionController {
 		
 		/* save request form data to typeInspection table */
 		try {
-			t = setTypeInspectionProperties(request);
+			t = setTypeInspectionProperties(request,t);
 			t.setCreateAt(new Date());  //create a new TypeInspection data
 			t = typeInspectionService.save(t);
 		} catch (Exception e) {
@@ -311,30 +316,39 @@ public class InspectionController {
 
 		Map<String, Object> res = new LinkedHashMap<String, Object>();
 		
-		if(request.getParameter("id") == null){
+		/* if null id or null entity */
+		if(request.getParameter("id") == null ){
 			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
-			res.put("error", "no entity to update, try to new one");
+			res.put("error", "no id to update, try to create one");
 			return res;
 		}
 		Long id = Long.parseLong(request.getParameter("id"));
-		typeInspectionService.getTypeInspectionById(id);
-		TypeInspection t = new TypeInspection();
+		TypeInspection t = typeInspectionService.getTypeInspectionById(id);
+		if(t==null){
+			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
+			res.put("error", "no entity to update, try to create one");
+			return res;
+		}
 		
 		/* save request form data to typeInspection table */
 		try {
-			t = setTypeInspectionProperties(request); //TODO always null?
-			//TODO 根据Long id更新TypeInspection条目
+			t = setTypeInspectionProperties(request,t);
+			//TODO test根据Long id更新TypeInspection条目
+			typeInspectionService.save(t);
 		} catch (Exception e) {
 			logger.error("", e);
 			res.put("error", e.getMessage());
 			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
 			return res;
 		}
-
+		String fname = request.getParameter("fileName");
+		System.out.println(fname);
+		//TODO if fname =="", 删库
+		
 		/* parse and save excel file */
 		if (null == file || file.isEmpty()) {
 			res.put("code", RetCode.FILE_EMPTY_CODE);
-			res.put("status", "empty file");
+			res.put("status", "No new file to update contents list");
 		} else {
 			InputStream xlsxFile = null;
 			/* Test excel Encryption & handle exceptions */
@@ -343,7 +357,6 @@ public class InspectionController {
 				Workbook workbook = WorkbookFactory.create(xlsxFile);
 				//TODO deal with multiple sheets (Exception)
 				Sheet contentSheet = workbook.getSheetAt(0);
-				inspectContentService.deleteByInspectionId(id);
 				int importRes = importContentSheet(contentSheet, t);
 				switch (importRes) {
 				case 0:
@@ -401,8 +414,7 @@ public class InspectionController {
 	 * @param request 前端提交的表单数据
 	 * @return t 转换后的TypeInspection实体，不包括创建时间
 	 */
-	private TypeInspection setTypeInspectionProperties(HttpServletRequest request) throws Exception{
-		TypeInspection t = new TypeInspection();
+	private TypeInspection setTypeInspectionProperties(HttpServletRequest request, TypeInspection t) throws Exception{
 		/* setAwardDate */
 		long awardDateLong = Long.parseLong(request.getParameter("awardDate"))*1000;  
 		Date awardDate = (new Date(awardDateLong));
