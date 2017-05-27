@@ -77,12 +77,10 @@ public class InspectionController {
 	 * @param id 型检id
 	 * @return contents 报告内容列表
 	 */
-	//@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/contents.do", method = RequestMethod.GET)
 	@ResponseBody
 	public List<InspectContent> getContents(Long id) {
 		List<InspectContent> contents = inspectContentService.getContentsAll(id);
-		//Collections.sort(contents, new ContentsComparator());
 		return contents;
 	}
 	
@@ -178,10 +176,11 @@ public class InspectionController {
 	 */
 	private int importInspectionSheet(Sheet sheet) throws Exception {
 		int res = 1;
-		int rows = sheet.getLastRowNum() - 2;
+		int rows = sheet.getLastRowNum() + 1;
 		logger.debug("the total number of type inspection is {}.", rows);
 
 		List<TypeInspection> inspections = new ArrayList<>();
+		//TODO row = 2 找到表头并且 判断表头是否符合条件
 		for (int row = 2; row < rows; row++) {
 			Row r = sheet.getRow(row);
 			/* for rows those are not empty */
@@ -201,6 +200,7 @@ public class InspectionController {
 					t.setAwardDate(r.getCell(6).getDateCellValue());
 				} else {
 					res = 2;
+					return res;
 				}
 				if (r.getCell(7) != null) {
 					if (r.getCell(7).getCellTypeEnum() != CellType.STRING) {
@@ -209,6 +209,7 @@ public class InspectionController {
 					t.setDocNo(r.getCell(7).getStringCellValue());
 				} else {
 					res = 2;
+					return res;
 				}
 				t.setCertUrl(r.getCell(8).getStringCellValue());
 				t.setOrganization(r.getCell(9).getStringCellValue());

@@ -88,12 +88,43 @@ angular.module('enterprise-quality')
             };
             
             /**  
-    	     *  file upload
-    	     */
+             *  file upload
+             */
             $scope.submit = function () {
-            	console.log('submit file');
-            	// 导入excel文件 inspections/upload.do
+                var defer = $q.defer();
+                var fd = new FormData();
+                fd.append('file',$scope.file);
+                $http({
+                    method: 'POST',
+                    url: '/copyright/upload.do',
+                    data: fd,
+                    headers: {
+                        'Accept':'*/*',
+                        'Content-Type':undefined
+                    }
+                }).success(function(res) {
+                    if(res.code<400 & res.code>=200){
+                        alert('上传成功');
+                        $scope.fileName = '';
+                        $scope.file = {};
+                        getList(1, $scope.pagination.size);
+                    } else{
+                        if(res.code == '501') {
+                            alert('错误：文件被加密，请上传未加密的文件');                        
+                        }else{
+                            alert('错误：文件格式有误！'); 
+                        }
+                    } 
+                    //TODO 刷新列表 getList(1, $scope.pagination.size);
+                }).error(function(res) {
+                    alert('Submit failure');
+                    console.log('Error msg:');
+                    console.log(res);
+                    defer.reject();
+                });
+                return defer.promise;
             };
+
 
             $scope.removeFile = function(){
             	$scope.file = {};
