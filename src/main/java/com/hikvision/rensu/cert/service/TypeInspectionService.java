@@ -36,10 +36,8 @@ public class TypeInspectionService {
         int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
         int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
         /* 按照更新时间降序排序（从先到后） */
-        Sort s = new Sort(Direction.DESC, "UpdateAt");
-        Pageable page = new PageRequest(pn, ps, s);
-        Page<TypeInspection> res = typeInspectionRepository.findAll(page);
-        return res;
+        Pageable page = new PageRequest(pn, ps, new Sort(Direction.DESC, "UpdateAt"));
+        return typeInspectionRepository.findAll(page);
     }
 
     public TypeInspection save(TypeInspection typeInspection) {
@@ -60,6 +58,9 @@ public class TypeInspectionService {
     * @return void
     */
     public void importInspectionList(List<TypeInspection> inspections){
+
+        //TODO:这里存在一个问题，在数据量大的情况下，大量的查表操作是在循环内，需要优化
+        //TODO:导入一个表，一般可以先把现存的那部分先搜索出来，然后更新
     	for(int i = 0; i < inspections.size(); i++){
     		List<TypeInspection> dupItems = typeInspectionRepository.findByDocNo(inspections.get(i).getDocNo());
     		if(dupItems.size()>0){

@@ -1,6 +1,7 @@
 package com.hikvision.rensu.cert.constant;
 
 public class RetCode {
+	//TODO: using http error code is not a good idea.
 	public final static String SUCCESS_CODE = "200";
 	public final static String FILE_EMPTY_CODE = "201";
 	public final static String FORM_VALIDATE_ERROR_CODE = "401";

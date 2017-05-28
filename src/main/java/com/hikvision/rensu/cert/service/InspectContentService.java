@@ -25,6 +25,7 @@ public class InspectContentService {
     
     /**
     * 用外键查询contents
+     * * 函数名取得不好
     * @param inspectionId 外键id
     * @return List<InspectContent> 查到的内容条目列表
     */

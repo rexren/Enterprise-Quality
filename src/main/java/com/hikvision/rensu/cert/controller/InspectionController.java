@@ -181,7 +181,8 @@ public class InspectionController {
 
 		List<TypeInspection> inspections = new ArrayList<>();
 		//TODO row = 2 找到表头并且 判断表头是否符合条件
-		for (int row = 2; row < rows; row++) {
+        //// TODO: 2017/5/28 controller里面不要放业务逻辑
+        for (int row = 2; row < rows; row++) {
 			Row r = sheet.getRow(row);
 			/* for rows those are not empty */
 			if (r.getCell(0) != null && r.getCell(0).getCellTypeEnum() != CellType.BLANK
@@ -471,7 +472,7 @@ public class InspectionController {
 		int res = 1;
 		int rows = contentSheet.getLastRowNum() + 1;
 		logger.debug("the total number of inspection content list is {}.", rows);
-		List<InspectContent> contentList = new ArrayList<>();
+		List<InspectContent> contentList = new ArrayList<>(rows);
 
 		/* 寻找表头所在行&每个字段所在列 */
 		int headRow = -1, caseIdCol = -1, caseNameCol = -1, caseDescrCol = -1, testResultCol = -1;
