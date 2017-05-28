@@ -4,6 +4,7 @@ import com.hikvision.rensu.cert.constant.RetCode;
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.service.TypeInspectionService;
 import com.hikvision.rensu.cert.support.PageResult;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -51,18 +52,14 @@ public class FileUploadController {
             try {
                 Workbook workbook = WorkbookFactory.create(file.getInputStream());
                 for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-                    if (workbook.getSheetName(i).contains("公检")) {
-                        Sheet sheet = workbook.getSheetAt(i);
-                        importInspectionSheet(sheet);
+                    if (workbook.getSheetName(i).contains("公检") || workbook.getSheetName(i).contains("双证")) {
+                        importInspectionSheet(workbook.getSheetAt(i));
                     } else if (workbook.getSheetName(i).contains("双证")) {
-                        System.out.println(workbook.getSheetName(i));
-                        // 导入双证解析
+                        importCopyRightSheet(workbook.getSheetAt(i));
                     } else if (workbook.getSheetName(i).contains("3C")) {
-                        System.out.println(workbook.getSheetName(i));
-                        // 导入3C解析
+                        importCCCSheet(workbook.getSheetAt(i));
                     } else if (workbook.getSheetName(i).contains("更新说明")) {
-                        System.out.println(workbook.getSheetName(i));
-                        // 导入更新说明
+                        // TODO: news can be done without sheet.
                     } else {
                         // TODO 错误：找不到sheet（每个controller只需一种测试）
                     }
@@ -117,7 +114,7 @@ public class FileUploadController {
         //// TODO: 2017/5/28 controller里面不要放业务逻辑
         for (int row = 2; row < rows; row++) {
             Row r = sheet.getRow(row);
-			/* for rows those are not empty */
+            /* for rows those are not empty */
             if (r.getCell(0) != null && r.getCell(0).getCellTypeEnum() != CellType.BLANK
                     && r.getCell(1).getCellTypeEnum() != CellType.BLANK) {
                 TypeInspection t = new TypeInspection();
@@ -155,8 +152,17 @@ public class FileUploadController {
             }
         }
         if (inspections.size() > 0) {
-            //typeInspectionService.importInspectionList(inspections);
+            typeInspectionService.importInspectionList(inspections);
         }
         return res;
+    }
+
+
+    private int importCCCSheet(Sheet sheet) throws NotImplementedException {
+        throw new NotImplementedException("importCCCSheet not implement");
+    }
+
+    private int importCopyRightSheet(Sheet sheet) throws NotImplementedException {
+        throw new NotImplementedException("importCopyRightSheet not implement");
     }
 }
