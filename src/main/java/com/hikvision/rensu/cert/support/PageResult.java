@@ -5,7 +5,7 @@ package com.hikvision.rensu.cert.support;
  */
 public class PageResult {
     private String code;
-    private String status;
+    private String errorMsg;
 
     public PageResult(String code) {
         this.code = code;
@@ -14,9 +14,9 @@ public class PageResult {
     public PageResult() {
     }
 
-    public PageResult(String code, String status) {
+    public PageResult(String code, String errorMsg) {
         this.code = code;
-        this.status = status;
+        this.errorMsg = errorMsg;
     }
 
     public String getCode() {
@@ -27,11 +27,11 @@ public class PageResult {
         this.code = code;
     }
 
-    public String getStatus() {
-        return status;
+    public String getErrorMsg() {
+        return errorMsg;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
     }
 }

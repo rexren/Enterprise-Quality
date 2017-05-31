@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 /**
  * Created by rensu on 17/4/27.
  */
+//TODO PageResult格式返回
 @Controller
 @RequestMapping("/inspections")
 public class InspectionController {
@@ -244,6 +245,8 @@ public class InspectionController {
 		TypeInspection t = new TypeInspection();
 		
 		/* save request form data to typeInspection table */
+		//TODO DEBUG 事务：如果文件被加密，也是不能插入数据的才对
+		//TODO 业务逻辑放入service
 		try {
 			t = setTypeInspectionProperties(request,t);
 			t.setCreateAt(new Date());  //create a new TypeInspection data

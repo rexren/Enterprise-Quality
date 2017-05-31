@@ -1,6 +1,11 @@
 'use strict';
 
-angular.module('enterprise-quality',['ngRoute','ui.bootstrap'])
+angular.module('enterprise-quality',[
+	'ngAnimate',
+    'ngRoute',
+    'ui.bootstrap',
+    'toastr'
+    ])
 .config(['$routeProvider', function($routeProvider){
     $routeProvider
     	.when('/',{

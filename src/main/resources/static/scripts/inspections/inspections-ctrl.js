@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$location','$http','$modal','$q','FileUploadService',
-    function($scope, $location, $http, $modal, $q, FileUploadService){
+angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$location','$http','$modal','$q','toastr','FileUploadService','common',
+    function($scope, $location, $http, $modal, $q, Toastr, FileUploadService, Common){
         $scope.pagination = {
             page: 1,
             size: 10,
@@ -23,7 +23,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
                     $scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].certUrl)? true : false;          
                 }
             }).error(function(res, status, headers, config){
-                alert("getListByAjax error: "+status);
+            	Toastr.error("getListByAjax error: "+status);
             })
         }
         
@@ -117,17 +117,13 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
                 	'Content-Type':undefined
                 }
             }).success(function(res) {
-            	if(res.code<400 & res.code>=200){
-                	alert('上传成功');
+            	if(res.code == 0){
+            		Toastr.success('上传成功');
                 	$scope.fileName = '';
                 	$scope.file = {};
                 	getList(1, $scope.pagination.size);
                 } else{
-                	if(res.code == '501') {
-                		alert('错误：文件被加密，请上传未加密的文件');                		
-                	}else{
-                		alert('错误：文件格式有误！'); 
-                	}
+                	Common.retCodeHandler(res.code);
                 } 
             	//TODO 刷新列表 getList(1, $scope.pagination.size);
             }).error(function(res) {

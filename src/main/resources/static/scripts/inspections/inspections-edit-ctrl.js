@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('enterprise-quality').controller('InspectionsEditCtrl',
-    function($scope, $location, $http, $q, FileUploadService) {
+angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope', '$location', '$http', '$q', 'toastr', 'FileUploadService', 'common',
+    function($scope, $location, $http, $q, Toastr, FileUploadService, Common) {
         $scope.formData = {
             'model': '',
             'name': '',
@@ -46,7 +46,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
                 };
                 $scope.fileName = res.docFilename;
             }).error(function(res, status, headers, config) {
-                alert("getListByAjax error: " + status);
+            	Toastr.error("getListByAjax error: " + status);
             });
 
             targetUrl = '/inspections/update.do';
@@ -70,11 +70,11 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
 
         $scope.submit = function() {
             if ($scope.formData.model == '') {
-                alert('请输入产品型号');
+            	Toastr.error('请输入产品型号');
             } else if ($scope.formData.name == '') {
-                alert('请输入软件名称');
+            	Toastr.error('请输入软件名称');
             }else if (!$scope.formData.awardDate || $scope.formData.awardDate == '') {
-                alert('请选择颁发日期');
+            	Toastr.error('请选择颁发日期');
             } else {
                 var defer = $q.defer();
                 var fd = new FormData();
@@ -97,27 +97,14 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
                         'Content-Type': undefined
                     }
                 }).success(function(res) {
-                    if (res.code < 400 & res.code >= 200) {
-                        alert('Submit successfully');
+                    if (res.code == 0) {
+                    	Toastr.success('Submit successfully');
+                    	$location.url('/inspections');
                     } else {
-                        switch (res.code) {
-                            case '501':
-                                alert('错误：文件被加密，请上传未加密的文件');
-                                break;
-                            case '502':
-                                alert('错误：文件格式有误！');
-                                break;
-                            case '503':
-                                alert('错误：关键字有误！');
-                                break;
-                            default:
-                                alert('错误：更新数据库失败！');
-                                break;
-                        }
+                        Common.retCodeHandler(res.code);
                     }
-                    $location.url('/inspections');
                 }).error(function(res) {
-                    alert('Submit failure');
+                	Toastr.error('HTTP failure');
                     console.log('Error msg:');
                     console.log(res);
                     defer.reject();
@@ -137,4 +124,4 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',
         	window.history.back();
         }
 
-    });
+    }]);

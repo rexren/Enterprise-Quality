@@ -183,18 +183,18 @@ angular.module('enterprise-quality')
         // 出错删除
         input.trigger('click');
     }
-      var service = {
-      		openFiles : function (uploadBlock, defer) {
+    var service = {
+    		openFiles : function (uploadBlock, defer) {
 
-              var url=(defer.params&&defer.params.url);
-              var datas=defer.params&&defer.params.datas;
-              var accept=defer.params&&defer.params.accept;
-      		  openFiles(uploadBlock, url, defer,datas,accept);
-      		},
-            open : function(uploadBlock,defer){//仅打开文件
-                var accept=defer.params&&defer.params.accept;
-                open(uploadBlock,defer,accept);
-            }
-      };
-      return service;
+          var url=(defer.params&&defer.params.url);
+          var datas=defer.params&&defer.params.datas;
+          var accept=defer.params&&defer.params.accept;
+    		  openFiles(uploadBlock, url, defer,datas,accept);
+    		},
+        open : function(uploadBlock,defer){//仅打开文件
+            var accept=defer.params&&defer.params.accept;
+            open(uploadBlock,defer,accept);
+        }
+    };
+    return service;
   });
