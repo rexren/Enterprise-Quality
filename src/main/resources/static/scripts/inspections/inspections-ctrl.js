@@ -17,15 +17,20 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
         function getList(page, size) {
             var param = {pageNum:page,pageSize:size};
             $http.get('/inspections/list.do',{params:param}).success(function(res){
-                $scope.list = res.content;
-                $scope.pagination.totalElements = res.totalElements;
-                for(var i=0; i<$scope.list.length;i++){
-                    $scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].certUrl)? true : false;          
-                }
+            	if(res.code==0){
+            		$scope.list = res.listContent.list;
+            		$scope.pagination.totalElements = res.listContent.totalElements;
+            		for(var i=0; i<$scope.list.length;i++){
+            			$scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].certUrl)? true : false;          
+            		}            		
+            	}else{
+            		//TODO other exceptions
+            		Toastr.error("系统繁忙");
+            	}
             }).error(function(res, status, headers, config){
-            	Toastr.error("getListByAjax error: "+status);
+            	Toastr.error("AjaxError: "+ status);
             })
-        }
+        };
         
         /** 
          * 编辑单条数据
@@ -110,7 +115,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
             fd.append('file',$scope.file);
             $http({
                 method: 'POST',
-                url: '/inspections/upload.do',
+                url: '/fileupload/indexlist.do',
                 data: fd,
                 headers: {
                 	'Accept':'*/*',
@@ -119,17 +124,14 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
             }).success(function(res) {
             	if(res.code == 0){
             		Toastr.success('上传成功');
-                	$scope.fileName = '';
-                	$scope.file = {};
+            		$scope.removeFile;
                 	getList(1, $scope.pagination.size);
                 } else{
                 	Common.retCodeHandler(res.code);
                 } 
             	//TODO 刷新列表 getList(1, $scope.pagination.size);
             }).error(function(res) {
-            	alert('Submit failure');
-            	console.log('Error msg:');
-            	console.log(res);
+            	Toastr.error('Submit ajax failure');
                 defer.reject();
             });
             return defer.promise;

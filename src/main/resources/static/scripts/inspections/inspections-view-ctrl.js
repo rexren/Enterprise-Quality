@@ -35,48 +35,52 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl',
         if($scope.inspectionId){
         	var param = {id: $scope.inspectionId};
 	        $http.get('/inspections/detail.do',{params:param}).success(function(res){
-	        	var adate = Date.parse(Date(res.awardDate));
-	        	adate = adate>32503651200? new Date(adate) : new Date(adate*1000);
-	        	$scope.digest = {
-	    	        'model': res.model,
-	    	        'name': res.name,
-	    	        'version': res.version,
-	    	        'testType': res.testType,
-	    	        'company': res.company,
-	    	        'basis': res.basis,
-	    	        'awardDate': adate,
-	    	        'docNo': res.docNo,
-	    	        'docFilename': res.docFilename,
-	    	        'certUrl': res.certUrl,
-	    	        'organization': res.organization,
-	    	        'remarks': res.remarks,
-	    	        'operator': res.operator
-	        	};
-	        	$scope.fileName = res.docFilename;
-	        	
+	        	if(res.code == 0){
+	        		var adate = Date.parse(Date(res.data.awardDate));
+	        		adate = adate>32503651200? new Date(adate) : new Date(adate*1000);
+	        		$scope.digest = {
+        				'model': res.data.model,
+        				'name': res.data.name,
+        				'version': res.data.version,
+        				'testType': res.data.testType,
+        				'company': res.data.company,
+        				'basis': res.data.basis,
+        				'awardDate': adate,
+        				'docNo': res.data.docNo,
+        				'docFilename': res.data.docFilename,
+        				'certUrl': res.data.certUrl,
+        				'organization': res.data.organization,
+        				'remarks': res.data.remarks,
+        				'operator': res.data.operator
+	        		};
+	        		$scope.fileName = res.docFilename;
+	        	} else{
+            		//TODO other exceptions
+            		Toastr.error("系统繁忙");
+            	} 
 		    }).error(function(res, status, headers, config){
 		        alert("getListByAjax error: "+status);
 		    });
 
 		    $http.get('/inspections/contents.do',{params:param}).success(function(res){
-				if(res.length>0){
+				if(res.listContent.list.length>0){
 	        		// rearrange contentList data to the template
-		        	$scope.contentHead  = [res[0].caseId, res[0].caseName, res[0].caseDescription];
+		        	$scope.contentHead  = [res.listContent.list[0].caseId, res.listContent.list[0].caseName, res.listContent.list[0].caseDescription];
 		        	var cachedCaseId = "";
 		        	var cachedCaseName = "";
 		        	var cIndex = -1;
-		        	for(var i = 1;i<res.length;i++){
-		        		if(cachedCaseId!=res[i].caseId){
-		        			cachedCaseId = res[i].caseId;
-		        			cachedCaseName = res[i].caseName;
+		        	for(var i = 1;i<res.listContent.list.length;i++){
+		        		if(cachedCaseId!=res.listContent.list[i].caseId){
+		        			cachedCaseId = res.listContent.list[i].caseId;
+		        			cachedCaseName = res.listContent.list[i].caseName;
 		        			$scope.contentList.push({
-		        				'caseId':res[i].caseId,
-		        				'caseName':res[i].caseName,
-		        				'caseDescription': [res[i].caseDescription]
+		        				'caseId':res.listContent.list[i].caseId,
+		        				'caseName':res.listContent.list[i].caseName,
+		        				'caseDescription': [res.listContent.list[i].caseDescription]
 		        			});
 		        			cIndex++;
 		        		} else{
-		        			$scope.contentList[cIndex].caseDescription.push(res[i].caseDescription);
+		        			$scope.contentList[cIndex].caseDescription.push(res.listContent.list[i].caseDescription);
 		        		}
 		        	}
 	        	}

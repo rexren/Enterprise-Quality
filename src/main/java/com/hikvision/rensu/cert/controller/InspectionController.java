@@ -1,11 +1,19 @@
 package com.hikvision.rensu.cert.controller;
 
-import com.hikvision.rensu.cert.constant.RetCode;
-import com.hikvision.rensu.cert.domain.InspectContent;
-import com.hikvision.rensu.cert.domain.TypeInspection;
-import com.hikvision.rensu.cert.service.InspectContentService;
-import com.hikvision.rensu.cert.service.TypeInspectionService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellType;
@@ -13,7 +21,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +33,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
+import com.hikvision.rensu.cert.constant.RetCode;
+import com.hikvision.rensu.cert.domain.InspectContent;
+import com.hikvision.rensu.cert.domain.TypeInspection;
+import com.hikvision.rensu.cert.service.InspectContentService;
+import com.hikvision.rensu.cert.service.TypeInspectionService;
+import com.hikvision.rensu.cert.support.AjaxResult;
+import com.hikvision.rensu.cert.support.ListContent;
+import com.hikvision.rensu.cert.support.ListResult;
+import com.hikvision.rensu.cert.support.RetStatus;
 
 /**
  * Created by rensu on 17/4/27.
@@ -57,8 +64,20 @@ public class InspectionController {
 	 */
 	@RequestMapping(value = "/list.do", method = RequestMethod.GET)
 	@ResponseBody
-	public Page<TypeInspection> getInspecionListByPage(Integer pageNum, Integer pageSize) {
-		return typeInspectionService.getInspectionByPage(pageNum, pageSize);
+	public ListResult getInspecionListByPage(Integer pageNum, Integer pageSize) {
+		//TODO  验证传入的参数
+		ListResult res = new ListResult();
+		try {
+			Page<TypeInspection> p = typeInspectionService.getInspectionByPage(pageNum, pageSize);
+			res.setListContent(new ListContent<TypeInspection>(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
+			res.setCode(RetStatus.SUCCESS_CODE.getRetCode()); //TODO 改为枚举类型
+			res.setMsg(RetCode.SUCCESS_INFO);
+		} catch (Exception e) {
+			logger.error("", e.getMessage());
+			res.setCode(RetCode.SYSTEM_ERROR_CODE);
+			res.setMsg(RetCode.SYSTEM_ERROR_INFO);
+		}
+		return res;
 	}
 
 	/**
@@ -68,10 +87,41 @@ public class InspectionController {
 	 */
 	@RequestMapping(value = "/detail.do", method = RequestMethod.GET)
 	@ResponseBody
-	public TypeInspection getInspecion(Long id) {
-		TypeInspection t = typeInspectionService.getTypeInspectionById(id);
-		return t;
+	public AjaxResult<TypeInspection> getInspecionById(Long id) {
+		AjaxResult<TypeInspection> res = new AjaxResult<TypeInspection>();
+		if(null==id){
+			//TODO 验证id不能为null，并且判断对象是否为空（数据不存在）
+		} else{
+			try {
+				TypeInspection t = typeInspectionService.getTypeInspectionById(id);
+				if(t!=null){
+					res.setData(t);
+					res.setCode(RetCode.SUCCESS_CODE);
+					res.setMsg(RetCode.SUCCESS_INFO);
+				}else{
+					//TODO 返回数据不存在
+				}
+			} catch (Exception e) {
+				logger.error("", e.getMessage());
+				res.setCode(RetCode.SYSTEM_ERROR_CODE);
+				res.setMsg(RetCode.SYSTEM_ERROR_INFO);
+			}
+		}
+		
+		return res;
 	}
+	
+	/**
+	 * 获取单条型检数据的报告内容列表
+	 * @param id 型检id
+	 * @return contents 报告内容列表
+	 */
+/*	@RequestMapping(value = "/contents.do", method = RequestMethod.GET)
+	@ResponseBody
+	public List<InspectContent> getContents(Long id) {
+		List<InspectContent> contents = inspectContentService.getContentsByInspectionId(id);
+		return contents;
+	}*/
 	
 	/**
 	 * 获取单条型检数据的报告内容列表
@@ -80,14 +130,21 @@ public class InspectionController {
 	 */
 	@RequestMapping(value = "/contents.do", method = RequestMethod.GET)
 	@ResponseBody
-	public List<InspectContent> getContents(Long id) {
-		List<InspectContent> contents = inspectContentService.getContentsAll(id);
-		return contents;
+	public ListResult getContentsByInspectionId(Long id) {
+		//TODO id not null, 返回数据为空，数据库后台错误
+		ListResult res = new ListResult();
+		List<InspectContent> contents = inspectContentService.getContentsByInspectionId(id);
+		res.setListContent(new ListContent<InspectContent>(contents.size(), (long) contents.size(), 1, contents));
+		res.setCode(RetStatus.SUCCESS_CODE.getRetCode());
+		res.setMsg(RetCode.SUCCESS_INFO);
+		return res;
 	}
 	
 	/**
 	 * 列表页(/inspections) 导入列表文件
+	 * 迁移至FileUploadController.java
 	 */
+	@Deprecated
 	@RequestMapping(value = "/upload.do", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> saveInspectionList(@RequestBody MultipartFile file) {
@@ -175,10 +232,10 @@ public class InspectionController {
 	 * @author langyicong
 	 * @throws Exception
 	 */
+	@Deprecated
 	private int importInspectionSheet(Sheet sheet) throws Exception {
 		int res = 1;
 		int rows = sheet.getLastRowNum() + 1;
-		logger.debug("the total number of type inspection is {}.", rows);
 
 		List<TypeInspection> inspections = new ArrayList<>();
 		//TODO row = 2 找到表头并且 判断表头是否符合条件
@@ -241,20 +298,23 @@ public class InspectionController {
 	@RequestMapping(value = "/save.do", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> saveInspectionForm(@RequestBody MultipartFile file, HttpServletRequest request) {
+		//TODO 验证表单必填项
+		
+		//TODO 返回类型为BaseResult
 		Map<String, Object> res = new LinkedHashMap<String, Object>();
 		TypeInspection t = new TypeInspection();
 		
 		/* save request form data to typeInspection table */
-		//TODO DEBUG 事务：如果文件被加密，也是不能插入数据的才对
+		//TODO DEBUG 放入service 事务 抛异常（如果抛出异常就会回滚）  如果文件被加密，也是不能插入数据的才对
 		//TODO 业务逻辑放入service
 		try {
-			t = setTypeInspectionProperties(request,t);
-			t.setCreateAt(new Date());  //create a new TypeInspection data
-			t = typeInspectionService.save(t);
+			t = setTypeInspectionProperties(request,t); //页面参数组装
+			// t.setCreateAt(new Date());  //TODO setCreateAt内聚在setTypeInspectionProperties中，通过判断t和t.getId()是否都不为空
+			//TODO 先解析文件，再保存 t = typeInspectionService.save(t,contentlist);
 		} catch (Exception e) {
 			logger.error("", e);
 			res.put("error", e.getMessage());
-			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
+			res.put("code", RetCode.SYSTEM_ERROR_CODE);
 			return res;
 		}
 
@@ -310,16 +370,7 @@ public class InspectionController {
 				logger.error("", e);
 				return res;
 			} finally {
-				if (xlsxFile != null) {
-					try {
-						xlsxFile.close();
-					} catch (IOException e) {
-						res.put("error", e.getMessage());
-						res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
-						logger.error("", e);
-						return res;
-					}
-				}
+				IOUtils.closeQuietly(xlsxFile);
 			}
 		}
 		return res;
@@ -327,6 +378,7 @@ public class InspectionController {
 
 	/**
 	 * 更新单条数据（包括报告详情文件）
+	 * TODO 逻辑和save.do类似，先update主表，再delete子表，再insert
 	 */
 	@RequestMapping(value = "/update.do", method = RequestMethod.POST)
 	@ResponseBody
@@ -334,16 +386,17 @@ public class InspectionController {
 
 		Map<String, Object> res = new LinkedHashMap<String, Object>();
 		
+		//TODO 字符串（空）判断、比较，数据类型转换等，都改为lang的 XXXUtils
 		/* if null id or null entity */
-		if(request.getParameter("id") == null ){
-			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
+		if(StringUtils.isBlank(request.getParameter("id"))){
+			res.put("code", RetCode.SYSTEM_ERROR_CODE);
 			res.put("error", "no id to update, try to create one");
 			return res;
 		}
-		Long inspectionId = Long.parseLong(request.getParameter("id"));
+		Long inspectionId = NumberUtils.toLong(request.getParameter("id"));
 		TypeInspection t = typeInspectionService.getTypeInspectionById(inspectionId);
 		if(t == null){
-			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
+			res.put("code", RetCode.SYSTEM_ERROR_CODE);
 			res.put("error", "no entity to update, try to create one");
 			return res;
 		}
@@ -351,11 +404,12 @@ public class InspectionController {
 		/* save request form data to typeInspection table */
 		try {
 			t = setTypeInspectionProperties(request,t);
-			t = typeInspectionService.updateTypeInspection(request, t);
+			String fname = (null == file || file.isEmpty())? "": file.getName();
+			t = typeInspectionService.updateTypeInspection(fname, t);
 		} catch (Exception e) {
 			logger.error("", e);
 			res.put("error", e.getMessage());
-			res.put("code", RetCode.UPDATE_DB_ERROR_CODE);
+			res.put("code", RetCode.SYSTEM_ERROR_CODE);
 			return res;
 		}
 		
@@ -429,8 +483,15 @@ public class InspectionController {
 	 * @return t 转换后的TypeInspection实体，不包括创建时间
 	 */
 	private TypeInspection setTypeInspectionProperties(HttpServletRequest request, TypeInspection t) throws Exception{
+		//TODO 判断t和tid是否为空
+		if(null == t){
+			t = new TypeInspection();
+		}
+		if(null == t.getId()||t.getId()<=0){
+			t.setCreateAt(new Date());
+		}
 		/* setAwardDate */
-		long awardDateLong = Long.parseLong(request.getParameter("awardDate"))*1000;  
+		long awardDateLong = NumberUtils.toLong(request.getParameter("awardDate"))*1000;  
 		Date awardDate = (new Date(awardDateLong));
 		t.setAwardDate(awardDate);
 		/* setDocFilename */
@@ -471,6 +532,7 @@ public class InspectionController {
 	 * @author langyicong
 	 * @throws Exception
 	 */
+	//TODO excel验证并且返回list，异常情况都抛上去
 	private int importContentSheet(Sheet contentSheet, Long inspectionId) throws Exception {
 		int res = 1;
 		int rows = contentSheet.getLastRowNum() + 1;
@@ -487,24 +549,21 @@ public class InspectionController {
 					if (r.getCell(col).getCellTypeEnum() != CellType.STRING) {
 						r.getCell(col).setCellType(CellType.STRING);
 					}
-				}
-				String cellValue = r.getCell(col).getStringCellValue();
-				if (Pattern.compile("序.*号").matcher(cellValue).find()) {
-					headRow = row;
-					System.out.println(cellValue);
-					caseIdCol = col;
-				}
-				if (Pattern.compile("(.*项目)|用例名称|功能列表").matcher(cellValue).find()) {
-					System.out.println(cellValue);
-					caseNameCol = col;
-				}
-				if (Pattern.compile("(.*要求)|用例说明|功能描述").matcher(cellValue).find()) {
-					System.out.println(cellValue);
-					caseDescrCol = col;
-				}
-				if (Pattern.compile("测试结果").matcher(cellValue).find()) {
-					System.out.println(cellValue);
-					testResultCol = col;
+					String cellValue = r.getCell(col).getStringCellValue();
+					//TODO 使用StringUtilsStringUtilsStringUtilsStringUtils
+					if (Pattern.compile("序.*号").matcher(cellValue).find()) {
+						headRow = row;
+						caseIdCol = col;
+					}
+					if (StringUtils.containsAny(cellValue, "项目","用例名称","功能列表")) {
+						caseNameCol = col;
+					}
+					if (Pattern.compile("(.*要求)|用例说明|功能描述").matcher(cellValue).find()) {
+						caseDescrCol = col;
+					}
+					if (Pattern.compile("测试结果").matcher(cellValue).find()) {
+						testResultCol = col;
+					}
 				}
 			}
 			if (row == headRow) {
@@ -547,7 +606,7 @@ public class InspectionController {
 				contentList.add(c);
 			}
 		}
-		inspectContentService.importContentList(contentList, inspectionId);
+		inspectContentService.importContentList(contentList, inspectionId); //TODO 放到save的
 		res = 0;
 		return res;
 	}

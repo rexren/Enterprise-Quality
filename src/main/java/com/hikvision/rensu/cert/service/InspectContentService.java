@@ -19,18 +19,17 @@ public class InspectContentService {
     @Autowired
     private InspectContentRepository inspectContentRepository;
     
-    public InspectContent get(Long id) {
+    public InspectContent getInspectContent(Long id) {
         return inspectContentRepository.findOne(id);
     }
     
     /**
-    * 用外键查询contents
-     * * 函数名取得不好
+    * 用外键inspectionId查询contents
     * @param inspectionId 外键id
     * @return List<InspectContent> 查到的内容条目列表
     */
-    public List<InspectContent> getContentsAll(Long inspectionId){
-		return inspectContentRepository.findContentsByFK(inspectionId);
+    public List<InspectContent> getContentsByInspectionId(Long inspectionId){
+		return inspectContentRepository.findByInspectionIdOrderById(inspectionId);
     }
     
     /**
@@ -39,10 +38,9 @@ public class InspectContentService {
     * @return List<InspectContent> 查到的内容条目列表
     */
 	public void deleteByFK(Long inspectionId) {
-		List<InspectContent> list = getContentsAll(inspectionId);
+		List<InspectContent> list = getContentsByInspectionId(inspectionId);
 		inspectContentRepository.deleteInBatch(list);
 	}
-    
     
     /**
     * 与数据库中的contentList比较，如果已经存在，则删除后插入新数据
@@ -53,7 +51,7 @@ public class InspectContentService {
     @Transactional
     public void importContentList(List<InspectContent> contentList, Long inspectionId) throws Exception {
 		// if there exists entries of this inspectionId in InspectContent table, delete these entries
-   		if(getContentsAll(inspectionId)!=null){
+   		if(getContentsByInspectionId(inspectionId)!=null){
    			deleteByFK(inspectionId);
     	}
     	inspectContentRepository.save(contentList);

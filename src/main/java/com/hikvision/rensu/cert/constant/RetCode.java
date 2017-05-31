@@ -1,7 +1,8 @@
 package com.hikvision.rensu.cert.constant;
 
 public class RetCode {
-
+	
+	
 	/* 请求成功 */
 	public final static String SUCCESS_CODE = "0"; // 成功
 	public final static String SUCCESS_INFO = "Success";
@@ -28,14 +29,18 @@ public class RetCode {
 	/* 1210-1220：文件内部格式问题 */
 	public final static String FILE_SHEET_MISSING_CODE = "1210"; // 找不到符合条件的工作表;
 	public final static String FILE_SHEET_MISSING_INFO = "Fail to find the qualified sheet";
+	
+	public final static String FILE_INVALID_CODE = "1211"; // 无效的文件
+	public final static String FILE_INVALID_INFO = "Invalid file format";
 
 	public final static String FILE_KEYWORD_ERROR_CODE = "1211"; // 文件表格中的关键字错误
 															// "503";
 	public final static String FILE_KEYWORD_ERROR_INFO = "File keywords error";
 
 	public final static String FILE_PARSING_ERROR_CODE = "1220"; // 其他文件解析错误"502";
-	public final static String FILE_PARSING_ERROR_INFO = "File parsing error";
+	public final static String FILE_PARSING_ERROR_INFO = "Invalid file";
 
-	/* 数据库操作错误（预留字段1300-1399） */
-	public final static String UPDATE_DB_ERROR_CODE = "1301";// "504";
+	/* 系统异常 */
+	public final static String SYSTEM_ERROR_CODE = "1301";// "504";
+	public final static String SYSTEM_ERROR_INFO = "系统异常";
 }
