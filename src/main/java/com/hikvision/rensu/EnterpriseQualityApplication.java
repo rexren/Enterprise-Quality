@@ -29,7 +29,7 @@ public class EnterpriseQualityApplication implements CommandLineRunner {
         logger.debug("Here we put some pre start.");
 
         SearchEntry entry = new SearchEntry();
-        entry.setId(2L);
+        entry.setId("2");
         entry.setCaseName("综合安防");
         entry.setDescription("Rex test 为了综合安防");
         entry.setTitle("iVMS8200");
