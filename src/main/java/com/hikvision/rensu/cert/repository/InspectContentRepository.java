@@ -15,8 +15,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InspectContentRepository extends JpaRepository<InspectContent, Long> {
 
-	//Here we have a better method: findByInspectionIdOrderById();
-	@Query("select c from InspectContent c where c.inspectionId=:inspectionId order by id")
-	public List<InspectContent> findContentsByFK(@Param("inspectionId")Long inspectionId);
+	public List<InspectContent> findByInspectionIdOrderById(Long inspectionId);
 	
 }

@@ -3,8 +3,9 @@ package com.hikvision.rensu.cert.controller;
 import com.hikvision.rensu.cert.constant.RetCode;
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.service.TypeInspectionService;
-import com.hikvision.rensu.cert.support.PageResult;
+import com.hikvision.rensu.cert.support.BaseResult;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -37,12 +38,12 @@ public class FileUploadController {
     @Autowired
     private TypeInspectionService typeInspectionService;
 
-    @RequestMapping(value = "/uploadIndexList.do", method = RequestMethod.POST)
+    @RequestMapping(value = "/indexlist.do", method = RequestMethod.POST)
     @ResponseBody
-    public PageResult saveIndexList(@RequestBody MultipartFile file) {
+    public BaseResult saveIndexList(@RequestBody MultipartFile file) {
 
         if (null == file || file.isEmpty()) {
-            return new PageResult(RetCode.FILE_EMPTY_CODE, "empty file");
+            return new BaseResult(RetCode.FILE_EMPTY_CODE, RetCode.FILE_EMPTY_INFO);
         } else {
             InputStream xlsxFile = null;
 
@@ -52,8 +53,10 @@ public class FileUploadController {
             try {
                 Workbook workbook = WorkbookFactory.create(file.getInputStream());
                 for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-                    if (workbook.getSheetName(i).contains("公检") || workbook.getSheetName(i).contains("双证")) {
-                        importInspectionSheet(workbook.getSheetAt(i));
+                	//TODO String操作相关的改为StringUtils
+                    if (StringUtils.contains(workbook.getSheetName(i), "公检")){
+                        //importInspectionSheet(workbook.getSheetAt(i));
+                    	typeInspectionService.importInspectionSheet(workbook.getSheetAt(i));
                     } else if (workbook.getSheetName(i).contains("双证")) {
                         importCopyRightSheet(workbook.getSheetAt(i));
                     } else if (workbook.getSheetName(i).contains("3C")) {
@@ -61,26 +64,26 @@ public class FileUploadController {
                     } else if (workbook.getSheetName(i).contains("更新说明")) {
                         // TODO: news can be done without sheet.
                     } else {
-                        // TODO 错误：找不到sheet（每个controller只需一种测试）
+                    	return new BaseResult(RetCode.FILE_SHEET_MISSING_CODE, RetCode.FILE_SHEET_MISSING_CODE);
                     }
                 }
-                return new PageResult(RetCode.SUCCESS_CODE);
+                return new BaseResult(RetCode.SUCCESS_CODE);
             } catch (IOException e) {
-                PageResult result = new PageResult();
+            	BaseResult result = new BaseResult();
                 if (e.getMessage().contains("EncryptionInfo")) {
-                    //TODO: exception occurs, must return errorcode
-                    result.setCode(RetCode.FILE_ENCYPTED_ERROR_CODE);
+                	result.setCode(RetCode.FILE_ENCYPTED_ERROR_CODE);
+                	result.setMsg(RetCode.FILE_ENCYPTED_ERROR_INFO);
                 } else {
                     result.setCode(RetCode.FILE_PARSING_ERROR_CODE);
+                    result.setMsg(RetCode.FILE_PARSING_ERROR_INFO);
                 }
-
                 return result;
             } catch (EncryptedDocumentException | InvalidFormatException e) {
                 logger.error("", e.getMessage());
-                return new PageResult(RetCode.FILE_PARSING_ERROR_CODE, "invalid file");
+                return new BaseResult(RetCode.FILE_INVALID_CODE, RetCode.FILE_INVALID_INFO);
             } catch (Exception e) {
                 logger.error("", e.getMessage());
-                return new PageResult(RetCode.FILE_PARSING_ERROR_CODE, "error file");
+                return new BaseResult(RetCode.FILE_PARSING_ERROR_CODE, RetCode.FILE_PARSING_ERROR_INFO);
             } finally {
                 /* 关闭文件流 */
                 if (xlsxFile != null) {
@@ -93,70 +96,6 @@ public class FileUploadController {
             }
         }
     }
-
-
-    /**
-     * 导入列表数据 | 产品型号 | 软件名称 | 软件版本 | 测试／检验类别 | 受检单位 | 测试依据 | 颁发日期 | 文件编号 |
-     * 证书系统链接 | 认证／测试机构 | 备注
-     *
-     * @param sheet: 【公检&国标】工作薄
-     * @return res: 0更新成功， 1更新失败：列表为空，2更新失败:其他必填数据为空
-     * @throws Exception
-     * @author langyicong
-     */
-    private int importInspectionSheet(Sheet sheet) throws Exception {
-        int res = 1;
-        int rows = sheet.getLastRowNum() + 1;
-        logger.debug("the total number of type inspection is {}.", rows);
-
-        List<TypeInspection> inspections = new ArrayList<>();
-        //TODO row = 2 找到表头并且 判断表头是否符合条件
-        //// TODO: 2017/5/28 controller里面不要放业务逻辑
-        for (int row = 2; row < rows; row++) {
-            Row r = sheet.getRow(row);
-            /* for rows those are not empty */
-            if (r.getCell(0) != null && r.getCell(0).getCellTypeEnum() != CellType.BLANK
-                    && r.getCell(1).getCellTypeEnum() != CellType.BLANK) {
-                TypeInspection t = new TypeInspection();
-                t.setModel(r.getCell(0).getStringCellValue());
-                t.setName(r.getCell(1).getStringCellValue());
-                t.setVersion(r.getCell(2).getStringCellValue());
-                t.setTestType(r.getCell(3).getStringCellValue());
-                t.setCompany(r.getCell(4).getStringCellValue());
-                t.setBasis(r.getCell(5).getStringCellValue());
-                if (r.getCell(6) != null) {
-                    if (r.getCell(6).getCellTypeEnum() != CellType.NUMERIC) {
-                        r.getCell(6).setCellType(CellType.NUMERIC);
-                    }
-                    t.setAwardDate(r.getCell(6).getDateCellValue());
-                } else {
-                    res = 2;
-                    return res;
-                }
-                if (r.getCell(7) != null) {
-                    if (r.getCell(7).getCellTypeEnum() != CellType.STRING) {
-                        r.getCell(7).setCellType(CellType.STRING);
-                    }
-                    t.setDocNo(r.getCell(7).getStringCellValue());
-                } else {
-                    res = 2;
-                    return res;
-                }
-                t.setCertUrl(r.getCell(8).getStringCellValue());
-                t.setOrganization(r.getCell(9).getStringCellValue());
-                t.setRemarks(r.getCell(10).getStringCellValue());
-                t.setCreateAt(new Date());
-                t.setUpdateAt(new Date());
-                t.setOperator("TESTER"); // TODO 获取当前用户
-                inspections.add(t);
-            }
-        }
-        if (inspections.size() > 0) {
-            typeInspectionService.importInspectionList(inspections);
-        }
-        return res;
-    }
-
 
     private int importCCCSheet(Sheet sheet) throws NotImplementedException {
         throw new NotImplementedException("importCCCSheet not implement");

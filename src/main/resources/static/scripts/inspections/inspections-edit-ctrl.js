@@ -28,27 +28,31 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
             $http.get('/inspections/detail.do', {
                 params: param
             }).success(function(res) {
-                var adate = Date.parse(Date(res.awardDate));
-                adate = adate > 32503651200 ? new Date(adate) : new Date(adate * 1000);
-                $scope.formData = {
-                    'model': res.model,
-                    'name': res.name,
-                    'version': res.version,
-                    'testType': res.testType,
-                    'company': res.company,
-                    'basis': res.basis,
-                    'awardDate': adate,
-                    'docNo': res.docNo,
-                    'certUrl': res.certUrl,
-                    'organization': res.organization,
-                    'remarks': res.remarks,
-                    'operator': res.operator
-                };
-                $scope.fileName = res.docFilename;
+            	if(res.code == 0){
+            		var adate = Date.parse(Date(res.data.awardDate));
+            		adate = adate > 32503651200 ? new Date(adate) : new Date(adate * 1000);
+            		$scope.formData = {
+        				'model': res.data.model,
+        				'name': res.data.name,
+        				'version': res.data.version,
+        				'testType': res.data.testType,
+        				'company': res.data.company,
+        				'basis': res.data.basis,
+        				'awardDate': adate,
+        				'docNo': res.data.docNo,
+        				'certUrl': res.data.certUrl,
+        				'organization': res.data.organization,
+        				'remarks': res.data.remarks,
+        				'operator': res.data.operator
+            		};
+            		$scope.fileName = res.data.docFilename;
+            	} else{
+            		//TODO other exceptions
+            		Toastr.error("系统繁忙");
+            	}
             }).error(function(res, status, headers, config) {
-            	Toastr.error("getListByAjax error: " + status);
+            	Toastr.error("AjaxError: "+ status);
             });
-
             targetUrl = '/inspections/update.do';
         }
 
@@ -98,17 +102,14 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
                     }
                 }).success(function(res) {
                     if (res.code == 0) {
-                    	Toastr.success('Submit successfully');
+                    	Toastr.success('保存成功');
                     	$location.url('/inspections');
                     } else {
                         Common.retCodeHandler(res.code);
                     }
-                }).error(function(res) {
-                	Toastr.error('HTTP failure');
-                    console.log('Error msg:');
-                    console.log(res);
-                    defer.reject();
-                });
+                }).error(function(res, status, headers, config){
+                	Toastr.error("AjaxError: "+ status);
+                })
                 return defer.promise;
             }
         };
