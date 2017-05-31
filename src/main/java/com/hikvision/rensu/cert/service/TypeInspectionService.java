@@ -73,8 +73,6 @@ public class TypeInspectionService {
     
     /**
     * 存储 & （如果文件名为空）删子表
-    * @param contentList 待插入数据库的检测报告内容表（子表）
-    * @param inspectionId 检测条目（主表条目）的id
     * @return void
     */
     @Transactional
