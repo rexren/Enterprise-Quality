@@ -17,6 +17,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SearchConfig {
 
+    private String elasticSearchUrl = "http://localhost:9200";
+
     private static Logger logger = LoggerFactory.getLogger(SearchConfig.class);
 
     @Bean
@@ -26,8 +28,8 @@ public class SearchConfig {
 
     @Bean
     public JestClient jestClient() {
-        String connectionUri = "http://localhost:9200";
-        logger.info("**** Elastic Search endpoint: " + connectionUri);
+        String connectionUri = elasticSearchUrl;
+        logger.info("The Elastic Search endpoint: " + connectionUri);
 
         HttpClientConfig clientConfig = new HttpClientConfig
                 .Builder(connectionUri)
