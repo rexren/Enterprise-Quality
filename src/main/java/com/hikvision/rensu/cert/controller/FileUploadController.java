@@ -71,7 +71,7 @@ public class FileUploadController {
                 return new BaseResult(RetCode.SUCCESS_CODE);
             } catch (IOException e) {
             	BaseResult result = new BaseResult();
-                if (e.getMessage().contains("EncryptionInfo")) {
+            	if (StringUtils.contains(e.getMessage(),"EncryptionInfo")) {
                 	result.setCode(RetCode.FILE_ENCYPTED_ERROR_CODE);
                 	result.setMsg(RetCode.FILE_ENCYPTED_ERROR_INFO);
                 } else {

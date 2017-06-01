@@ -5,7 +5,9 @@ public enum RetStatus {
 	SUCCESS("0", "成功"), 
 	
 	/* 请求数据格式（预留字段1000-1099） */
-	FORM_VALIDATE("1001", "表单验证不通过"),
+	FORM_DATA_INVALID("1001", "表单验证不通过"),
+	FORM_DATA_MISSING("1002", "表单验证缺少关键字段"),
+	DOCNO_DUPLICATED("1004", "docNo字段重复"),
 	
 	/* 用户登录/权限错误（预留字段1100-1199） */
 	USER_NOT_LOGGED_IN("1101", "用户未登录"),
@@ -20,8 +22,9 @@ public enum RetStatus {
 	FILE_KEYWORD_ERROR("1212","表格中关键字错误"),
 	FILE_PARSING_ERROR("1220","文件解析错误"),
 	
-	/* 系统异常 */
-	SYSTEM_ERROR("1301","系统异常");
+	/* 系统(数据库)异常 */
+	SYSTEM_ERROR("1301","系统异常"),
+	ITEM_NOT_FOUND("1302","数据库中找不到数据");
 	
 	private String code;
 	private String info;

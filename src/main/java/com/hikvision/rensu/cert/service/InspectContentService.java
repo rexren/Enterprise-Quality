@@ -48,6 +48,7 @@ public class InspectContentService {
     * @param inspectionId 检测条目（主表条目）的id
     * @return void
     */
+	//TODO 放到TypeInspectionService中组成事务
     @Transactional
     public void importContentList(List<InspectContent> contentList, Long inspectionId) throws Exception {
 		// if there exists entries of this inspectionId in InspectContent table, delete these entries
@@ -56,4 +57,9 @@ public class InspectContentService {
     	}
     	inspectContentRepository.save(contentList);
     }
+
+	public void save(List<InspectContent> contentList) {
+		// TODO Auto-generated method stub
+		inspectContentRepository.save(contentList);
+	}
 }

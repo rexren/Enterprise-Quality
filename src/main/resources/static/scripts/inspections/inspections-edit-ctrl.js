@@ -79,6 +79,8 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
             	Toastr.error('请输入软件名称');
             }else if (!$scope.formData.awardDate || $scope.formData.awardDate == '') {
             	Toastr.error('请选择颁发日期');
+            } else if ($scope.formData.docNo == '') {
+            	Toastr.error('请输入文件编号');
             } else {
                 var defer = $q.defer();
                 var fd = new FormData();
@@ -105,7 +107,11 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
                     	Toastr.success('保存成功');
                     	$location.url('/inspections');
                     } else {
-                        Common.retCodeHandler(res.code);
+                    	if(res.code == 1004){
+                        	Toastr.error('文件编号已存在！');
+                    	} else{
+                    		Common.retCodeHandler(res.code);
+                    	}
                     }
                 }).error(function(res, status, headers, config){
                 	Toastr.error("AjaxError: "+ status);
