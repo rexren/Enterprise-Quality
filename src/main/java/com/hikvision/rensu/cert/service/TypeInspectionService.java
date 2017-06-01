@@ -1,7 +1,9 @@
 package com.hikvision.rensu.cert.service;
 
 import com.hikvision.rensu.cert.domain.TypeInspection;
+import com.hikvision.rensu.cert.domain.TypeInspectionMapper;
 import com.hikvision.rensu.cert.repository.TypeInspectionRepository;
+import com.hikvision.rensu.cert.search.IndexService;
 import io.searchbox.client.JestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;
@@ -33,11 +35,13 @@ public class TypeInspectionService {
 
     private final static String SORT_TYPEINSPECTION_UPDATEAT = "UpdateAt";
     @Autowired
-    JestClient jestClient;
+    IndexService indexService;
     @Autowired
     private TypeInspectionRepository typeInspectionRepository;
     @Autowired
     private InspectContentService inspectContentService;
+
+    private TypeInspectionMapper mapper = new TypeInspectionMapper();
 
     public Page<TypeInspection> getInspectionByPage(Integer pageNum, Integer pageSize) {
         //TODO 参数验证放到controller中
@@ -122,6 +126,7 @@ public class TypeInspectionService {
                 t.setUpdateAt(new Date());
                 t.setOperator("TESTER"); // TODO 获取当前用户
 
+                inspections.add(t);
             }
         }
         if (inspections.size() > 0) {
@@ -148,6 +153,8 @@ public class TypeInspectionService {
                 typeInspectionRepository.delete(dupItems);
             }
             typeInspectionRepository.save(inspections.get(i));
+
+            indexService.saveToIndex(mapper.map(inspections.get(i)));
         }
         return dupItems;
     }

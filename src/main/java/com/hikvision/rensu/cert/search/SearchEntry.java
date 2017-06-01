@@ -14,9 +14,9 @@ public class SearchEntry {
 
     private String title;
 
-    private String caseName;
-
     private String description;
+
+    private String rowContent;
 
     private String remark;
 
@@ -24,14 +24,6 @@ public class SearchEntry {
      * Index type
      */
     private String type;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getId() {
         return id;
@@ -49,14 +41,6 @@ public class SearchEntry {
         this.title = title;
     }
 
-    public String getCaseName() {
-        return caseName;
-    }
-
-    public void setCaseName(String caseName) {
-        this.caseName = caseName;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -71,5 +55,21 @@ public class SearchEntry {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getRowContent() {
+        return rowContent;
+    }
+
+    public void setRowContent(String rowContent) {
+        this.rowContent = rowContent;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

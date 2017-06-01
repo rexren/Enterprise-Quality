@@ -16,9 +16,6 @@ import java.util.List;
 public class InspectContentService {
 
     @Autowired
-    JestClient jestClient;
-
-    @Autowired
     private InspectContentRepository inspectContentRepository;
 
 

@@ -57,7 +57,9 @@ public class FileUploadController {
                     if (StringUtils.contains(workbook.getSheetName(i), "公检")){
                         //importInspectionSheet(workbook.getSheetAt(i));
                     	typeInspectionService.importInspectionSheet(workbook.getSheetAt(i));
-                    } else if (workbook.getSheetName(i).contains("双证")) {
+                    }
+                    /**
+                    else if (workbook.getSheetName(i).contains("双证")) {
                         importCopyRightSheet(workbook.getSheetAt(i));
                     } else if (workbook.getSheetName(i).contains("3C")) {
                         importCCCSheet(workbook.getSheetAt(i));
@@ -65,7 +67,7 @@ public class FileUploadController {
                         // TODO: news can be done without sheet.
                     } else {
                     	return new BaseResult(RetCode.FILE_SHEET_MISSING_CODE, RetCode.FILE_SHEET_MISSING_CODE);
-                    }
+                    }*/
                 }
                 return new BaseResult(RetCode.SUCCESS_CODE);
             } catch (IOException e) {
