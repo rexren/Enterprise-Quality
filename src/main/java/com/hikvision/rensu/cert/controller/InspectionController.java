@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.hikvision.rensu.cert.constant.RetCode;
+import com.hikvision.rensu.cert.constant.RetStatus;
 import com.hikvision.rensu.cert.domain.InspectContent;
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.service.InspectContentService;
@@ -41,18 +42,17 @@ import com.hikvision.rensu.cert.service.TypeInspectionService;
 import com.hikvision.rensu.cert.support.AjaxResult;
 import com.hikvision.rensu.cert.support.ListContent;
 import com.hikvision.rensu.cert.support.ListResult;
-import com.hikvision.rensu.cert.support.RetStatus;
-
 /**
  * Created by rensu on 17/4/27.
  */
-//TODO PageResult格式返回
 @Controller
 @RequestMapping("/inspections")
 public class InspectionController {
 
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 
+	private final static String SORT_TYPEINSPECTION_UPDATEAT = "UpdateAt";
+	
 	@Autowired
 	private TypeInspectionService typeInspectionService;
 
@@ -64,18 +64,22 @@ public class InspectionController {
 	 */
 	@RequestMapping(value = "/list.do", method = RequestMethod.GET)
 	@ResponseBody
-	public ListResult getInspecionListByPage(Integer pageNum, Integer pageSize) {
-		//TODO  验证传入的参数
+	public ListResult getInspecionListByPage(Integer pageNum, Integer pageSize, String sortBy) {
+    	int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
+        int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
+        if(StringUtils.isBlank(sortBy)){
+        	sortBy = SORT_TYPEINSPECTION_UPDATEAT; //默认按照更新时间倒序
+        }
 		ListResult res = new ListResult();
 		try {
-			Page<TypeInspection> p = typeInspectionService.getInspectionByPage(pageNum, pageSize);
+			Page<TypeInspection> p = typeInspectionService.getInspectionByPage(pn, ps,sortBy);
 			res.setListContent(new ListContent<TypeInspection>(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
-			res.setCode(RetStatus.SUCCESS_CODE.getRetCode()); //TODO 改为枚举类型
-			res.setMsg(RetCode.SUCCESS_INFO);
+			res.setCode(RetStatus.SUCCESS.getCode());
+			res.setMsg(RetStatus.SUCCESS.getInfo());
 		} catch (Exception e) {
 			logger.error("", e.getMessage());
-			res.setCode(RetCode.SYSTEM_ERROR_CODE);
-			res.setMsg(RetCode.SYSTEM_ERROR_INFO);
+			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
 		}
 		return res;
 	}
@@ -96,32 +100,20 @@ public class InspectionController {
 				TypeInspection t = typeInspectionService.getTypeInspectionById(id);
 				if(t!=null){
 					res.setData(t);
-					res.setCode(RetCode.SUCCESS_CODE);
-					res.setMsg(RetCode.SUCCESS_INFO);
+					res.setCode(RetStatus.SUCCESS.getCode());
+					res.setMsg(RetStatus.SUCCESS.getInfo());
 				}else{
 					//TODO 返回数据不存在
 				}
 			} catch (Exception e) {
 				logger.error("", e.getMessage());
-				res.setCode(RetCode.SYSTEM_ERROR_CODE);
-				res.setMsg(RetCode.SYSTEM_ERROR_INFO);
+				res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+				res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
 			}
 		}
 		
 		return res;
 	}
-	
-	/**
-	 * 获取单条型检数据的报告内容列表
-	 * @param id 型检id
-	 * @return contents 报告内容列表
-	 */
-/*	@RequestMapping(value = "/contents.do", method = RequestMethod.GET)
-	@ResponseBody
-	public List<InspectContent> getContents(Long id) {
-		List<InspectContent> contents = inspectContentService.getContentsByInspectionId(id);
-		return contents;
-	}*/
 	
 	/**
 	 * 获取单条型检数据的报告内容列表
@@ -135,155 +127,11 @@ public class InspectionController {
 		ListResult res = new ListResult();
 		List<InspectContent> contents = inspectContentService.getContentsByInspectionId(id);
 		res.setListContent(new ListContent<InspectContent>(contents.size(), (long) contents.size(), 1, contents));
-		res.setCode(RetStatus.SUCCESS_CODE.getRetCode());
-		res.setMsg(RetCode.SUCCESS_INFO);
+		res.setCode(RetStatus.SUCCESS.getCode());
+		res.setMsg(RetStatus.SUCCESS.getInfo());
 		return res;
 	}
 	
-	/**
-	 * 列表页(/inspections) 导入列表文件
-	 * 迁移至FileUploadController.java
-	 */
-	@Deprecated
-	@RequestMapping(value = "/upload.do", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> saveInspectionList(@RequestBody MultipartFile file) {
-		Map<String, Object> res = new LinkedHashMap<String, Object>();
-
-		if (null == file || file.isEmpty()) {
-			res.put("code", RetCode.FILE_EMPTY_CODE);
-			res.put("status", "empty file");
-		} else {
-			String fileName = file.getOriginalFilename();
-			String suffixName = fileName.substring(fileName.lastIndexOf("."));
-			logger.debug("the upload file name is {}.", fileName + suffixName);
-			InputStream xlsxFile = null;
-
-			/*
-			 * Test excel Encryption & handle exceptions
-			 */
-			try {
-				xlsxFile = file.getInputStream();
-				Workbook workbook = WorkbookFactory.create(xlsxFile);
-				int sheetCount = workbook.getNumberOfSheets();
-				for (int i = 0; i < sheetCount; i++) {
-					if (Pattern.compile("公检").matcher(workbook.getSheetName(i)).find()) {
-						System.out.println(workbook.getSheetName(i));
-						Sheet sheet = workbook.getSheetAt(i);
-						importInspectionSheet(sheet);
-						// typeInspectionService.importInspectionList(sheet);
-					} else if (Pattern.compile("双证").matcher(workbook.getSheetName(i)).find()) {
-						System.out.println(workbook.getSheetName(i));
-						// 导入双证解析
-					} else if (Pattern.compile("3C").matcher(workbook.getSheetName(i)).find()) {
-						System.out.println(workbook.getSheetName(i));
-						// 导入3C解析
-					} else if (Pattern.compile("更新说明").matcher(workbook.getSheetName(i)).find()) {
-						System.out.println(workbook.getSheetName(i));
-						// 导入更新说明
-					} else {
-						// TODO 错误：找不到sheet（每个controller只需一种测试）
-					}
-				}
-				res.put("code", RetCode.SUCCESS_CODE);
-			} catch (IOException e) {
-				String errMessage = e.getMessage();
-				logger.error("", e);
-				res.put("error", e.getMessage());
-				String regExp = "EncryptionInfo";
-				if (Pattern.compile(regExp).matcher(errMessage).find()) {
-					res.put("code", RetCode.FILE_ENCYPTED_ERROR_CODE);
-				} else {
-					res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
-				}
-				return res;
-			} catch (EncryptedDocumentException | InvalidFormatException e) {
-				res.put("error", e.getMessage());
-				res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
-				logger.error("", e);
-				return res;
-			} catch (Exception e) {
-				logger.error("", e);
-				res.put("error", e.getMessage());
-				res.put("code", RetCode.FILE_PARSING_ERROR_CODE);
-				logger.error("", e);
-				return res;
-			} finally {
-				/* 关闭文件流 */
-				if (xlsxFile != null) {
-					try {
-						xlsxFile.close();
-					} catch (IOException e) {
-						logger.error("", e);
-					}
-				}
-			}
-		}
-		return res;
-	}
-
-	/**
-	 * 导入列表数据 | 产品型号 | 软件名称 | 软件版本 | 测试／检验类别 | 受检单位 | 测试依据 | 颁发日期 | 文件编号 |
-	 * 证书系统链接 | 认证／测试机构 | 备注
-	 * 
-	 * @param sheet:
-	 *            【公检&国标】工作薄
-	 * @return res: 0更新成功， 1更新失败：列表为空，2更新失败:其他必填数据为空
-	 * @author langyicong
-	 * @throws Exception
-	 */
-	@Deprecated
-	private int importInspectionSheet(Sheet sheet) throws Exception {
-		int res = 1;
-		int rows = sheet.getLastRowNum() + 1;
-
-		List<TypeInspection> inspections = new ArrayList<>();
-		//TODO row = 2 找到表头并且 判断表头是否符合条件
-        //// TODO: 2017/5/28 controller里面不要放业务逻辑
-        for (int row = 2; row < rows; row++) {
-			Row r = sheet.getRow(row);
-			/* for rows those are not empty */
-			if (r.getCell(0) != null && r.getCell(0).getCellTypeEnum() != CellType.BLANK
-					&& r.getCell(1).getCellTypeEnum() != CellType.BLANK) {
-				TypeInspection t = new TypeInspection();
-				t.setModel(r.getCell(0).getStringCellValue());
-				t.setName(r.getCell(1).getStringCellValue());
-				t.setVersion(r.getCell(2).getStringCellValue());
-				t.setTestType(r.getCell(3).getStringCellValue());
-				t.setCompany(r.getCell(4).getStringCellValue());
-				t.setBasis(r.getCell(5).getStringCellValue());
-				if (r.getCell(6) != null) {
-					if (r.getCell(6).getCellTypeEnum() != CellType.NUMERIC) {
-						r.getCell(6).setCellType(CellType.NUMERIC);
-					}
-					t.setAwardDate(r.getCell(6).getDateCellValue());
-				} else {
-					res = 2;
-					return res;
-				}
-				if (r.getCell(7) != null) {
-					if (r.getCell(7).getCellTypeEnum() != CellType.STRING) {
-						r.getCell(7).setCellType(CellType.STRING);
-					}
-					t.setDocNo(r.getCell(7).getStringCellValue());
-				} else {
-					res = 2;
-					return res;
-				}
-				t.setCertUrl(r.getCell(8).getStringCellValue());
-				t.setOrganization(r.getCell(9).getStringCellValue());
-				t.setRemarks(r.getCell(10).getStringCellValue());
-				t.setCreateAt(new Date());
-				t.setUpdateAt(new Date());
-				t.setOperator("TESTER"); // TODO 获取当前用户
-				inspections.add(t);
-			}
-		}
-		if (inspections.size() > 0) {
-			typeInspectionService.importInspectionList(inspections);
-		}
-		return res;
-	}
 
 	/**
 	 * 新建保存单条数据（包括报告详情文件）

@@ -40,6 +40,7 @@ public class FileUploadController {
 
     @RequestMapping(value = "/indexlist.do", method = RequestMethod.POST)
     @ResponseBody
+    //TODO 返回每个表中插入成功、更新成功的数量，扩展baseResult
     public BaseResult saveIndexList(@RequestBody MultipartFile file) {
 
         if (null == file || file.isEmpty()) {
@@ -58,9 +59,9 @@ public class FileUploadController {
                         //importInspectionSheet(workbook.getSheetAt(i));
                     	typeInspectionService.importInspectionSheet(workbook.getSheetAt(i));
                     } else if (workbook.getSheetName(i).contains("双证")) {
-                        importCopyRightSheet(workbook.getSheetAt(i));
+                        //importCopyRightSheet(workbook.getSheetAt(i));
                     } else if (workbook.getSheetName(i).contains("3C")) {
-                        importCCCSheet(workbook.getSheetAt(i));
+                        //importCCCSheet(workbook.getSheetAt(i));
                     } else if (workbook.getSheetName(i).contains("更新说明")) {
                         // TODO: news can be done without sheet.
                     } else {

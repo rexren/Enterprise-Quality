@@ -22,7 +22,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
             		$scope.pagination.totalElements = res.listContent.totalElements;
             		for(var i=0; i<$scope.list.length;i++){
             			$scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].certUrl)? true : false;          
-            		}            		
+            		}
             	}else{
             		//TODO other exceptions
             		Toastr.error("系统繁忙");
@@ -124,7 +124,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
             }).success(function(res) {
             	if(res.code == 0){
             		Toastr.success('上传成功');
-            		$scope.removeFile;
+            		$scope.removeFile();
                 	getList(1, $scope.pagination.size);
                 } else{
                 	Common.retCodeHandler(res.code);

@@ -17,6 +17,7 @@ import com.hikvision.rensu.cert.domain.TypeInspection;
 public interface TypeInspectionRepository extends JpaRepository<TypeInspection, Long> {
 	
 	//TODO 使用JPA原油特性来写
-	@Query("select t from TypeInspection t where t.docNo=:no")
-	public List<TypeInspection> findByDocNo(@Param("no")String docNo);
+	/*@Query("select t from TypeInspection t where t.docNo=:no")
+	public List<TypeInspection> findByDocNo(@Param("no")String docNo);*/
+	public List<TypeInspection> findByDocNo(String docNo);
 }
