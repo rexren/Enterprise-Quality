@@ -185,8 +185,9 @@ public class InspectionController {
 			return res;
 		}
 		/* 表单验证:docNo不能重复 */
+		String docNoStripped = StringUtils.trim(request.getParameter("docNo"));
 		//TODO 去掉空格后比较字符串StringUtils.trim
-		if(typeInspectionService.findByDocNo(request.getParameter("docNo")).size()>0){
+		if(typeInspectionService.findByDocNo(docNoStripped).size()>0){
 			res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());
 			res.setMsg(RetStatus.DOCNO_DUPLICATED.getInfo());
 			return res;
@@ -343,7 +344,7 @@ public class InspectionController {
 			t.setTestType(request.getParameter("testType"));
 			t.setCompany(request.getParameter("company"));
 			t.setBasis(request.getParameter("basis"));
-			t.setDocNo(request.getParameter("docNo"));
+			t.setDocNo(StringUtils.trim(request.getParameter("docNo")));
 			t.setCertUrl(request.getParameter("certUrl"));
 			t.setOrganization(request.getParameter("organization"));
 			t.setRemarks(request.getParameter("remarks"));

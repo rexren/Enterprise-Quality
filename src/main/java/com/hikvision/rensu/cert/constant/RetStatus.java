@@ -16,11 +16,11 @@ public enum RetStatus {
 	/* 文件解析错误（预留字段1200-1299） */
 	/* 1200-1209：文件自身格式问题 */
 	FILE_EMPTY("1201","文件为空"),
-	FILE_ENCYPTED("1202","文件被加密"),
+	FILE_ENCYPTED("1202","文件被加密，请上传未加密的文件"),
 	FILE_SHEET_MISSING("1210","找不到符合条件的工作表"),
-	FILE_INVALID("1211","文件无效"),
+	FILE_INVALID("1211","无效文件"),
 	FILE_KEYWORD_ERROR("1212","表格中关键字错误"),
-	FILE_PARSING_ERROR("1220","文件解析错误"),
+	FILE_PARSING_ERROR("1220","文件格式错误"),
 	
 	/* 系统(数据库)异常 */
 	SYSTEM_ERROR("1301","系统异常"),

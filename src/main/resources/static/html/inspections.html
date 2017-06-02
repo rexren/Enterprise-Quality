@@ -59,7 +59,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="item in list" >
+                        <tr ng-if="list.length == 0">
+                        	<td colspan="16" style="text-align:center;">没有查询到结果</td>
+                        </tr>
+                        <tr ng-repeat="item in list" ng-if="list.length> 0">
                             <td>{{$index+1}}</td>
                             <td>{{item.model}}</td>
                             <td>{{item.name}}</td>

@@ -1,7 +1,5 @@
 package com.hikvision.rensu.cert.support;
 
-import java.util.Map;
-
 public class AjaxResult<T> extends BaseResult{
 	private T data;
 
