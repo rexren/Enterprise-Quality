@@ -10,17 +10,30 @@
                 <div class="box-header">
                     <h3 class="box-title"></h3>
 
-                    <div class="box-tools">
-                        <div class="input-group input-group-sm" style="width: 400px;">
-                            <input type="text" name="table_search" class="form-control pull-right"
-                                   placeholder="Search">
-						<div class="input-group-btn">
-                            <button class="btn btn-default" ng-click="edit()">新增</button>
-                        </div>
-                        <div class="input-group-btn">
-                            <button class="btn btn-default" ng-click="importList()">批量导入</button>
+                    <div class="box-tools" style="left:10px;">
+                        <div class="input-group input-group-sm">
+                        	<div class="input-group-btn">
+                                <button class="btn btn-default" ng-click="edit()">新增</button>
+                            </div>
+                            <div class="input-group-btn">
+                                <button class="btn btn-primary" ng-click="importList()">{{fileName?'重新选择':'导入列表'}}</button>
+                            </div>
+                            <input type="text" class="form-control pull-right" placeholder="Search" style="width: 200px">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" ng-click="searchList()">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </button>
+                            </div>
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" ng-click="advancedSearch()">高级搜索</button>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div class="box-header" ng-if="fileName">
+	                <span>{{fileName}}</span>
+	                <button class="btn btn-default" ng-click="submit()">上传</button>
+	                <button class="btn btn-danger" ng-click="removeFile()">删除</button>
                 </div>
 
                 <div class="box-body">
@@ -45,18 +58,24 @@
                         <tbody>
                         <tr ng-repeat="item in list" >
                             <td>{{$index+1}}</td>
-                            <td>{{item.docNo}}</td>
+                            <td style="word-wrap: break-word;">{{item.docNo}}</td>
                             <td>{{item.model}}</td>
                             <td>{{item.productName}}</td>
-                            <td>{{item.awardDate}}</td>
-                            <td>{{item.expiryDate}}</td>
-                            <td><a ng-href="{{item.url}}">link</a></td>
+                            <td>{{item.awardDate | date:'yyyy-MM-dd'}}</td>
+                            <td>{{item.expiryDate | date:'yyyy-MM-dd'}}</td>
+                            <td>
+                            	<span ng-if="!item.hasURL">{{item.url}}</span>
+                            	<a ng-if="item.hasURL" ng-href="{{item.url}}" target="_blank">link</a>
+                            </td>
                             <td>{{item.organization}}</td>
                             <td>{{item.remarks}}</td>
-                            <td>{{item.createDate}}</td>
-                            <td>{{item.updateDate}}</td>
+                            <td>{{item.createDate | date:'yyyy-MM-dd'}}</td>
+                            <td>{{item.updateDate | date:'yyyy-MM-dd'}}</td>
                             <td>{{item.operator}}</td>
-                            <td><button class="btn btn-link" ng-click="edit(item)">修改</button> </td>
+                            <td>
+                            	<button class="btn btn-link" ng-click="edit(item)">修改</button>
+                            	<button class="btn btn-link" ng-click="view(item)">查看</button>
+							</td>
                         </tr>
                         </tbody>
                     </table>

@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('enterprise-quality')
-    .controller('CopyrightCtrl',['$scope','$location','$http','$modal','$q','FileUploadService',
-        function($scope, $location, $http, $modal, $q, FileUploadService){
+    .controller('CopyrightCtrl',['$scope','$location','$http','$modal','$q','toastr','FileUploadService',
+        function($scope, $location, $http, $modal, $q, Toastr, FileUploadService){
 
             $scope.pagination = {
                 page: 1,
@@ -19,10 +19,21 @@ angular.module('enterprise-quality')
             function getList(page, size) {
                 var param = {pageNum:page,pageSize:size};
                 $http.get('/copyright/list.do',{params:param}).success(function(res){
-                    $scope.list = res.content;
-                    $scope.pagination.totalElements = res.totalElements;
-                }).error(function(res, status){
-                    alert("getListByAjax error: "+status);
+                	if(res.code==0){
+                		$scope.list = res.listContent.list;
+                		$scope.pagination.totalElements = res.listContent.totalElements;
+                		for(var i=0; i<$scope.list.length; i++){
+                			$scope.list[i].hasCrURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].crUrl)? true : false;
+                			$scope.list[i].hasCdURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].cdUrl)? true : false;
+                			$scope.list[i].hasRgURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].rgUrl)? true : false;
+                			$scope.list[i].hasEpURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].epUrl)? true : false;
+                		}
+                	}else{
+                		//TODO other exceptions
+                		Toastr.error("系统繁忙");
+                	}
+                }).error(function(res, status, headers, config){
+                	Toastr.error("AjaxError: "+ status);
                 })
             }
 
@@ -88,43 +99,34 @@ angular.module('enterprise-quality')
             };
             
             /**  
-             *  file upload
-             */
+    	     *  file upload
+    	     */
             $scope.submit = function () {
                 var defer = $q.defer();
                 var fd = new FormData();
                 fd.append('file',$scope.file);
                 $http({
                     method: 'POST',
-                    url: '/copyright/upload.do',
+                    url: '/fileupload/indexlist.do',
                     data: fd,
                     headers: {
-                        'Accept':'*/*',
-                        'Content-Type':undefined
+                    	'Accept':'*/*',
+                    	'Content-Type':undefined
                     }
                 }).success(function(res) {
-                    if(res.code<400 & res.code>=200){
-                        alert('上传成功');
-                        $scope.fileName = '';
-                        $scope.file = {};
-                        getList(1, $scope.pagination.size);
+                	if(res.code == 0){
+                		Toastr.success('更新公检记录'+res.numOfInspections+"条，双证记录"+res.numOfCopyRight+"条，3C记录"+res.numOf3C+"条");
+                		$scope.removeFile();
+                    	getList(1, $scope.pagination.size);
                     } else{
-                        if(res.code == '501') {
-                            alert('错误：文件被加密，请上传未加密的文件');                        
-                        }else{
-                            alert('错误：文件格式有误！'); 
-                        }
-                    } 
-                    //TODO 刷新列表 getList(1, $scope.pagination.size);
+                    	Common.retCodeHandler(res.code);
+                    }
                 }).error(function(res) {
-                    alert('Submit failure');
-                    console.log('Error msg:');
-                    console.log(res);
+                	Toastr.error('Submit ajax failure');
                     defer.reject();
                 });
                 return defer.promise;
             };
-
 
             $scope.removeFile = function(){
             	$scope.file = {};

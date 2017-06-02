@@ -2,7 +2,6 @@ package com.hikvision.rensu.cert.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,8 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -179,15 +176,15 @@ public class InspectionController {
 		BaseResult res = new BaseResult();
 		/* 表单验证:关键信息不为空 */
 		if (StringUtils.isBlank(request.getParameter("model")) || StringUtils.isBlank(request.getParameter("name"))
-				|| StringUtils.isBlank(request.getParameter("awardDate"))|| StringUtils.isBlank(request.getParameter("docNo"))) {
+				|| StringUtils.isBlank(request.getParameter("awardDate"))
+				|| StringUtils.isBlank(request.getParameter("docNo"))) {
 			res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
 			res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
 			return res;
 		}
 		/* 表单验证:docNo不能重复 */
 		String docNoStripped = StringUtils.trim(request.getParameter("docNo"));
-		//TODO 去掉空格后比较字符串StringUtils.trim
-		if(typeInspectionService.findByDocNo(docNoStripped).size()>0){
+		if (typeInspectionService.findByDocNo(docNoStripped).size() > 0) {
 			res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());
 			res.setMsg(RetStatus.DOCNO_DUPLICATED.getInfo());
 			return res;
@@ -205,7 +202,7 @@ public class InspectionController {
 				xlsxFile = file.getInputStream();
 				Workbook workbook = WorkbookFactory.create(xlsxFile);
 				Sheet contentSheet = workbook.getSheetAt(0);
-				contentlist = importContentSheet(contentSheet, t.getId());
+				contentlist = inspectContentService.importContentSheet(contentSheet, t.getId());
 			}
 			typeInspectionService.saveTypeInspection(t, contentlist);
 			res.setCode(RetStatus.SUCCESS.getCode());
@@ -253,8 +250,7 @@ public class InspectionController {
 			res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
 			return res;
 		}
-		//TODO docNo不能和除这条id对应的docNo之外的条目重复
-		
+
 		/* 查询对应的实体，并且将页面数据更新实体内容 */
 		Long inspectionId = NumberUtils.toLong(request.getParameter("id"));
 		TypeInspection t = null;
@@ -266,6 +262,14 @@ public class InspectionController {
 				res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
 				return res;
 			}
+			//docNo不能和除这条id对应的docNo之外的条目重复
+			String docNoStripped = StringUtils.trim(request.getParameter("docNo"));
+			if (typeInspectionService.findByDocNo(docNoStripped).size() > 0
+					&& !StringUtils.equals(t.getDocNo(), docNoStripped)) {
+				res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());
+				res.setMsg(RetStatus.DOCNO_DUPLICATED.getInfo());
+				return res;
+			};
 			t = setTypeInspectionProperties(request, t); // 更新实体，包括文件名docFileName
 			List<InspectContent> contentlist = null;
 			if (file != null && !file.isEmpty()) {
@@ -273,7 +277,7 @@ public class InspectionController {
 				xlsxFile = file.getInputStream();
 				Workbook workbook = WorkbookFactory.create(xlsxFile);
 				Sheet contentSheet = workbook.getSheetAt(0);
-				contentlist = importContentSheet(contentSheet, inspectionId);
+				contentlist = inspectContentService.importContentSheet(contentSheet, inspectionId);
 			}
 			typeInspectionService.updateTypeInspection(t, contentlist);
 			res.setCode(RetStatus.SUCCESS.getCode());
@@ -338,14 +342,14 @@ public class InspectionController {
 			throw e;
 		} finally {
 			/* set other properties */
-			t.setModel(request.getParameter("model"));
-			t.setName(request.getParameter("name"));
-			t.setVersion(request.getParameter("version"));
+			t.setModel(StringUtils.trim(request.getParameter("model")));
+			t.setName(StringUtils.trim(request.getParameter("name")));
+			t.setVersion(StringUtils.trim(request.getParameter("version")));
 			t.setTestType(request.getParameter("testType"));
 			t.setCompany(request.getParameter("company"));
 			t.setBasis(request.getParameter("basis"));
 			t.setDocNo(StringUtils.trim(request.getParameter("docNo")));
-			t.setCertUrl(request.getParameter("certUrl"));
+			t.setCertUrl(StringUtils.trim(request.getParameter("certUrl")));
 			t.setOrganization(request.getParameter("organization"));
 			t.setRemarks(request.getParameter("remarks"));
 			t.setOperator(request.getParameter("operator"));
@@ -355,87 +359,4 @@ public class InspectionController {
 		return t;
 	}
 
-	/**
-	 * 导入检测报告工作表到list中
-	 * 
-	 * @param contentSheet:
-	 *            <检测项索引表>工作表
-	 * @param inspectionId:
-	 *            对应的型检id
-	 * @return list 检测项列表
-	 * @author langyicong
-	 * @throws Exception
-	 */
-	private List<InspectContent> importContentSheet(Sheet contentSheet, Long inspectionId) throws Exception {
-		int rows = contentSheet.getLastRowNum() + 1;
-		logger.debug("the total number of inspection content list is {}.", rows);
-		List<InspectContent> contentList = new ArrayList<>(); // 此处不能将row的值作为List的长度，因为工作表中可能会有无内容的行
-
-		/* 寻找表头所在行&每个字段所在列 */
-		int headRow = -1, caseIdCol = -1, caseNameCol = -1, caseDescrCol = -1, testResultCol = -1;
-		for (int row = 0; row < rows; row++) {
-			Row r = contentSheet.getRow(row);
-			int cols = r.getPhysicalNumberOfCells();
-			for (int col = 0; col < cols; col++) {
-				if (r.getCell(col) != null) {
-					if (r.getCell(col).getCellTypeEnum() != CellType.STRING) {
-						r.getCell(col).setCellType(CellType.STRING);
-					}
-					String cellValue = r.getCell(col).getStringCellValue();
-					if (StringUtils.contains(cellValue, "序号")) {
-						headRow = row;
-						caseIdCol = col;
-					}
-					if (StringUtils.containsAny(cellValue, "项目", "用例名称", "功能列表")) {
-						caseNameCol = col;
-					}
-					if (StringUtils.containsAny(cellValue, "要求", "用例说明", "功能描述")) {
-						caseDescrCol = col;
-					}
-					if (StringUtils.contains(cellValue, "测试结果")) {
-						testResultCol = col;
-					}
-				}
-			}
-			if (row == headRow) {
-				break;
-			}
-		}
-
-		if (caseIdCol < 0 || caseNameCol < 0 || caseDescrCol < 0) {
-			throw new Exception("缺少关键字");
-		}
-
-		String cachedCaseId = "";
-		String cachedCaseName = "";
-		for (int row = headRow; row < rows; row++) {
-			Row r = contentSheet.getRow(row);
-			/* for rows those are not empty */
-			if (r.getCell(caseDescrCol) != null && r.getCell(caseDescrCol).getCellTypeEnum() != CellType.BLANK) {
-				InspectContent c = new InspectContent();
-				if (r.getCell(caseIdCol) != null && r.getCell(caseIdCol).getCellTypeEnum() != CellType.BLANK) {
-					if (r.getCell(caseIdCol).getCellTypeEnum() != CellType.STRING) {
-						r.getCell(caseIdCol).setCellType(CellType.STRING);
-					}
-					cachedCaseId = r.getCell(caseIdCol).getStringCellValue();
-				}
-				c.setCaseId(cachedCaseId);
-
-				if (r.getCell(caseNameCol) != null && r.getCell(caseNameCol).getCellTypeEnum() != CellType.BLANK) {
-					cachedCaseName = r.getCell(caseNameCol).getStringCellValue();
-				}
-				c.setCaseName(cachedCaseName);
-
-				if (caseDescrCol >= 0) {
-					c.setCaseDescription(r.getCell(caseDescrCol).getStringCellValue());
-				}
-				if (testResultCol >= 0) {
-					c.setTestResult(r.getCell(testResultCol).getStringCellValue());
-				}
-				c.setInspectionId(inspectionId);
-				contentList.add(c);
-			}
-		}
-		return contentList;
-	}
 }

@@ -73,8 +73,8 @@
                             <td>{{item.awardDate | date:'yyyy-MM-dd'}}</td>
                             <td style="word-wrap: break-word;">{{item.docNo}}</td>
                             <td>
-                            <span ng-if="!item.hasURL">{{item.certUrl}}</span>
-                            <a ng-if="item.hasURL" ng-href="{{item.certUrl}}" target="_blank">link</a>
+                            	<span ng-if="!item.hasURL">{{item.certUrl}}</span>
+                            	<a ng-if="item.hasURL" ng-href="{{item.certUrl}}" target="_blank">link</a>
                             </td>
                             <td>{{item.organization}}</td>
                             <td>{{item.remarks}}</td>

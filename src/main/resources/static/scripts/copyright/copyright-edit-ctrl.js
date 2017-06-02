@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('enterprise-quality').controller('CopyrightEditCtrl', 
-	function($scope, $location, $http, $q, FileUploadService){
+angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','$location','$http','$modal','$q','toastr','FileUploadService','common',
+    function($scope, $location, $http, $modal, $q, Toastr, FileUploadService, Common){
             $scope.formData = {
                 'softwareName': '',
                 'abbreviation': '',
@@ -26,57 +26,52 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl',
                 'model': '',
                 'charge': ''
             };
-            
-    	    $scope.fileName = '';
-    	    
             var urlId = $location.search().id;
             if(urlId){
-            	var param = {id: urlId};
+            	var param = {id: urlId}; // param : {id, sortby, directioin}
     	        $http.get('/copyright/detail.do',{params:param}).success(function(res){
-    	        	console.log('success');
-    	        	console.log(res);
     	        	
-    	        	var crDate = Date.parse(Date(res.crDate));
+    	        	var crDate = Date.parse(Date(res.data.crDate));
     	        	crDate = crDate>32503651200? new Date(crDate) : new Date(crDate*1000);
 
-    	        	var rgDate = Date.parse(Date(res.rgDate));
+    	        	var rgDate = Date.parse(Date(res.data.rgDate));
     	        	rgDate = rgDate>32503651200? new Date(rgDate) : new Date(rgDate*1000);
 
-    	        	var rgExpiryDate = Date.parse(Date(res.rgExpiryDate));
+    	        	var rgExpiryDate = Date.parse(Date(res.data.rgExpiryDate));
     	        	rgExpiryDate = rgExpiryDate>32503651200? new Date(rgExpiryDate) : new Date(rgExpiryDate*1000);
 
-    	        	var epDate = Date.parse(Date(res.epDate));
+    	        	var epDate = Date.parse(Date(res.data.epDate));
     	        	epDate = epDate>32503651200? new Date(epDate) : new Date(epDate*1000);
 
-    	        	var cdDate = Date.parse(Date(res.cdDate));
+    	        	var cdDate = Date.parse(Date(res.data.cdDate));
     	        	cdDate = cdDate>32503651200? new Date(cdDate) : new Date(cdDate*1000);
 
     	        	$scope.formData = {
-	                    'softwareName': res.softwareName,
-	                    'abbreviation': res.abbreviation,
-	                    'crNo': res.crNo,
+	                    'softwareName': res.data.softwareName,
+	                    'abbreviation': res.data.abbreviation,
+	                    'crNo': res.data.crNo,
 	                    'crDate': crDate,
-	                    'crUrl': res.crUrl,
-	                    'crOrganization': res.crOrganization,
-	                    'crSoftwareType': res.crSoftwareType,
-	                    'rgNo': res.rgNo,
+	                    'crUrl': res.data.crUrl,
+	                    'crOrganization': res.data.crOrganization,
+	                    'crSoftwareType': res.data.crSoftwareType,
+	                    'rgNo': res.data.rgNo,
 	                    'rgDate': rgDate,
 	                    'rgExpiryDate':rgExpiryDate,
-	                    'rgUrl': res.rgUrl,
-	                    'rgOrganization': res.rgOrganization,
-	                    'epNo': res.epNo,
+	                    'rgUrl': res.data.rgUrl,
+	                    'rgOrganization': res.data.rgOrganization,
+	                    'epNo': res.data.epNo,
 	                    'epDate': epDate,
-	                    'epUrl': res.epUrl,
-	                    'epOrganization': res.epOrganization,
-	                    'cdNo': res.cdNo,
+	                    'epUrl': res.data.epUrl,
+	                    'epOrganization': res.data.epOrganization,
+	                    'cdNo': res.data.cdNo,
 	                    'cdDate': cdDate,
-	                    'cdUrl': res.cdUrl,
-	                    'cdOrganization': res.cdOrganization,
-	                    'model': res.model,
-	                    'charge': res.charge
+	                    'cdUrl': res.data.cdUrl,
+	                    'cdOrganization': res.data.cdOrganization,
+	                    'model': res.data.model,
+	                    'charge': res.data.charge
     	        	}
     		    }).error(function(res, status, headers, config){
-    		        alert("getListByAjax error: "+status);
+    		        Toastr.error("getListByAjax error: "+status);
     		    })
             }
 
@@ -99,4 +94,4 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl',
                 $location.url('/copyright');
             }
 
-        });
+        }]);

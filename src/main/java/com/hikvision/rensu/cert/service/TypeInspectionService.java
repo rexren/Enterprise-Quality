@@ -5,8 +5,6 @@ import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.repository.InspectContentRepository;
 import com.hikvision.rensu.cert.repository.TypeInspectionRepository;
 
-import antlr.collections.impl.LList;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -26,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Created by rensu on 17/4/21.
  */
@@ -36,8 +32,6 @@ import javax.servlet.http.HttpServletRequest;
 public class TypeInspectionService {
 
 	private final static Logger logger = LoggerFactory.getLogger(TypeInspectionService.class);
-	private final static String SORT_TYPEINSPECTION_UPDATEAT = "UpdateAt";
-
 	@Autowired
 	private TypeInspectionRepository typeInspectionRepository;
 
@@ -60,7 +54,7 @@ public class TypeInspectionService {
 	public TypeInspection getTypeInspectionById(Long id) {
 		return typeInspectionRepository.findOne(id);
 	}
-	
+
 	public List<TypeInspection> findByDocNo(String docNo) {
 		return typeInspectionRepository.findByDocNo(docNo);
 	}
@@ -70,8 +64,9 @@ public class TypeInspectionService {
 	}
 
 	/**
-	 * 导入列表数据 | 产品型号 | 软件名称 | 软件版本 | 测试／检验类别 | 受检单位 | 测试依据 | 颁发日期 | 文件编号 |
-	 * 证书系统链接 | 认证／测试机构 | 备注
+	 * 导入型检列表到数据库
+	 *  产品型号 | 软件名称 | 软件版本 | 测试／检验类别 | 受检单位 | 测试依据 | 颁发日期 | 文件编号 |证书系统链接 |
+	 * 认证／测试机构 | 备注
 	 *
 	 * @param sheet:
 	 *            【公检&国标】工作薄
@@ -83,44 +78,87 @@ public class TypeInspectionService {
 		int res = 0;
 		int rows = sheet.getLastRowNum() + 1;
 		List<TypeInspection> inspections = new ArrayList<>();
-		// TODO 找到表头并且 判断表头是否符合条件
-		for (int row = 2; row < rows; row++) {
+		/* 找到表头并且 判断表头是否符合条件 */
+		int headRow = -1, startCol = -1, modelCol = -1, nameCol = -1, docNoCol = -1, awardDateCol =-1;
+		for (int row = 0; row < rows; row++) {
+			Row r = sheet.getRow(row);
+			int cols = r.getPhysicalNumberOfCells();
+			for (int col = 0; col < cols; col++) {
+				if (r.getCell(col) != null) {
+					if (r.getCell(col).getCellTypeEnum() != CellType.STRING) {
+						r.getCell(col).setCellType(CellType.STRING);
+					}
+					String cellValue = r.getCell(col).getStringCellValue();
+					if (StringUtils.containsAny(cellValue, "型号", "软件名称", "文件编号","颁发日期")) {
+						headRow = row;
+						if (StringUtils.contains(cellValue, "型号")) {
+							modelCol = col;
+						}
+						if (StringUtils.contains(cellValue, "软件名称")) {
+							nameCol = col;
+						}
+						if (StringUtils.contains(cellValue, "文件编号")) {
+							docNoCol = col;
+						}
+						if (StringUtils.contains(cellValue, "颁发日期")) {
+							awardDateCol = col;
+						}
+					}
+				}
+			}
+			if (row == headRow) {
+				break;
+			}
+		}
+		startCol = Math.min(modelCol, Math.min(nameCol,docNoCol));
+		if (headRow < 0 || startCol < 0) {
+			throw new Exception("缺少关键字");
+		}
+
+		for (int row = headRow + 1; row < rows; row++) {
 			Row r = sheet.getRow(row);
 			/* for rows those are not empty */
-			if (r.getCell(0) != null && r.getCell(0).getCellTypeEnum() != CellType.BLANK
-					&& r.getCell(1).getCellTypeEnum() != CellType.BLANK) {
+			if (r.getCell(startCol) != null && r.getCell(startCol).getCellTypeEnum() != CellType.BLANK
+					&& r.getCell(startCol+1).getCellTypeEnum() != CellType.BLANK) {
 				TypeInspection t = null;
-				if (r.getCell(7) != null) {
-					if (r.getCell(7).getCellTypeEnum() != CellType.STRING) {
-						r.getCell(7).setCellType(CellType.STRING);
+				if (r.getCell(docNoCol) != null) {
+					if (r.getCell(docNoCol).getCellTypeEnum() != CellType.STRING) {
+						try {
+							r.getCell(docNoCol).setCellType(CellType.STRING);
+						} catch (Exception e) {
+							throw e;
+						}
 					}
-					// 如果docNo在数据库中存在
-					if (typeInspectionRepository.findByDocNo(r.getCell(7).getStringCellValue()).size() > 0) {
-						t = typeInspectionRepository.findByDocNo(r.getCell(7).getStringCellValue()).get(0);
+					if (typeInspectionRepository.findByDocNo(r.getCell(docNoCol).getStringCellValue()).size() > 0) {
+						/* if this docNo exists in db, find it and update other properties */
+						t = typeInspectionRepository.findByDocNo(r.getCell(docNoCol).getStringCellValue()).get(0);
 					} else {
-						t = new TypeInspection(); // 新的
+
+						t = new TypeInspection();
 						t.setCreateAt(new Date());
+						t.setDocNo(StringUtils.trim(r.getCell(docNoCol).getStringCellValue()));
 					}
-					t.setDocNo(r.getCell(7).getStringCellValue());
 				} else {
-					throw new Exception("Table cell(7) is empty, expected to be docNo");
+					throw new Exception("Missing docNo");
 				}
 
-				t.setModel(r.getCell(0).getStringCellValue());
-				t.setName(r.getCell(1).getStringCellValue());
-				t.setVersion(r.getCell(2).getStringCellValue());
-				t.setTestType(r.getCell(3).getStringCellValue());
-				t.setCompany(r.getCell(4).getStringCellValue());
+				t.setModel(StringUtils.trim(r.getCell(modelCol).getStringCellValue()));
+				t.setName(StringUtils.trim(r.getCell(nameCol).getStringCellValue()));
+				t.setVersion(StringUtils.trim(r.getCell(2).getStringCellValue()));
+				t.setTestType(StringUtils.trim(r.getCell(3).getStringCellValue()));
+				t.setCompany(StringUtils.trim(r.getCell(4).getStringCellValue()));
 				t.setBasis(r.getCell(5).getStringCellValue());
-				if (r.getCell(6) != null) {
-					if (r.getCell(6).getCellTypeEnum() != CellType.NUMERIC) {
-						r.getCell(6).setCellType(CellType.NUMERIC);
+				
+				if (r.getCell(awardDateCol) != null) {
+					if (r.getCell(awardDateCol).getCellTypeEnum() != CellType.NUMERIC) {
+						try {
+							r.getCell(awardDateCol).setCellType(CellType.NUMERIC);
+						} catch (Exception e) {
+							throw e;
+						}
 					}
-					t.setAwardDate(r.getCell(6).getDateCellValue());
-				} else {
-					throw new Exception("Table cell(6) is empty, expected to be awardDate");
+					t.setAwardDate(r.getCell(awardDateCol).getDateCellValue());
 				}
-
 				t.setCertUrl(r.getCell(8).getStringCellValue());
 				t.setOrganization(r.getCell(9).getStringCellValue());
 				t.setRemarks(r.getCell(10).getStringCellValue());
@@ -129,20 +167,17 @@ public class TypeInspectionService {
 				inspections.add(t);
 			}
 		}
-		if (inspections.size() > 0) {
-			// importInspectionList(inspections);
-			try {
-				typeInspectionRepository.save(inspections);
-				res = inspections.size();
-			} catch (Exception e) {
-				throw e;
-			}
+		try {
+			typeInspectionRepository.save(inspections);
+			res = inspections.size();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+		}
 
-		} else
-			throw new Exception("无导入项");
 		return res;
 	}
-	
+
 	/**
 	 * 新建存儲主表条目
 	 * 
@@ -158,7 +193,6 @@ public class TypeInspectionService {
 		}
 		return typeInspectionRepository.save(t);
 	}
-
 
 	/**
 	 * 更新主表 &（如果文件名为空）删子表 &（如果有文件）存储子表

@@ -2,6 +2,8 @@ package com.hikvision.rensu.cert.controller;
 
 import com.hikvision.rensu.cert.constant.RetCode;
 import com.hikvision.rensu.cert.constant.RetStatus;
+import com.hikvision.rensu.cert.service.CccPageService;
+import com.hikvision.rensu.cert.service.CopyrightService;
 import com.hikvision.rensu.cert.service.TypeInspectionService;
 import com.hikvision.rensu.cert.support.ImportResult;
 
@@ -35,6 +37,12 @@ public class FileUploadController {
 
 	@Autowired
 	private TypeInspectionService typeInspectionService;
+	
+	@Autowired
+	private CopyrightService copyrightService;
+	
+	@Autowired
+	private CccPageService cccPageService;
 
 	@RequestMapping(value = "/indexlist.do", method = RequestMethod.POST)
 	@ResponseBody
@@ -56,9 +64,9 @@ public class FileUploadController {
 					if (StringUtils.contains(workbook.getSheetName(i), "公检")) {
 						numOfInpections = typeInspectionService.importInspectionSheet(workbook.getSheetAt(i));
 					} else if (StringUtils.contains(workbook.getSheetName(i), "双证")) {
-						// numOfCopyRight = importCopyRightSheet(workbook.getSheetAt(i));
+						numOfCopyRight = copyrightService.importCopyRightSheet(workbook.getSheetAt(i));
 					} else if (StringUtils.contains(workbook.getSheetName(i), "3C")) {
-						// numOf3C = importCCCSheet(workbook.getSheetAt(i));
+						numOf3C = cccPageService.importCCCSheet(workbook.getSheetAt(i));
 					//} else if (StringUtils.contains(workbook.getSheetName(i), "更新说明")) {
 						// TODO: news can be done without sheet.
 					}
@@ -81,11 +89,4 @@ public class FileUploadController {
 		}
 	}
 
-	private int importCCCSheet(Sheet sheet) throws NotImplementedException {
-		throw new NotImplementedException("importCCCSheet not implement");
-	}
-
-	private int importCopyRightSheet(Sheet sheet) throws NotImplementedException {
-		throw new NotImplementedException("importCopyRightSheet not implement");
-	}
 }
