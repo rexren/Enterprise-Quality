@@ -24,6 +24,10 @@ angular.module('enterprise-quality',[
     		templateUrl: 'html/inspection-view.html',
     		controller: 'InspectionsViewCtrl'
     	})
+    	.when('/inspections/search',{
+    		templateUrl: 'html/inspection-search.html',
+    		controller: 'InspectionsSearchCtrl'
+    	})
         .when('/copyright',{
             templateUrl: 'html/copyright.html',
             controller: 'CopyrightCtrl'
@@ -32,6 +36,10 @@ angular.module('enterprise-quality',[
             templateUrl: 'html/copyright-edit.html',
             controller: 'CopyrightEditCtrl'
         })
+        .when('/copyright/search',{
+            templateUrl: 'html/copyright-search.html',
+            controller: 'CopyrightSearchCtrl'
+        })
     	.when('/ccc',{
     		templateUrl: 'html/ccc.html',
     		controller: 'CccCtrl'
@@ -39,6 +47,10 @@ angular.module('enterprise-quality',[
     	.when('/ccc/edit',{
     		templateUrl: 'html/ccc-edit.html',
     		controller: 'CccEditCtrl'
+    	})
+    	.when('/ccc/search',{
+    		templateUrl: 'html/ccc-search.html',
+    		controller: 'CccSearchCtrl'
     	})
     	.when('/components/form',{
     		templateUrl: 'html/components/form.html',

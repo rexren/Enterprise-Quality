@@ -47,39 +47,54 @@ angular.module('enterprise-quality')
                 }
             }
 
-            $scope.searchList = function () {
-                //TODO 搜索列表结果展示
-                console.log('TODO 搜索列表结果展示');
-            };
-            
-            $scope.keywords = {};
-            
-            $scope.advancedSearch = function () {
-                //TODO 高级搜索
-                console.log('TODO 高级搜索弹窗');
-                // 打开弹窗
-                var modalInstance = $modal.open({
-                	animation: true,
-                	templateUrl: 'html/copyright-search-modal.html',
-                	controller: 'CopyRightSearchModalCtrl',
-                	size: '',
-                	resolve: {
-                		keywords: function () {
-                			return $scope.keywords;
-                		}
-                	}
-                });
 
-                // 弹窗在关闭的时候执行的
-                modalInstance.result.then(function () {
-                  // $modalInstance.close 时候传递的参数
-                    console.log('Modal closed at: ' + new Date());
-                    console.log($scope.keywords);
-                }, function () {
-                  // $modalInstance.dismiss 时候传递的参数
-                	console.log('Modal dismissed at: ' + new Date());
-                });
+            /** 
+             * 查看详情
+             */
+            $scope.view = function(item){
+            	$location.url('/inspections/view?id='+item.id);
+            }
+            
+            $scope.fields = [{
+            	name: '全部',
+            	value: ''
+            }, {
+            	name:'软件名称',
+            	value: '1'
+            }, {
+            	name:'简称',
+            	value: '2'
+            }, {
+            	name:'软著登记号',
+            	value: '3'
+            }, {
+            	name:'软件产品登记证书',
+            	value: '4'
+            }, {
+            	name:'软件测评报告号',
+            	value: '5'
+            }, {
+            	name:'类别界定报告号',
+            	value: '6'
+            }, {            	
+            	name:'软件型号',
+            	value: '7'
+            }]
+            	
+            $scope.searchInput = {
+            	"field":"",
+            	"keyword":"",
+            	"contentKeyword":""
             };
+            
+            /**  
+    	     *   搜索
+    	     */
+            $scope.search = function (input) {
+                $location.url('/inspections/search?f='+input.field+'&kw='+input.keyword+'&c='+input.contentKeyword);
+            };
+            
+            
                        
             /**  
     	     *   导入excel文件列表

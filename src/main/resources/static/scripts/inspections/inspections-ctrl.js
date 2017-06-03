@@ -51,44 +51,46 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
         $scope.view = function(item){
         	$location.url('/inspections/view?id='+item.id);
         }
-
-
-        $scope.searchList = function () {
-            //TODO 搜索列表结果展示
-            console.log('TODO 搜索列表结果展示');
+        
+        $scope.fields = [{
+        	name: '全部',
+        	value: ''
+        }, {
+        	name:'产品型号',
+        	value: '1'
+        }, {
+        	name:'软件名称',
+        	value: '2'
+        }, {
+        	name:'测试类别',
+        	value: '3'
+        }, {
+        	name:'测试依据',
+        	value: '4'
+        }, {
+        	name:'文件编号',
+        	value: '5'
+        }, {
+        	name:'认证机构',
+        	value: '6'
+        }, {
+        	name:'备注',
+        	value: '7'
+        }]
+        	
+        $scope.searchInput = {
+        	"field":"",
+        	"keyword":"",
+        	"contentKeyword":""
         };
         
-        $scope.keywords = {};
-        
-        /** 
-         * 高级搜索
-         */
-        $scope.advancedSearch = function () {
-            //TODO 高级搜索
-            console.log('TODO 高级搜索弹窗');
-            // 打开弹窗
-            var modalInstance = $modal.open({
-            	animation: true,
-            	templateUrl: 'html/inspections-search-modal.html',
-            	controller: 'InspectionsSearchModalCtrl',
-            	size: '',
-            	resolve: {
-            		keywords: function () {
-            			return $scope.keywords;
-            		}
-            	}
-            });
-
-            // 弹窗在关闭的时候执行的
-            modalInstance.result.then(function () {
-              // $modalInstance.close 时候传递的参数
-                console.log('Modal closed at: ' + new Date());
-                console.log($scope.keywords);
-            }, function () {
-              // $modalInstance.dismiss 时候传递的参数
-            	console.log('Modal dismissed at: ' + new Date());
-            });
+        /**  
+	     *   搜索
+	     */
+        $scope.search = function (input) {
+            $location.url('/inspections/search?f='+input.field+'&kw='+input.keyword+'&c='+input.contentKeyword);
         };
+        
         
         /**  
 	     *   导入excel文件列表
