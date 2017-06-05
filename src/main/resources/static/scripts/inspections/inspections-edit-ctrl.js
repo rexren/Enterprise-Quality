@@ -29,8 +29,8 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
                 params: param
             }).success(function(res) {
             	if(res.code == 0){
-            		var adate = Date.parse(Date(res.data.awardDate));
-            		adate = adate > 32503651200 ? new Date(adate) : new Date(adate * 1000);
+            		var awardDate =  res.data.awardDate?new Date(Number(res.data.awardDate)):null;
+                   	
             		$scope.formData = {
         				'model': res.data.model,
         				'name': res.data.name,
@@ -38,7 +38,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
         				'testType': res.data.testType,
         				'company': res.data.company,
         				'basis': res.data.basis,
-        				'awardDate': adate,
+        				'awardDate': awardDate,
         				'docNo': res.data.docNo,
         				'certUrl': res.data.certUrl,
         				'organization': res.data.organization,
@@ -92,7 +92,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
                 for (var i in $scope.formData) {
                     fd.append(i, $scope.formData[i]);
                 }
-            	var awardTimeStamp = Date.parse($scope.formData.awardDate) / 1000;
+            	var awardTimeStamp = Date.parse($scope.formData.awardDate);
             	fd.set('awardDate', awardTimeStamp);
                 $http({
                     method: 'POST',
@@ -107,16 +107,11 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
                     	Toastr.success('保存成功');
                     	$location.url('/inspections');
                     } else {
-                    	if(res.code == 1004){
-                        	Toastr.error('文件编号已存在！');
-                    	} else{
-                    		Common.retCodeHandler(res.code);
-                    	}
+                    	Toastr.error(res.msg);
                     }
                 }).error(function(res, status, headers, config){
                 	Toastr.error("AjaxError: "+ status);
                 })
-                return defer.promise;
             }
         };
 

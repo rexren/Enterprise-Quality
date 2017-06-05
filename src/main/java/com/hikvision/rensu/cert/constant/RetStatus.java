@@ -8,6 +8,7 @@ public enum RetStatus {
 	FORM_DATA_INVALID("1001", "表单验证不通过"),
 	FORM_DATA_MISSING("1002", "表单验证缺少关键字段"),
 	DOCNO_DUPLICATED("1004", "docNo字段重复"),
+	NAME_DUPLICATED("1005", "名称字段重复"),
 	
 	/* 用户登录/权限错误（预留字段1100-1199） */
 	USER_NOT_LOGGED_IN("1101", "用户未登录"),

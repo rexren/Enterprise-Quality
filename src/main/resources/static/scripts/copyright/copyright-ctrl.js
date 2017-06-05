@@ -91,7 +91,7 @@ angular.module('enterprise-quality')
     	     *   搜索
     	     */
             $scope.search = function (input) {
-                $location.url('/inspections/search?f='+input.field+'&kw='+input.keyword);
+                $location.url('/copyright/search?f='+input.field+'&kw='+input.keyword);
             };
                  
             /**  

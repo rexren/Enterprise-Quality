@@ -166,4 +166,19 @@ public class CopyrightService {
 		
 		return res;
 	}
+
+	public List<Copyright> findBySoftwareName(String softwareName) {
+		return copyrightRepository.findBySoftwareName(softwareName);
+	}
+	
+	/**
+	 * 新建/更新存儲双证条目
+	 * 
+	 * @param c
+	 *            待插入数据库的双证条目
+	 * @return 存储成功的Copyright实体
+	 */
+	public Copyright saveCopyright(Copyright c) {
+		return copyrightRepository.save(c);
+	}
 }

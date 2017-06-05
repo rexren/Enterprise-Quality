@@ -14,17 +14,13 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$locat
     	"remarks":""
     };
     
-    $scope.cccId = $location.search().id;
-    if($scope.cccId){
-    	var param = {id: $scope.cccId};
+    var cccId = $location.search().id;
+    if(cccId){
+    	var param = {id: cccId};
         $http.get('/ccc/detail.do',{params:param}).success(function(res){
-        	
-    		var awardDate = Date.parse(Date(res.data.awardDate));
-			awardDate = awardDate>32503651200? new Date(awardDate) : new Date(awardDate*1000);
-			
-			var expiryDate = Date.parse(Date(res.data.expiryDate));
-			expiryDate = expiryDate>32503651200? new Date(expiryDate) : new Date(expiryDate*1000);
-			
+        	var awardDate =  res.data.awardDate?new Date(Number(res.data.awardDate)):null;
+    		var expiryDate =  res.data.expiryDate?new Date(Number(res.data.expiryDate)):null;
+
         	$scope.digest = {
 				"docNo":res.data.docNo,
 	        	"model":res.data.model,
@@ -42,6 +38,11 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$locat
 	    })
     }
 
+    // edit
+    $scope.edit = function() {
+        $location.url('/ccc/edit?id='+cccId);
+    }
+    
     // back
     $scope.back = function(){
         $location.url('/ccc');

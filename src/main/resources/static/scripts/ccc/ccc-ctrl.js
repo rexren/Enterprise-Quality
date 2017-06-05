@@ -88,12 +88,11 @@ angular.module('enterprise-quality')
                 "keyword": ""
             };
 
-
             /**  
              *   搜索
              */
             $scope.search = function(input) {
-                $location.url('/copyright/search?f=' + input.field + '&kw=' + input.keyword);
+                $location.url('/ccc/search?f=' + input.field + '&kw=' + input.keyword);
             };
             /**  
              *   导入excel文件列表
@@ -139,6 +138,11 @@ angular.module('enterprise-quality')
                     defer.reject();
                 });
                 return defer.promise;
+            };
+            
+            $scope.removeFile = function(){
+                $scope.file = {};
+                $scope.fileName = '';
             };
         }
     ]);

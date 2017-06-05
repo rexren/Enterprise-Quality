@@ -1,10 +1,10 @@
 package com.hikvision.rensu.cert.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.hikvision.rensu.cert.constant.RetStatus;
 import com.hikvision.rensu.cert.domain.Copyright;
-import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.service.CopyrightService;
 import com.hikvision.rensu.cert.support.AjaxResult;
+import com.hikvision.rensu.cert.support.BaseResult;
 import com.hikvision.rensu.cert.support.ListContent;
 import com.hikvision.rensu.cert.support.ListResult;
 
@@ -70,7 +70,10 @@ public class CopyrightController {
     
     /**
      * 获取双证单条数据
-     */
+     * @param id
+	 *            双证id
+	 * @return 包含双证数据对象的返回对象
+	 */
     @RequestMapping(value ="/detail.do", method = RequestMethod.GET)
     @ResponseBody
     public AjaxResult<Copyright> getCopyright(Long id) {
@@ -99,21 +102,143 @@ public class CopyrightController {
     }
     
     /**
-     * 保存单条数据
-     * TODO 自定义返回类型
-     */
+	 * 新建保存单条数据
+	 * 
+	 * @param request
+	 *            双证编辑页表单内容
+	 * @return res 返回状态
+	 * @author langyicong
+	 */
     @RequestMapping(value = "/save.do", method = RequestMethod.POST)
     @ResponseBody
-	public List<String> saveCopyrightForm(HttpServletRequest request) {
-    	System.out.println("Start"+request.getParameter("softwareName"));
-        //TODO 保存数据
-    	List<String> list = new ArrayList<>();
-        list.add("aaa");
-        list.add("bbb");
-        list.add("ccc");
-        return list;
+	public BaseResult saveCopyright(HttpServletRequest request) {
+    	BaseResult res = new BaseResult();
+    	/* 表单验证:关键信息softwareName不为空 */
+		if (StringUtils.isBlank(request.getParameter("softwareName"))) {
+			res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
+			res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
+			return res;
+		}
+		/* 表单验证:softwareName不能重复 */
+		String nameStripped = StringUtils.trim(request.getParameter("softwareName"));
+		if (copyrightService.findBySoftwareName(nameStripped).size() > 0) {
+			res.setCode(RetStatus.NAME_DUPLICATED.getCode());
+			res.setMsg(RetStatus.NAME_DUPLICATED.getInfo());
+			return res;
+		}
+		Copyright c = new Copyright();
+		try {
+			/* 页面参数组装成Copyright实体 */
+			c = setCopyrightProperties(request, c);
+			copyrightService.saveCopyright(c);
+			res.setCode(RetStatus.SUCCESS.getCode());
+			res.setMsg(RetStatus.SUCCESS.getInfo());
+		} catch (Exception e) {
+			logger.error("", e);
+			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+			return res;
+		}
+		
+    	return res;
+    }
+
+	/**
+	 * 更新单条数据
+	 * 
+	 * @param request
+	 *            双证编辑页表单内容
+	 * @return res 返回状态
+	 * @author langyicong
+	 */
+    @RequestMapping(value = "/update.do", method = RequestMethod.POST)
+    @ResponseBody
+	public BaseResult updateCopyright(HttpServletRequest request) {
+    	BaseResult res = new BaseResult();
+    	/* if null id or null entity */
+		if (null == request || StringUtils.isBlank(request.getParameter("id"))) {
+			res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
+			res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
+			return res;
+		}
+		
+		/* 查询对应的实体，并且将页面数据更新实体内容 */
+		Long requestId = NumberUtils.toLong(request.getParameter("id"));
+		Copyright c = null;
+		try {
+			c = copyrightService.getCopyrightById(requestId);
+			if(null == c){
+				res.setCode(RetStatus.ITEM_NOT_FOUND.getCode());
+				res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
+				return res;
+			}
+			// 编辑后softwareName无重复
+			String nameStripped = StringUtils.trim(request.getParameter("softwareName"));
+			if (copyrightService.findBySoftwareName(nameStripped).size() > 0
+					&& !StringUtils.equals(c.getSoftwareName(), nameStripped)) {
+				res.setCode(RetStatus.NAME_DUPLICATED.getCode());
+				res.setMsg(RetStatus.NAME_DUPLICATED.getInfo());
+				return res;
+			}
+			c = setCopyrightProperties(request, c);
+			copyrightService.saveCopyright(c);
+			res.setCode(RetStatus.SUCCESS.getCode());
+			res.setMsg(RetStatus.SUCCESS.getInfo());
+		} catch (Exception e) {
+			logger.error("", e);
+			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+			return res;
+		}
+    	return res;
     }
     
+	/**
+	 * 将HttpServletRequest请求体（页面参数）组装成Copyright实体
+	 * 
+	 * @param request
+	 *            页面表单数据
+	 * @param c  初始的Copyright实体，可为空（新建）或者含id（更新）
+	 * @return c 转换后的Copyright实体，不包括创建时间
+	 * @throws Exception
+	 */
+    private Copyright setCopyrightProperties(HttpServletRequest request, Copyright c) throws Exception {
+		if(null == c){
+			c = new Copyright();
+		}
+		/* 新建 */
+		if(null == c.getId() || c.getId()<0){
+			c.setCreateDate(new Date());
+		}
+		/* setXxxxDate */
+		c.setCrDate(NumberUtils.toLong(request.getParameter("crDate"))>0?new Date(NumberUtils.toLong(request.getParameter("crDate"))):null);
+		c.setRgDate(NumberUtils.toLong(request.getParameter("rgDate"))>0?new Date(NumberUtils.toLong(request.getParameter("rgDate"))):null);
+		c.setRgExpiryDate(NumberUtils.toLong(request.getParameter("rgExpiryDate"))>0?new Date(NumberUtils.toLong(request.getParameter("rgExpiryDate"))):null);
+		c.setEpDate(NumberUtils.toLong(request.getParameter("epDate"))>0?new Date(NumberUtils.toLong(request.getParameter("epDate"))):null);
+		c.setCdDate(NumberUtils.toLong(request.getParameter("cdDate"))>0?new Date(NumberUtils.toLong(request.getParameter("cdDate"))):null);
+		c.setUpdateDate(new Date());
+		/* set other properties */
+		c.setSoftwareName(StringUtils.trim(request.getParameter("softwareName")));
+		c.setAbbreviation(StringUtils.trim(request.getParameter("abbreviation")));
+		c.setCrNo(StringUtils.trim(request.getParameter("crNo")));
+		c.setCrUrl(StringUtils.trim(request.getParameter("crUrl")));
+		c.setCrOrganization(StringUtils.trim(request.getParameter("crOrganization")));
+		c.setCrSoftwareType(StringUtils.trim(request.getParameter("crSoftwareType")));
+		c.setRgNo(StringUtils.trim(request.getParameter("rgNo")));
+		c.setRgUrl(StringUtils.trim(request.getParameter("rgUrl")));
+		c.setRgOrganization(StringUtils.trim(request.getParameter("rgOrganization")));
+		c.setEpNo(StringUtils.trim(request.getParameter("epNo")));
+		c.setEpUrl(StringUtils.trim(request.getParameter("epUrl")));
+		c.setEpOrganization(StringUtils.trim(request.getParameter("epOrganization")));
+		c.setCdNo(StringUtils.trim(request.getParameter("cdNo")));
+		c.setCdUrl(StringUtils.trim(request.getParameter("cdUrl")));
+		c.setCdOrganization(StringUtils.trim(request.getParameter("cdOrganization")));
+		c.setModel(StringUtils.trim(request.getParameter("model")));
+		c.setCharge(StringUtils.trim(request.getParameter("charge")));
+		c.setOperator("TESTER");
+		
+		return c;
+	}
 
     
 }

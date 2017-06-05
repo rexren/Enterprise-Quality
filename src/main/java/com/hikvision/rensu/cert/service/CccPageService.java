@@ -146,4 +146,13 @@ public class CccPageService {
 		return cccPageRepository.findOne(id);
 	}
 
+	public List<CccPage> findByDocNo(String docNo) {
+		return cccPageRepository.findByDocNo(docNo);
+	}
+
+	public CccPage saveCccPage(CccPage c) {
+		return cccPageRepository.save(c);
+		
+	}
+
 }

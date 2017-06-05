@@ -26,26 +26,19 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
                 'model': '',
                 'charge': ''
             };
+            var targetUrl = '/copyright/save.do';
+            
             var urlId = $location.search().id;
             if(urlId){
-            	var param = {id: urlId}; // param : {id, sortby, directioin}
-    	        $http.get('/copyright/detail.do',{params:param}).success(function(res){
+            	var param = {id: urlId}; 
+            	$http.get('/copyright/detail.do',{params:param}).success(function(res){
     	        	
-    	        	var crDate = Date.parse(Date(res.data.crDate));
-    	        	crDate = crDate>32503651200? new Date(crDate) : new Date(crDate*1000);
-
-    	        	var rgDate = Date.parse(Date(res.data.rgDate));
-    	        	rgDate = rgDate>32503651200? new Date(rgDate) : new Date(rgDate*1000);
-
-    	        	var rgExpiryDate = Date.parse(Date(res.data.rgExpiryDate));
-    	        	rgExpiryDate = rgExpiryDate>32503651200? new Date(rgExpiryDate) : new Date(rgExpiryDate*1000);
-
-    	        	var epDate = Date.parse(Date(res.data.epDate));
-    	        	epDate = epDate>32503651200? new Date(epDate) : new Date(epDate*1000);
-
-    	        	var cdDate = Date.parse(Date(res.data.cdDate));
-    	        	cdDate = cdDate>32503651200? new Date(cdDate) : new Date(cdDate*1000);
-
+    	        	var crDate =  res.data.crDate?new Date(Number(res.data.crDate)):null;
+    	        	var rgDate =  res.data.rgDate?new Date(Number(res.data.rgDate)):null;
+    	        	var rgExpiryDate =  res.data.rgExpiryDate?new Date(Number(res.data.rgExpiryDate)):null;
+    	        	var epDate =  res.data.epDate?new Date(Number(res.data.epDate)):null;
+    	        	var cdDate =  res.data.crDate?new Date(Number(res.data.cdDate)):null;
+       	
     	        	$scope.formData = {
 	                    'softwareName': res.data.softwareName,
 	                    'abbreviation': res.data.abbreviation,
@@ -73,20 +66,40 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
     		    }).error(function(res, status, headers, config){
     		        Toastr.error("getListByAjax error: "+status);
     		    })
+    		    targetUrl = '/copyright/update.do';
             }
 
             $scope.submit = function () {
-            	//TODO 发送前数据整理
-            	 $http({
-            	     method  : 'POST',
-            	     url     : '/copyright/save.do',
-            	     data    : $.param($scope.formData),  // pass in data as strings
-            	     headers : { 
-            	    	 'Content-Type': 'application/x-www-form-urlencoded' 
-            	     }
-            	 }).success(function(res) {
-            	     console.log(res);
-            	});
+            	if($scope.formData.softwareName==''){
+            		Toastr.error("请输入软件名称");
+            	} else{
+            		var params = angular.extend({},$scope.formData);
+            		params['crDate'] = Date.parse($scope.formData.crDate);
+            		params['rgDate'] = Date.parse($scope.formData.rgDate);
+            		params['rgExpiryDate'] = Date.parse($scope.formData.rgExpiryDate);
+            		params['epDate'] = Date.parse($scope.formData.epDate);
+            		params['cdDate'] = Date.parse($scope.formData.cdDate);
+            		if (urlId) {
+            			params = angular.extend(params, {'id': urlId});
+                    }
+            		$http({
+            			method  : 'POST',
+            			url     : targetUrl,
+            			data    : $.param(params),  // pass in data as strings
+            			headers : { 
+            				'Content-Type': 'application/x-www-form-urlencoded' 
+            			}
+            		}).success(function(res) {
+            			if (res.code == 0) {
+            				Toastr.success('保存成功');
+                        	$location.url('/copyright');
+            			}else{
+                    		Toastr.error(res.msg);
+                    	}
+            		}).error(function(res, status, headers, config) {
+                    	Toastr.error("AjaxError: "+ status);
+                    });
+            	}
             };
 
             // back

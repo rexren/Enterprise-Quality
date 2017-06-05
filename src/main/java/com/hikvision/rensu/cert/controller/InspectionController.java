@@ -167,7 +167,7 @@ public class InspectionController {
 	 *            表单文件
 	 * @param request
 	 *            表单内容
-	 * @return res Map->Json 返回状态
+	 * @return res 返回状态
 	 * @author langyicong
 	 */
 	@RequestMapping(value = "/save.do", method = RequestMethod.POST)
@@ -257,7 +257,7 @@ public class InspectionController {
 		InputStream xlsxFile = null;
 		try {
 			t = typeInspectionService.getTypeInspectionById(inspectionId);
-			if (t == null) {
+			if (null == t) {
 				res.setCode(RetStatus.ITEM_NOT_FOUND.getCode());
 				res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
 				return res;
@@ -319,7 +319,8 @@ public class InspectionController {
 	 *            页面表单数据
 	 * @param t
 	 *            初始的TypeInspection实体，可为空（新建）或者含id（更新）
-	 * @return t 转换后的TypeInspection实体，不包括创建时间
+	 * @return t 转换后的TypeInspection实体
+	 * @throws Exception
 	 */
 	private TypeInspection setTypeInspectionProperties(HttpServletRequest request, TypeInspection t) throws Exception {
 		if (null == t) {
@@ -330,8 +331,8 @@ public class InspectionController {
 			t.setCreateAt(new Date());
 		}
 		/* setAwardDate */
-		long awardDateLong = NumberUtils.toLong(request.getParameter("awardDate")) * 1000;
-		Date awardDate = (new Date(awardDateLong));
+		long awardDateLong = NumberUtils.toLong(request.getParameter("awardDate"));
+		Date awardDate = new Date(awardDateLong);
 		t.setAwardDate(awardDate);
 		/* setDocFilename */
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
