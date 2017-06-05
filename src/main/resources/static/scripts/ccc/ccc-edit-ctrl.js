@@ -17,10 +17,10 @@ angular.module('enterprise-quality')
             
             var urlId = $location.search().id;
             if(urlId){
-            	var param = {id: urlId}; // param : {id, sortby, directioin}
+            	var param = {id: urlId}; 
             	$http.get('/ccc/detail.do',{params:param}).success(function(res) {
-					console.log(res);
-					var awardDate = Date.parse(Date(res.data.awardDate));
+					
+            		var awardDate = Date.parse(Date(res.data.awardDate));
 					awardDate = awardDate>32503651200? new Date(awardDate) : new Date(awardDate*1000);
 					
 					var expiryDate = Date.parse(Date(res.data.expiryDate));

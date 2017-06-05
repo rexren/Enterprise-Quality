@@ -32,6 +32,10 @@ angular.module('enterprise-quality',[
             templateUrl: 'html/copyright.html',
             controller: 'CopyrightCtrl'
         })
+        .when('/copyright/view',{
+            templateUrl: 'html/copyright-view.html',
+            controller: 'CopyrightViewCtrl'
+        })
         .when('/copyright/edit',{
             templateUrl: 'html/copyright-edit.html',
             controller: 'CopyrightEditCtrl'
@@ -48,16 +52,19 @@ angular.module('enterprise-quality',[
     		templateUrl: 'html/ccc-edit.html',
     		controller: 'CccEditCtrl'
     	})
+		.when('/ccc/view',{
+			templateUrl: 'html/ccc-view.html',
+			controller: 'CccViewCtrl'
+		})
     	.when('/ccc/search',{
     		templateUrl: 'html/ccc-search.html',
     		controller: 'CccSearchCtrl'
     	})
-    	.when('/components/form',{
-    		templateUrl: 'html/components/form.html',
-    		controller: 'FormCtrl'
+    	.when('/404',{
+    		templateUrl: 'html/404.html'
     	})
     	.otherwise({
-            redirectTo: '/inspections'
+            redirectTo: '/404'
         })
     }
 ])

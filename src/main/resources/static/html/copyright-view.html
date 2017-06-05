@@ -1,0 +1,171 @@
+<section class="content-header">
+	<h1>双证详情</h1>
+</section>
+
+
+<!-- 查看页 -->
+<section class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box box-info">
+				<div class="box-header">
+					<a ng-href="#/copyright/edit?id={{cpId}}" class="text-muted"> <i
+						class="fa fa-edit"></i></a>
+				</div>
+				<div class="box-body">
+					<table class="table table-striped view-table">
+						<thead>
+							<tr>
+								<th colspan="2">信息总览</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>软件名称</td>
+								<td>{{digest.softwareName}}</td>
+							</tr>
+							<tr>
+								<td>软件简称</td>
+								<td>{{digest.abbreviation}}</td>
+							</tr>
+							<tr>
+								<td>软件型号</td>
+								<td>{{digest.model}}</td>
+							</tr>
+							<tr>
+								<td>负责人</td>
+								<td>{{digest.charge}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="box-body">
+					<table class="table table-striped view-table">
+						<thead>
+							<tr>
+								<th colspan="2">软件著作权</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>软著登记号</td>
+								<td>{{digest.crNo}}</td>
+							</tr>
+							<tr>
+								<td>软著签发日期</td>
+								<td>{{digest.crDate| date:'yyyy-MM-dd'}}</td>
+							</tr>
+							<tr>
+								<td>软著链接</td>
+								<td><span ng-if="!hasCrURL">{{digest.crUrl}}</span> <a
+									ng-if="hasCrURL" ng-href="{{digest.crUrl}}" target="_blank">{{digest.crUrl}}</a>
+								</td>
+							</tr>
+							<tr>
+								<td>认证机构</td>
+								<td>{{digest.crOrganization}}</td>
+							</tr>
+							<tr>
+								<td>软件类型</td>
+								<td>{{digest.crSoftwareType}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="box-body">
+					<table class="table table-striped view-table">
+						<thead>
+							<tr>
+								<th colspan="2">软件产品登记证书</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>证书编号</td>
+								<td>{{digest.rgNo}}</td>
+							</tr>
+							<tr>
+								<td>登记日期</td>
+								<td>{{digest.rgDate| date:'yyyy-MM-dd'}}</td>
+							</tr>
+							<tr>
+								<td>登记有效期</td>
+								<td>{{digest.rgExpiryDate| date:'yyyy-MM-dd'}}</td>
+							</tr>
+							<tr>
+								<td>链接</td>
+								<td><span ng-if="!hasRgURL">{{digest.rgUrl}}</span> <a
+									ng-if="hasRgURL" ng-href="{{digest.rgUrl}}" target="_blank">{{digest.rgUrl}}</a>
+								</td>
+							<tr>
+								<td>认证机构</td>
+								<td>{{digest.rgOrganization}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="box-body">
+					<table class="table table-striped view-table">
+						<thead>
+							<tr>
+								<th colspan="2">软件测评报告</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>测评报告号</td>
+								<td>{{digest.epNo}}</td>
+							</tr>
+							<tr>
+								<td>签发日期</td>
+								<td>{{digest.epDate | date:'yyyy-MM-dd'}}</td>
+							</tr>
+							<tr>
+								<td>链接</td>
+								<td><span ng-if="!hasEpURL">{{digest.epUrl}}</span> <a
+									ng-if="hasEpURL" ng-href="{{digest.epUrl}}" target="_blank">{{digest.epUrl}}</a>
+								</td>
+							</tr>
+							<tr>
+								<td>认证机构</td>
+								<td>{{digest.epOrganization}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="box-body">
+					<table class="table table-striped view-table">
+						<thead>
+							<tr>
+								<th colspan="2">类别界定报告</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>界定报告号</td>
+								<td>{{digest.cdNo}}</td>
+							</tr>
+							<tr>
+								<td>鉴定日期</td>
+								<td>{{digest.cdDate| date:'yyyy-MM-dd'}}</td>
+							</tr>
+							<tr>
+								<td>链接</td>
+								<td><span ng-if="!hasCdURL">{{digest.cdUrl}}</span> <a
+									ng-if="hasCdURL" ng-href="{{digest.cdUrl}}" target="_blank">{{digest.cdUrl}}</a>
+								</td>
+							</tr>
+							<tr>
+								<td>认证机构</td>
+								<td>{{digest.cdOrganization}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

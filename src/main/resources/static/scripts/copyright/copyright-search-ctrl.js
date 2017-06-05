@@ -13,7 +13,6 @@ angular.module('enterprise-quality').controller('CopyrightSearchCtrl', ['$scope'
             getList($scope.pagination.page, $scope.pagination.size);
         };
 
-        //todo url中读取searchInput
         $scope.searchInput = {
         	"field": $location.search().f,
         	"keyword":$location.search().kw

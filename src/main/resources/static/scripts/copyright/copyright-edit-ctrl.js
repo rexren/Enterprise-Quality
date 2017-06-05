@@ -90,8 +90,8 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
             };
 
             // back
-            $scope.back = function(){
-                $location.url('/copyright');
+            $scope.back = function() {
+            	window.history.back();
             }
 
         }]);

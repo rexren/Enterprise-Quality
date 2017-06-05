@@ -9,4 +9,8 @@
 
 .clear-top-border{
 	border-top: 0  !important;
+} 
+
+.view-table tbody tr td:nth-child(1){
+	width: 150px;
 }

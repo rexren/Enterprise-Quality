@@ -20,6 +20,4 @@ angular.module('enterprise-quality').controller('CccSearchCtrl', ['$scope','$loc
         };
         
         console.log($scope.searchInput);
-        
-        
     }]);

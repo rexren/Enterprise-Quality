@@ -52,9 +52,10 @@ angular.module('enterprise-quality')
              * 查看详情
              */
             $scope.view = function(item){
-            	$location.url('/inspections/view?id='+item.id);
+            	$location.url('/copyright/view?id='+item.id);
             }
             
+            //TODO complete fields
             $scope.fields = [{
             	name: '全部',
             	value: ''
@@ -83,19 +84,16 @@ angular.module('enterprise-quality')
             	
             $scope.searchInput = {
             	"field":"",
-            	"keyword":"",
-            	"contentKeyword":""
+            	"keyword":""
             };
             
             /**  
     	     *   搜索
     	     */
             $scope.search = function (input) {
-                $location.url('/inspections/search?f='+input.field+'&kw='+input.keyword+'&c='+input.contentKeyword);
+                $location.url('/inspections/search?f='+input.field+'&kw='+input.keyword);
             };
-            
-            
-                       
+                 
             /**  
     	     *   导入excel文件列表
     	     */

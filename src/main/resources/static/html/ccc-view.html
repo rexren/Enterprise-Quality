@@ -1,0 +1,63 @@
+<section class="content-header">
+    <h1>CCC详情</h1>
+</section>
+
+
+<!-- 查看页 -->
+<section class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box box-info">
+				<div class="box-header">
+					<a ng-href="#/ccc/edit?id={{cccId}}" class="text-muted"> <i
+						class="fa fa-edit"></i></a>
+				</div>
+				<div class="box-body">
+					<table class="table table-striped view-table">
+						<thead>
+							<tr>
+								<th colspan="2">信息总览</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>文件编号</td>
+								<td>{{digest.docNo}}</td>
+							</tr>
+							<tr>
+								<td>产品型号</td>
+								<td>{{digest.model}}</td>
+							</tr>
+							<tr>
+								<td>产品名称</td>
+								<td>{{digest.productName}}</td>
+							</tr>
+							<tr>
+								<td>颁发日期</td>
+								<td>{{digest.awardDate | date:'yyyy-MM-dd'}}</td>
+							</tr>
+							<tr>
+								<td>有效日期</td>
+								<td>{{digest.expiryDate | date:'yyyy-MM-dd'}}</td>
+							</tr>
+							<tr>
+								<td>链接</td>
+								<td><span ng-if="!hasURL">{{digest.url}}</span> <a
+									ng-if="hasURL" ng-href="{{digest.url}}" target="_blank">{{digest.url}}</a>
+								</td>
+							</tr>
+							<tr>
+								<td>认证机构</td>
+								<td>{{digest.organization}}</td>
+							</tr>
+							<tr>
+								<td>备注</td>
+								<td>{{digest.organization}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

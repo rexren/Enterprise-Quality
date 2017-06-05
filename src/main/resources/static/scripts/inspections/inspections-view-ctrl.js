@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('enterprise-quality').controller('InspectionsViewCtrl', 
-	function($scope, $location, $http, $q, FileUploadService){
+	function($scope, $location, $http, $q){
 		/*initialization*/
 	    $scope.digest = 
 	    {
@@ -63,7 +63,7 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl',
 		    });
 
 		    $http.get('/inspections/contents.do',{params:param}).success(function(res){
-				if(res.listContent.list.length>0){
+				if(res.listContent&&res.listContent.list.length>0){
 	        		// rearrange contentList data to the template
 		        	$scope.contentHead  = [res.listContent.list[0].caseId, res.listContent.list[0].caseName, res.listContent.list[0].caseDescription];
 		        	var cachedCaseId = "";
@@ -91,8 +91,8 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl',
         
 
         // back
-        $scope.back = function(){
-            $location.url('/inspections');
+        $scope.back = function() {
+        	window.history.back();
         }
 
     });
