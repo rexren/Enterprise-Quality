@@ -65,7 +65,6 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 
 		<!-->we use h2 to test< -->
@@ -86,60 +85,78 @@
 			<artifactId>json</artifactId>
 			<version>20160810</version>
 		</dependency>
-
+		
+		<dependency>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-resources-plugin</artifactId>
+		    <version>2.4.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
-		<defaultGoal>compile</defaultGoal>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<resources>
+			<!-- 控制资源文件的拷贝 -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>application.properties</exclude>
+					<exclude>application-dev.properties</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.springframework</groupId>
-						<artifactId>springloaded</artifactId>
-						<version>1.2.1.RELEASE</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath> <!-- 增加classpath -->
-							<classpathPrefix>lib/</classpathPrefix> <!-- classpath路径前缀 -->
-							<mainClass>com.hikvision.rensu.EnterpriseQualityApplication.Main</mainClass> <!-- 程序主入口类 -->
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
+			<!-- 设置源文件编码方式 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<defaultLibBundleDir>lib</defaultLibBundleDir>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<!-- 打包source文件为jar文件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<configuration>
+					<attach>true</attach>
+					<encoding>UTF-8</encoding>
+				</configuration>
 				<executions>
 					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
+						<phase>compile</phase>
 						<goals>
-							<goal>copy-dependencies</goal>
+							<goal>jar</goal>
 						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-					        <includeScope>compile</includeScope>  
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId> 
-				<configuration> <descriptors> <descriptor>assembly.xml</descriptor> </descriptors> 
-				</configuration> <executions> <execution> <id>make-assembly</id> <phase>package</phase> 
-				<goals> <goal>single</goal> </goals> </execution> </executions> </plugin> -->
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.hikvision.rensu.EnterpriseQualityApplication</mainClass>
+						</manifest>
+					</archive>
+					<descriptors>
+						<descriptor>src/assembly/assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
-
-
 </project>
