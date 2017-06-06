@@ -51,33 +51,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
         $scope.view = function(item){
         	$location.url('/inspections/view?id='+item.id);
         }
-        
-        $scope.fields = [{
-        	name: '全部',
-        	value: ''
-        }, {
-        	name:'产品型号',
-        	value: '1'
-        }, {
-        	name:'软件名称',
-        	value: '2'
-        }, {
-        	name:'测试类别',
-        	value: '3'
-        }, {
-        	name:'测试依据',
-        	value: '4'
-        }, {
-        	name:'文件编号',
-        	value: '5'
-        }, {
-        	name:'认证机构',
-        	value: '6'
-        }, {
-        	name:'备注',
-        	value: '7'
-        }]
-        	
+
         $scope.searchInput = {
         	"field":"",
         	"keyword":"",
@@ -142,5 +116,30 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
         	$scope.file = {};
             $scope.fileName = '';
 		};
-        
+		
+		$scope.fields = [{
+        	name: '全部',
+        	value: ''
+        }, {
+        	name:'产品型号',
+        	value: '1'
+        }, {
+        	name:'软件名称',
+        	value: '2'
+        }, {
+        	name:'测试类别',
+        	value: '3'
+        }, {
+        	name:'测试依据',
+        	value: '4'
+        }, {
+        	name:'文件编号',
+        	value: '5'
+        }, {
+        	name:'认证机构',
+        	value: '6'
+        }, {
+        	name:'备注',
+        	value: '7'
+        }]
     }]);

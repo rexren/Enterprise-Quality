@@ -18,6 +18,23 @@ angular.module('enterprise-quality').controller('CccSearchCtrl', ['$scope','$loc
         	"field": $location.search().f,
         	"keyword":$location.search().kw
         };
+       
+        $http.get('/ccc/search.do', {
+            params: $scope.searchInput
+        }).success(function(res) {
+            if (res.code == 0) {
+                $scope.list = res.listContent.list;
+                $scope.pagination.totalElements = res.listContent.totalElements;
+                for (var i = 0; i < $scope.list.length; i++) {
+                    $scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].url) ? true : false;
+                }
+            } else {
+                //TODO other exceptions
+                Toastr.error("系统繁忙");
+            }
+        }).error(function(res, status) {
+            Toastr.error("getListByAjax error: " + status);
+        })
         
-        console.log($scope.searchInput);
+        
     }]);

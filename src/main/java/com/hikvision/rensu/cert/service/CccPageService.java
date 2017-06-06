@@ -155,4 +155,20 @@ public class CccPageService {
 		
 	}
 
+	/**
+	 * 模糊搜索关键字
+	 */
+	public Page<CccPage> searchCccListByPage(String fieldName, String[] keywordList, int pn, int ps, String sortBy,
+			int dir) {
+		Page<CccPage> p = null;
+		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
+		Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy));
+		String keywords = "%";
+		for(int i =0;i<keywordList.length;i++){
+			keywords = keywords.concat(keywordList[i]+"%");
+		}
+		//p = cccPageRepository.searchCccByMyKeyword(fieldName, keywords, page);
+		return p;
+	}
+
 }

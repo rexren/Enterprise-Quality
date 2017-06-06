@@ -1,6 +1,7 @@
 package com.hikvision.rensu.cert.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,7 +31,7 @@ import com.hikvision.rensu.cert.support.ListResult;
 @RequestMapping("/ccc")
 public class CccPageController {
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
-	private final static String SORT_TYPEINSPECTION_UPDATEDATE = "UpdateDate";
+	private final static String SORT_TYPEINSPECTION_UPDATEDATE = "updateDate";
 
 	@Autowired
     private CccPageService cccPageService;
@@ -225,5 +226,60 @@ public class CccPageController {
 		return c;
 	}
 	
+	/**
+	 * 关键词搜索CCC列表
+	 * 
+	 * @param pageNum
+	 *            页码 默认为第一页
+	 * @param pageSize
+	 *            页大小 默认20条/页
+	 * @param sortBy
+	 *            需要倒序排序的字段，默认为更新时间UpdateAt字段
+	 * @param direction
+	 *            <=0表示降序，>0为升序，默认为降序
+	 * @return 包含型检数据对象的返回对象
+	 */
+	@RequestMapping(value ="/search.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ListResult searchCCCList(Integer field, String keyword, Integer pageNum, Integer pageSize, String sortBy, Integer direction) {
+		int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
+		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
+		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
+		if (StringUtils.isBlank(sortBy)) {
+			sortBy = SORT_TYPEINSPECTION_UPDATEDATE; // 默认按照更新时间倒序
+		}
+		String fieldName;
+		if(field == null){ 
+			fieldName = "";
+		}else{
+			switch (field) {
+				case 1: fieldName="docNo";break;
+				case 2: fieldName="model";break;
+				case 3: fieldName="productName";break;
+				case 4: fieldName="remarks";break;
+				default: fieldName="";break;
+			}
+			
+		}		
+		if (StringUtils.isBlank(keyword)) {
+			keyword = ""; // 默认按照更新时间倒序
+		}
+		//TODO 空格分词
+		String[] keywordList = StringUtils.split(keyword);
+		ListResult res = new ListResult();
+		try {
+			//TODO 搜索函数 Integer pageNum, Integer pageSize, String sortBy, Integer direction
+			Page<CccPage> p = cccPageService.searchCccListByPage(fieldName, keywordList, pn, ps, sortBy, dir);
+			res.setListContent(new ListContent<CccPage>(p.getSize(), p.getTotalElements(), p.getTotalPages(),
+					p.getContent()));
+			res.setCode(RetStatus.SUCCESS.getCode());
+			res.setMsg(RetStatus.SUCCESS.getInfo());
+		} catch (Exception e) {
+			logger.error("", e.getMessage());
+			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+		}
+		return res;
+    }
 	
 }

@@ -85,18 +85,18 @@
 			<artifactId>json</artifactId>
 			<version>20160810</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-resources-plugin</artifactId>
-		    <version>2.4.3</version>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-resources-plugin</artifactId>
+			<version>2.4.3</version>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
+		<!-- debug模式下注释掉下面的sourceDirectory和第一个resources，否则配置文件无法生效 -->
+		<!-- <sourceDirectory>src/main/java</sourceDirectory>
 		<resources>
-			<!-- 控制资源文件的拷贝 -->
 			<resource>
 				<directory>src/main/resources</directory>
 				<excludes>
@@ -104,7 +104,7 @@
 					<exclude>application-dev.properties</exclude>
 				</excludes>
 			</resource>
-		</resources>
+		</resources> -->
 		<plugins>
 			<!-- 设置源文件编码方式 -->
 			<plugin>

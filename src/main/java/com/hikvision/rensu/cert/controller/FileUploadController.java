@@ -1,6 +1,5 @@
 package com.hikvision.rensu.cert.controller;
 
-import com.hikvision.rensu.cert.constant.RetCode;
 import com.hikvision.rensu.cert.constant.RetStatus;
 import com.hikvision.rensu.cert.service.CccPageService;
 import com.hikvision.rensu.cert.service.CopyrightService;
@@ -8,7 +7,6 @@ import com.hikvision.rensu.cert.service.TypeInspectionService;
 import com.hikvision.rensu.cert.support.ImportResult;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -49,7 +47,7 @@ public class FileUploadController {
 	public ImportResult saveIndexList(@RequestBody MultipartFile file) {
 
 		if (null == file || file.isEmpty()) {
-			return new ImportResult(RetCode.FILE_EMPTY_CODE, RetCode.FILE_EMPTY_INFO,0,0,0);
+			return new ImportResult(RetStatus.FILE_EMPTY.getCode(), RetStatus.FILE_EMPTY.getInfo(),0,0,0);
 		} else {
 			InputStream xlsxFile = null;
 			int numOfInpections = 0;

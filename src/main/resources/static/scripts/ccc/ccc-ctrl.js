@@ -35,7 +35,7 @@ angular.module('enterprise-quality')
                         Toastr.error("系统繁忙");
                     }
                 }).error(function(res, status) {
-                    alert("getListByAjax error: " + status);
+                	Toastr.error("getListByAjax error: " + status);
                 })
             }
 
@@ -56,33 +56,6 @@ angular.module('enterprise-quality')
                 $location.url('/ccc/view?id=' + item.id);
             }
 
-            //TODO complete fields
-            $scope.fields = [{
-                name: '全部',
-                value: ''
-            }, {
-                name: '软件名称',
-                value: '1'
-            }, {
-                name: '简称',
-                value: '2'
-            }, {
-                name: '软著登记号',
-                value: '3'
-            }, {
-                name: '软件产品登记证书',
-                value: '4'
-            }, {
-                name: '软件测评报告号',
-                value: '5'
-            }, {
-                name: '类别界定报告号',
-                value: '6'
-            }, {
-                name: '软件型号',
-                value: '7'
-            }]
-
             $scope.searchInput = {
                 "field": "",
                 "keyword": ""
@@ -92,7 +65,12 @@ angular.module('enterprise-quality')
              *   搜索
              */
             $scope.search = function(input) {
-                $location.url('/ccc/search?f=' + input.field + '&kw=' + input.keyword);
+            	if(input.keyword==''){
+            		Toastr.error('请输入搜索关键字');
+            	}
+            	else{            		
+            		$location.url('/ccc/search?f=' + input.field + '&kw=' + input.keyword);
+            	}
             };
             /**  
              *   导入excel文件列表
@@ -131,11 +109,10 @@ angular.module('enterprise-quality')
                         $scope.removeFile();
                         getList(1, $scope.pagination.size);
                     } else {
-                        Common.retCodeHandler(res.code);
+                    	Toastr.error(res.msg);
                     }
                 }).error(function(res) {
                     Toastr.error('Submit ajax failure');
-                    defer.reject();
                 });
                 return defer.promise;
             };
@@ -144,5 +121,23 @@ angular.module('enterprise-quality')
                 $scope.file = {};
                 $scope.fileName = '';
             };
+
+            $scope.fields = [{
+                name: '全部',
+                value: ''
+            }, {
+                name: '文件编号',  //docNo
+                value: '1'
+            }, {
+                name: '产品型号',  //model
+                value: '2'
+            }, {
+                name: '产品名称',  //productName
+                value: '3'
+            }, {
+                name: '备注',   //remarks
+                value: '4'
+            }]
+
         }
     ]);
