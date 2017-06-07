@@ -1,9 +1,5 @@
 package com.hikvision.rensu.cert.service;
 
-import com.hikvision.rensu.cert.controller.InspectionController;
-import com.hikvision.rensu.cert.domain.CccPage;
-import com.hikvision.rensu.cert.repository.CccPageRepository;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,18 +18,27 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.hikvision.rensu.cert.controller.InspectionController;
+import com.hikvision.rensu.cert.domain.CccPage;
+import com.hikvision.rensu.cert.repository.CccPageRepository;
+import com.hikvision.rensu.cert.repository.CccPageRepositoryCustom;
+
 @Service
 public class CccPageService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 
 	@Autowired
-	private CccPageRepository cccPageRepository;
+	private CccPageRepositoryCustom cccPageRepository;
+	
+	@Autowired
+	private CccPageRepository<CccPage, Long> simpleJpaRepository;
+	
 
 	public Page<CccPage> getCCCListByPage(Integer pageNum, Integer pageSize, String sortBy, int dir) {
 		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
 		Pageable page = new PageRequest(pageNum, pageSize, new Sort(d, sortBy));
-		return cccPageRepository.findAll(page);
+		return simpleJpaRepository.findAll(page);
 	}
 
 	/**
@@ -132,7 +137,7 @@ public class CccPageService {
 			}
 		}
 		try {
-			cccPageRepository.save(cccList);
+			simpleJpaRepository.save(cccList);
 			res = cccList.size();
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -143,7 +148,7 @@ public class CccPageService {
 	}
 
 	public CccPage getCccPageById(Long id) {
-		return cccPageRepository.findOne(id);
+		return simpleJpaRepository.findOne(id);
 	}
 
 	public List<CccPage> findByDocNo(String docNo) {
@@ -151,7 +156,7 @@ public class CccPageService {
 	}
 
 	public CccPage saveCccPage(CccPage c) {
-		return cccPageRepository.save(c);
+		return simpleJpaRepository.save(c);
 		
 	}
 
@@ -163,11 +168,17 @@ public class CccPageService {
 		Page<CccPage> p = null;
 		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
 		Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy));
-		String keywords = "%";
-		for(int i =0;i<keywordList.length;i++){
-			keywords = keywords.concat(keywordList[i]+"%");
+		String likePattern = "";
+		if(keywordList.length > 0){
+			likePattern.concat("%");
+			for(int i =0;i<keywordList.length;i++){
+				likePattern = likePattern.concat(keywordList[i]+"%");
+			}
+			cccPageRepository.searchCccByKeyword(fieldName,likePattern,page);
+		} else {
+			p = simpleJpaRepository.findAll(page);
 		}
-		//p = cccPageRepository.searchCccByMyKeyword(fieldName, keywords, page);
+		
 		return p;
 	}
 

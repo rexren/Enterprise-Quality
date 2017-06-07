@@ -1,8 +1,6 @@
 package com.hikvision.rensu.cert.controller;
 
 import java.util.Date;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -66,7 +64,7 @@ public class CccPageController {
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());
 		} catch (Exception e) {
-			logger.error("", e.getMessage());
+			logger.error("", e);
 			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
 			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
 		}
