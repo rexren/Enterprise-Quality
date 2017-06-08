@@ -62,7 +62,7 @@ public class CopyrightController {
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());
 		} catch (Exception e) {
-			logger.error("", e.getMessage());
+			logger.error("", e);
 			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
 			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
 		}
@@ -95,7 +95,7 @@ public class CopyrightController {
 					res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
 				}
 			} catch (Exception e) {
-				logger.error("", e.getMessage());
+				logger.error("", e);
 				res.setCode(RetStatus.SYSTEM_ERROR.getCode());
 				res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
 			}

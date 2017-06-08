@@ -161,7 +161,7 @@ public class CopyrightService {
 		try {
 			res = copyrightRepository.save(copyrights).size();
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error("",e);
 			throw e;
 		}
 		

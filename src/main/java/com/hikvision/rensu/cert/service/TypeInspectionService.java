@@ -171,7 +171,7 @@ public class TypeInspectionService {
 			typeInspectionRepository.save(inspections);
 			res = inspections.size();
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error("",e);
 			throw e;
 		}
 

@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -136,7 +135,7 @@ public class CccPageService {
 			cccPageRepository.save(cccList);
 			res = cccList.size();
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error("",e);
 			throw e;
 		}
 
@@ -166,8 +165,8 @@ public class CccPageService {
 		Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy));
 		
 		if(keywordList.length > 0){
-			List<CccPage> ccc = cccPageRepository.searchCccByKeyword(fieldName,keywordList);
-			p = new PageImpl<CccPage>(ccc, page, ccc.size());
+			//List<CccPage> ccc = cccPageRepository.searchCccByKeyword(fieldName,keywordList);
+			//p = new PageImpl<CccPage>(ccc, page, ccc.size());
 		} else {
 			p = cccPageRepository.findAll(page);
 		}

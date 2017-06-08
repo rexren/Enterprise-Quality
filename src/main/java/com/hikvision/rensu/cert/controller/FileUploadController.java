@@ -71,15 +71,15 @@ public class FileUploadController {
 				}
 				return new ImportResult(RetStatus.SUCCESS.getCode(), RetStatus.SUCCESS.getInfo(),numOfInpections,numOfCopyRight,numOf3C);
 			} catch (IOException e) {
-				logger.error("", e.getMessage());
+				logger.error("", e);
 				return StringUtils.contains(e.getMessage(), "EncryptionInfo")
 						? new ImportResult(RetStatus.FILE_ENCYPTED.getCode(), RetStatus.FILE_ENCYPTED.getInfo())
 						: new ImportResult(RetStatus.FILE_PARSING_ERROR.getCode(), RetStatus.FILE_PARSING_ERROR.getInfo());
 			} catch (EncryptedDocumentException | InvalidFormatException e) {
-				logger.error("", e.getMessage());
+				logger.error("", e);
 				return new ImportResult(RetStatus.FILE_INVALID.getCode(), RetStatus.FILE_INVALID.getInfo());
 			} catch (Exception e) {
-				logger.error("", e.getMessage());
+				logger.error("", e);
 				return new ImportResult(RetStatus.FILE_PARSING_ERROR.getCode(), RetStatus.FILE_PARSING_ERROR.getInfo());
 			} finally {
 				IOUtils.closeQuietly(xlsxFile);
