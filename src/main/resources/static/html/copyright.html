@@ -23,7 +23,7 @@
 							</div>
 							<div class="form-group pull-right">
 								<label class="control-label"> </label>
-								<input type="text" class="form-control" placeholder="输入关键字" ng-model="searchInput.keyword">
+								<input type="text" class="form-control" placeholder="输入关键字" ng-model="searchInput.keyword" ng-keydown="enterEvent($event)">
 							</div>
 							<div class="form-group pull-right">
 								<select class="form-control" style="width: 150px" ng-model="searchInput.field" ng-options="f.value as f.name for f in fields"></select>

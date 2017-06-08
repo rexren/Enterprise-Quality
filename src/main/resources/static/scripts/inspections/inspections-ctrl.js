@@ -18,14 +18,15 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
             var param = {pageNum:page,pageSize:size};
             $http.get('/inspections/list.do',{params:param}).success(function(res){
             	if(res.code==0){
-            		$scope.list = res.listContent.list;
-            		$scope.pagination.totalElements = res.listContent.totalElements;
-            		for(var i=0; i<$scope.list.length;i++){
-            			$scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].certUrl)? true : false;          
+            		$scope.list = res.listContent?res.listContent.list:null;
+    	            $scope.pagination.totalElements = res.listContent?res.listContent.totalElements:null;
+    	            if($scope.list && $scope.list.length > 0){
+    	            	for(var i=0; i<$scope.list.length;i++){
+    	            		$scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].certUrl)? true : false;          
+    	            	}
             		}
             	}else{
-            		//TODO other exceptions
-            		Toastr.error("系统繁忙");
+            		Toastr.error(res.msg);
             	}
             }).error(function(res, status, headers, config){
             	Toastr.error("AjaxError: "+ status);
@@ -39,7 +40,6 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
             if(item){
                 $location.url('/inspections/edit?id='+item.id);
             }
-            // 新建
             else{
                 $location.url('/inspections/edit');
             }
@@ -65,6 +65,13 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
             $location.url('/inspections/search?f='+input.field+'&kw='+input.keyword+'&c='+input.contentKeyword);
         };
         
+        $scope.enterEvent = function(e) {
+            var keycode = window.event?e.keyCode:e.which;
+            if(keycode==13){
+            	e.preventDefault();
+                $scope.search($scope.searchInput);
+            }
+        }
         
         /**  
 	     *   导入excel文件列表
@@ -103,10 +110,10 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
             		$scope.removeFile();
                 	getList(1, $scope.pagination.size);
                 } else{
-                	Common.retCodeHandler(res.code);
+                	Toastr.error(res.msg);
                 }
             }).error(function(res) {
-            	Toastr.error('Submit ajax failure');
+            	Toastr.error('网络错误');
                 defer.reject();
             });
             return defer.promise;
@@ -121,25 +128,25 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$l
         	name: '全部',
         	value: ''
         }, {
-        	name:'产品型号',
+        	name:'产品型号', //model
         	value: '1'
         }, {
-        	name:'软件名称',
+        	name:'软件名称', //name
         	value: '2'
         }, {
-        	name:'测试类别',
+        	name:'测试类别', //testType
         	value: '3'
         }, {
-        	name:'测试依据',
+        	name:'测试依据', //basis
         	value: '4'
         }, {
-        	name:'文件编号',
+        	name:'文件编号', //docNo
         	value: '5'
         }, {
-        	name:'认证机构',
+        	name:'认证机构', //organization
         	value: '6'
         }, {
-        	name:'备注',
+        	name:'备注', //remarks
         	value: '7'
         }]
     }]);

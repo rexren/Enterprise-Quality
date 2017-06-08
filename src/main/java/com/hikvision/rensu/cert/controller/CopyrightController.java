@@ -24,16 +24,16 @@ import com.hikvision.rensu.cert.support.ListResult;
 @Controller
 @RequestMapping("/copyright")
 public class CopyrightController {
-	
-	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
-	private final static String SORT_TYPEINSPECTION_UPDATEDATE = "UpdateDate";
 
-    @Autowired
-    private CopyrightService copyrightService;
-   
-    /**
-     * 获取双证列表页
-   	 * 
+	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
+	private final static String SORTBY_UPDATEDATE = "UpdateDate";
+
+	@Autowired
+	private CopyrightService copyrightService;
+
+	/**
+	 * 获取双证列表页
+	 * 
 	 * @param pageNum
 	 *            页码 默认为第一页
 	 * @param pageSize
@@ -44,20 +44,21 @@ public class CopyrightController {
 	 *            <=0表示降序，>0为升序，默认为降序
 	 * @return 包含双证数据对象的返回对象
 	 */
-    @RequestMapping(value ="/list.do", method = RequestMethod.GET)
-    @ResponseBody
-    public ListResult getListByPage(Integer pageNum, Integer pageSize, String sortBy, Integer direction) {
+	@RequestMapping(value = "/list.do", method = RequestMethod.GET)
+	@ResponseBody
+	public ListResult getListByPage(Integer pageNum, Integer pageSize, String sortBy, Integer direction) {
 		int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORT_TYPEINSPECTION_UPDATEDATE; // 默认按照更新时间倒序
+			sortBy = SORTBY_UPDATEDATE; // 默认按照更新时间倒序
 		}
 		ListResult res = new ListResult();
 		try {
 			Page<Copyright> p = copyrightService.getCopyrightByPage(pn, ps, sortBy, dir);
-			res.setListContent(new ListContent<Copyright>(p.getSize(), p.getTotalElements(), 
-					p.getTotalPages(),p.getContent()));
+			if(null!=p){
+				res.setListContent(new ListContent<Copyright>(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
+			}
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());
 		} catch (Exception e) {
@@ -66,25 +67,26 @@ public class CopyrightController {
 			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
 		}
 		return res;
-    }
-    
-    /**
-     * 获取双证单条数据
-     * @param id
+	}
+
+	/**
+	 * 获取双证单条数据
+	 * 
+	 * @param id
 	 *            双证id
 	 * @return 包含双证数据对象的返回对象
 	 */
-    @RequestMapping(value ="/detail.do", method = RequestMethod.GET)
-    @ResponseBody
-    public AjaxResult<Copyright> getCopyright(Long id) {
-    	AjaxResult<Copyright> res = new AjaxResult<Copyright>();
-    	if (null == id) {
+	@RequestMapping(value = "/detail.do", method = RequestMethod.GET)
+	@ResponseBody
+	public AjaxResult<Copyright> getCopyright(Long id) {
+		AjaxResult<Copyright> res = new AjaxResult<Copyright>();
+		if (null == id) {
 			res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
 			res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
 		} else {
 			try {
 				Copyright c = copyrightService.getCopyrightById(id);
-				if(c != null){
+				if (c != null) {
 					res.setData(c);
 					res.setCode(RetStatus.SUCCESS.getCode());
 					res.setMsg(RetStatus.SUCCESS.getInfo());
@@ -92,16 +94,16 @@ public class CopyrightController {
 					res.setCode(RetStatus.ITEM_NOT_FOUND.getCode());
 					res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
 				}
-			}catch (Exception e) {
+			} catch (Exception e) {
 				logger.error("", e.getMessage());
 				res.setCode(RetStatus.SYSTEM_ERROR.getCode());
 				res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
 			}
 		}
-    	return res;
-    }
-    
-    /**
+		return res;
+	}
+
+	/**
 	 * 新建保存单条数据
 	 * 
 	 * @param request
@@ -109,11 +111,11 @@ public class CopyrightController {
 	 * @return res 返回状态
 	 * @author langyicong
 	 */
-    @RequestMapping(value = "/save.do", method = RequestMethod.POST)
-    @ResponseBody
+	@RequestMapping(value = "/save.do", method = RequestMethod.POST)
+	@ResponseBody
 	public BaseResult saveCopyright(HttpServletRequest request) {
-    	BaseResult res = new BaseResult();
-    	/* 表单验证:关键信息softwareName不为空 */
+		BaseResult res = new BaseResult();
+		/* 表单验证:关键信息softwareName不为空 */
 		if (StringUtils.isBlank(request.getParameter("softwareName"))) {
 			res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
 			res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
@@ -139,9 +141,9 @@ public class CopyrightController {
 			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
 			return res;
 		}
-		
-    	return res;
-    }
+
+		return res;
+	}
 
 	/**
 	 * 更新单条数据
@@ -151,23 +153,23 @@ public class CopyrightController {
 	 * @return res 返回状态
 	 * @author langyicong
 	 */
-    @RequestMapping(value = "/update.do", method = RequestMethod.POST)
-    @ResponseBody
+	@RequestMapping(value = "/update.do", method = RequestMethod.POST)
+	@ResponseBody
 	public BaseResult updateCopyright(HttpServletRequest request) {
-    	BaseResult res = new BaseResult();
-    	/* if null id or null entity */
+		BaseResult res = new BaseResult();
+		/* if null id or null entity */
 		if (null == request || StringUtils.isBlank(request.getParameter("id"))) {
 			res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
 			res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
 			return res;
 		}
-		
+
 		/* 查询对应的实体，并且将页面数据更新实体内容 */
 		Long requestId = NumberUtils.toLong(request.getParameter("id"));
 		Copyright c = null;
 		try {
 			c = copyrightService.getCopyrightById(requestId);
-			if(null == c){
+			if (null == c) {
 				res.setCode(RetStatus.ITEM_NOT_FOUND.getCode());
 				res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
 				return res;
@@ -190,32 +192,38 @@ public class CopyrightController {
 			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
 			return res;
 		}
-    	return res;
-    }
-    
+		return res;
+	}
+
 	/**
 	 * 将HttpServletRequest请求体（页面参数）组装成Copyright实体
 	 * 
 	 * @param request
 	 *            页面表单数据
-	 * @param c  初始的Copyright实体，可为空（新建）或者含id（更新）
+	 * @param c
+	 *            初始的Copyright实体，可为空（新建）或者含id（更新）
 	 * @return c 转换后的Copyright实体，不包括创建时间
 	 * @throws Exception
 	 */
-    private Copyright setCopyrightProperties(HttpServletRequest request, Copyright c) throws Exception {
-		if(null == c){
+	private Copyright setCopyrightProperties(HttpServletRequest request, Copyright c) throws Exception {
+		if (null == c) {
 			c = new Copyright();
 		}
 		/* 新建 */
-		if(null == c.getId() || c.getId()<0){
+		if (null == c.getId() || c.getId() < 0) {
 			c.setCreateDate(new Date());
 		}
 		/* setXxxxDate */
-		c.setCrDate(NumberUtils.toLong(request.getParameter("crDate"))>0?new Date(NumberUtils.toLong(request.getParameter("crDate"))):null);
-		c.setRgDate(NumberUtils.toLong(request.getParameter("rgDate"))>0?new Date(NumberUtils.toLong(request.getParameter("rgDate"))):null);
-		c.setRgExpiryDate(NumberUtils.toLong(request.getParameter("rgExpiryDate"))>0?new Date(NumberUtils.toLong(request.getParameter("rgExpiryDate"))):null);
-		c.setEpDate(NumberUtils.toLong(request.getParameter("epDate"))>0?new Date(NumberUtils.toLong(request.getParameter("epDate"))):null);
-		c.setCdDate(NumberUtils.toLong(request.getParameter("cdDate"))>0?new Date(NumberUtils.toLong(request.getParameter("cdDate"))):null);
+		c.setCrDate(NumberUtils.toLong(request.getParameter("crDate")) > 0
+				? new Date(NumberUtils.toLong(request.getParameter("crDate"))) : null);
+		c.setRgDate(NumberUtils.toLong(request.getParameter("rgDate")) > 0
+				? new Date(NumberUtils.toLong(request.getParameter("rgDate"))) : null);
+		c.setRgExpiryDate(NumberUtils.toLong(request.getParameter("rgExpiryDate")) > 0
+				? new Date(NumberUtils.toLong(request.getParameter("rgExpiryDate"))) : null);
+		c.setEpDate(NumberUtils.toLong(request.getParameter("epDate")) > 0
+				? new Date(NumberUtils.toLong(request.getParameter("epDate"))) : null);
+		c.setCdDate(NumberUtils.toLong(request.getParameter("cdDate")) > 0
+				? new Date(NumberUtils.toLong(request.getParameter("cdDate"))) : null);
 		c.setUpdateDate(new Date());
 		/* set other properties */
 		c.setSoftwareName(StringUtils.trim(request.getParameter("softwareName")));
@@ -236,9 +244,85 @@ public class CopyrightController {
 		c.setModel(StringUtils.trim(request.getParameter("model")));
 		c.setCharge(StringUtils.trim(request.getParameter("charge")));
 		c.setOperator("TESTER");
-		
+
 		return c;
 	}
 
-    
+	/**
+	 * 关键词搜索Copyright列表
+	 * 
+	 * @param pageNum
+	 *            页码 默认为第一页
+	 * @param pageSize
+	 *            页大小 默认20条/页
+	 * @param sortBy
+	 *            需要倒序排序的字段，默认为更新时间UpdateAt字段
+	 * @param direction
+	 *            <=0表示降序，>0为升序，默认为降序
+	 * @return 包含搜索结果的的返回对象
+	 */
+	@RequestMapping(value = "/search.do", method = RequestMethod.GET)
+	@ResponseBody
+	public ListResult searchCopyright(Integer field, String keyword, Integer pageNum, Integer pageSize, String sortBy,
+			Integer direction) {
+		int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
+		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
+		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
+		if (StringUtils.isBlank(sortBy)) {
+			sortBy = SORTBY_UPDATEDATE; // 默认按照更新时间倒序
+		}
+		String fieldName;
+		if (field == null) {
+			fieldName = "";
+		} else {
+			switch (field) {
+			case 1:
+				fieldName = "softwareName";
+				break;
+			case 2:
+				fieldName = "abbreviation";
+				break;
+			case 3:
+				fieldName = "model";
+				break;
+			case 4:
+				fieldName = "crNo";
+				break;
+			case 5:
+				fieldName = "rgNo";
+				break;
+			case 6:
+				fieldName = "epNo";
+				break;
+			case 7:
+				fieldName = "cdNo";
+				break;
+			default:
+				fieldName = "";
+				break;
+			}
+
+		}
+		if (StringUtils.isBlank(keyword)) {
+			keyword = "";
+		}
+
+		String[] keywordList = StringUtils.split(keyword);
+		ListResult res = new ListResult();
+		try {
+			Page<Copyright> p = copyrightService.searchCopyrightByPage(fieldName, keywordList, pn, ps, sortBy, dir);
+			if(null != p){
+			res.setListContent(
+					new ListContent<Copyright>(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
+			}
+			res.setCode(RetStatus.SUCCESS.getCode());
+			res.setMsg(RetStatus.SUCCESS.getInfo());
+		} catch (Exception e) {
+			logger.error("", e);
+			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+		}
+		return res;
+	}
+
 }

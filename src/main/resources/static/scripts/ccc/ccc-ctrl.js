@@ -25,14 +25,15 @@ angular.module('enterprise-quality')
                     params: param
                 }).success(function(res) {
                     if (res.code == 0) {
-                        $scope.list = res.listContent.list;
-                        $scope.pagination.totalElements = res.listContent.totalElements;
-                        for (var i = 0; i < $scope.list.length; i++) {
-                            $scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].url) ? true : false;
+                    	$scope.list = res.listContent?res.listContent.list:null;
+        	            $scope.pagination.totalElements = res.listContent?res.listContent.totalElements:null;
+        	            if($scope.list && $scope.list.length > 0){
+        	            	for (var i = 0; i < $scope.list.length; i++) {
+        	            		$scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].url) ? true : false;
+        	            	}
                         }
                     } else {
-                        //TODO other exceptions
-                        Toastr.error("系统繁忙");
+                        Toastr.error(res.msg);
                     }
                 }).error(function(res, status) {
                 	Toastr.error("getListByAjax error: " + status);
@@ -43,7 +44,6 @@ angular.module('enterprise-quality')
                 if (item) {
                     $location.url('/ccc/edit?id=' + item.id);
                 }
-                // 新建
                 else {
                     $location.url('/ccc/edit');
                 }
@@ -65,13 +65,20 @@ angular.module('enterprise-quality')
              *   搜索
              */
             $scope.search = function(input) {
-            	if(input.keyword==''){
+            	if(input.keyword=='')
             		Toastr.error('请输入搜索关键字');
-            	}
-            	else{            		
+            	else		
             		$location.url('/ccc/search?f=' + input.field + '&kw=' + input.keyword);
-            	}
             };
+            
+            $scope.enterEvent = function(e) {
+                var keycode = window.event?e.keyCode:e.which;
+                if(keycode==13){
+                	e.preventDefault();
+                    $scope.search($scope.searchInput);
+                }
+            }
+            
             /**  
              *   导入excel文件列表
              */
@@ -138,6 +145,5 @@ angular.module('enterprise-quality')
                 name: '备注',   //remarks
                 value: '4'
             }]
-
         }
     ]);

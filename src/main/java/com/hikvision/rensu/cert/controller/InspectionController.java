@@ -79,8 +79,10 @@ public class InspectionController {
 		ListResult res = new ListResult();
 		try {
 			Page<TypeInspection> p = typeInspectionService.getInspectionByPage(pn, ps, sortBy, dir);
-			res.setListContent(new ListContent<TypeInspection>(p.getSize(), p.getTotalElements(), p.getTotalPages(),
-					p.getContent()));
+			if (null != p) {
+				res.setListContent(new ListContent<TypeInspection>(p.getSize(), p.getTotalElements(), p.getTotalPages(),
+						p.getContent()));
+			}
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());
 		} catch (Exception e) {
@@ -262,14 +264,15 @@ public class InspectionController {
 				res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
 				return res;
 			}
-			//docNo不能和除这条id对应的docNo之外的条目重复
+			// docNo不能和除这条id对应的docNo之外的条目重复
 			String docNoStripped = StringUtils.trim(request.getParameter("docNo"));
 			if (typeInspectionService.findByDocNo(docNoStripped).size() > 0
 					&& !StringUtils.equals(t.getDocNo(), docNoStripped)) {
 				res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());
 				res.setMsg(RetStatus.DOCNO_DUPLICATED.getInfo());
 				return res;
-			};
+			}
+			;
 			t = setTypeInspectionProperties(request, t); // 更新实体，包括文件名docFileName
 			List<InspectContent> contentlist = null;
 			if (file != null && !file.isEmpty()) {
@@ -358,6 +361,91 @@ public class InspectionController {
 			t.setOperator("TESTER"); // TODO 获取当前用户
 		}
 		return t;
+	}
+
+	/**
+	 * 关键词搜索TypeInspection列表
+	 * 
+	 * @param pageNum
+	 *            页码 默认为第一页
+	 * @param pageSize
+	 *            页大小 默认20条/页
+	 * @param sortBy
+	 *            需要倒序排序的字段，默认为更新时间UpdateAt字段
+	 * @param direction
+	 *            <=0表示降序，>0为升序，默认为降序
+	 * @return 包含搜索结果的的返回对象
+	 */
+	@RequestMapping(value = "/search.do", method = RequestMethod.GET)
+	@ResponseBody
+	public ListResult searchTypeInspection(Integer field, String keyword, String contentKeyword, Integer pageNum,
+			Integer pageSize, String sortBy, Integer direction) {
+		int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
+		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
+		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
+		if (StringUtils.isBlank(sortBy)) {
+			sortBy = SORT_TYPEINSPECTION_UPDATEAT; // 默认按照更新时间倒序
+		}
+		ListResult res = new ListResult();
+
+		String fieldName;
+		if (field == null) {
+			fieldName = "";
+		} else {
+			switch (field) {
+			case 1:
+				fieldName = "model";
+				break;
+			case 2:
+				fieldName = "name";
+				break;
+			case 3:
+				fieldName = "testType";
+				break;
+			case 4:
+				fieldName = "basis";
+				break;
+			case 5:
+				fieldName = "docNo";
+				break;
+			case 6:
+				fieldName = "organization";
+				break;
+			case 7:
+				fieldName = "remarks";
+				break;
+			default:
+				fieldName = "";
+				break;
+			}
+
+		}
+		if (StringUtils.isBlank(keyword)) {
+			keyword = "";
+		}
+		if (StringUtils.isBlank(contentKeyword)) {
+			contentKeyword = "";
+		}
+
+		String[] keywordList = StringUtils.split(keyword);
+
+		String[] contentKeywordList = StringUtils.split(contentKeyword);
+
+		try {
+			Page<TypeInspection> p = typeInspectionService.searchTypeInspectionByPage(fieldName, keywordList,
+					contentKeywordList, pn, ps, sortBy, dir);
+			if (null != p) {
+				res.setListContent(new ListContent<TypeInspection>(p.getSize(), p.getTotalElements(), p.getTotalPages(),
+						p.getContent()));
+			}
+			res.setCode(RetStatus.SUCCESS.getCode());
+			res.setMsg(RetStatus.SUCCESS.getInfo());
+		} catch (Exception e) {
+			logger.error("", e);
+			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+		}
+		return res;
 	}
 
 }

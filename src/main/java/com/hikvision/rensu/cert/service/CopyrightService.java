@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -180,5 +181,23 @@ public class CopyrightService {
 	 */
 	public Copyright saveCopyright(Copyright c) {
 		return copyrightRepository.save(c);
+	}
+	
+	/**
+	 * 模糊搜索关键字
+	 */
+	public Page<Copyright> searchCopyrightByPage(String fieldName, String[] keywordList, int pn, int ps, String sortBy,
+			int dir) {
+		Page<Copyright> p = null;
+		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
+		Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy));
+		
+		if(keywordList.length > 0){
+			List<Copyright> crs = copyrightRepository.searchCopyrightByKeyword(fieldName, keywordList);
+			p = new PageImpl<Copyright>(crs, page, crs.size());
+		} else {
+			p = copyrightRepository.findAll(page);
+		}
+		return p;
 	}
 }

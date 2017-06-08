@@ -11,9 +11,9 @@
 
 				<div class="box-header">
 					<h4>
-						检索关键字：{{searchInput.field}} {{searchInput.keyword}} {{searchInput.contentKeyword}}
+						检索关键字：{{searchField}}：{{searchInput.keyword}}，内容关键字：{{searchInput.contentKeyword}}
 					</h4>
-					共xx条
+					共{{pagination.totalElements}}条
 				</div>
 
 				<div class="box-body">
@@ -47,8 +47,9 @@
 									<td>version</td>
 									<td>testType</td>
 									<td>item.basis</td>
-									<td style="word-wrap: break-word;"><a
-										href="#/inspections/view?id=153">公沪检177332</a></td>
+									<td style="word-wrap: break-word;">
+										<a href="#/inspections/view?id=153">公沪检177332</a>
+									</td>
 									<td>item.颁发日期</td>
 									<td><a ng-if="true" ng-href="item.certUrl" target="_blank">link</a>
 									</td>

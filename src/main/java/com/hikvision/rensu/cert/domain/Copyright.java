@@ -120,7 +120,6 @@ public class Copyright implements Serializable{
     @Column
     private String epOrganization;
 
-    
     /**
      * 类别界定报告编号
      */

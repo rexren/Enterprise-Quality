@@ -55,37 +55,40 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl',
 	        		};
 	        		$scope.fileName = res.docFilename;
 	        	} else{
-            		//TODO other exceptions
-            		Toastr.error("系统繁忙");
+	        		Toastr.error(res.msg);
             	} 
 		    }).error(function(res, status, headers, config){
-		        alert("getListByAjax error: "+status);
+		    	Toastr.error("getListByAjax error: "+status);
 		    });
 
 		    $http.get('/inspections/contents.do',{params:param}).success(function(res){
-				if(res.listContent&&res.listContent.list.length>0){
-	        		// rearrange contentList data to the template
-		        	$scope.contentHead  = [res.listContent.list[0].caseId, res.listContent.list[0].caseName, res.listContent.list[0].caseDescription];
-		        	var cachedCaseId = "";
-		        	var cachedCaseName = "";
-		        	var cIndex = -1;
-		        	for(var i = 1;i<res.listContent.list.length;i++){
-		        		if(cachedCaseId!=res.listContent.list[i].caseId){
-		        			cachedCaseId = res.listContent.list[i].caseId;
-		        			cachedCaseName = res.listContent.list[i].caseName;
-		        			$scope.contentList.push({
-		        				'caseId':res.listContent.list[i].caseId,
-		        				'caseName':res.listContent.list[i].caseName,
-		        				'caseDescription': [res.listContent.list[i].caseDescription]
-		        			});
-		        			cIndex++;
-		        		} else{
-		        			$scope.contentList[cIndex].caseDescription.push(res.listContent.list[i].caseDescription);
-		        		}
+		    	if(res.code == 0){
+					if(res.listContent && res.listContent.list.length>0){
+		        		// rearrange contentList data to the template
+			        	$scope.contentHead  = [res.listContent.list[0].caseId, res.listContent.list[0].caseName, res.listContent.list[0].caseDescription];
+			        	var cachedCaseId = "";
+			        	var cachedCaseName = "";
+			        	var cIndex = -1;
+			        	for(var i = 1;i<res.listContent.list.length;i++){
+			        		if(cachedCaseId!=res.listContent.list[i].caseId){
+			        			cachedCaseId = res.listContent.list[i].caseId;
+			        			cachedCaseName = res.listContent.list[i].caseName;
+			        			$scope.contentList.push({
+			        				'caseId':res.listContent.list[i].caseId,
+			        				'caseName':res.listContent.list[i].caseName,
+			        				'caseDescription': [res.listContent.list[i].caseDescription]
+			        			});
+			        			cIndex++;
+			        		} else{
+			        			$scope.contentList[cIndex].caseDescription.push(res.listContent.list[i].caseDescription);
+			        		}
+			        	}
 		        	}
-	        	}
+		    	}else {
+		    		Toastr.error(res.msg);
+		    	}
 		   	}).error(function(res, status, headers, config){
-		        alert("getListByAjax error: "+status);
+		   		Toastr.error("getListByAjax error: "+status);
 		    });
         }
         

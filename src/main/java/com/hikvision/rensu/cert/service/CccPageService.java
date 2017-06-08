@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import com.hikvision.rensu.cert.controller.InspectionController;
 import com.hikvision.rensu.cert.domain.CccPage;
 import com.hikvision.rensu.cert.repository.CccPageRepository;
-import com.hikvision.rensu.cert.repository.CccPageRepositoryCustom;
 
 @Service
 public class CccPageService {
@@ -29,16 +29,12 @@ public class CccPageService {
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 
 	@Autowired
-	private CccPageRepositoryCustom cccPageRepository;
+	private CccPageRepository cccPageRepository;
 	
-	@Autowired
-	private CccPageRepository<CccPage, Long> simpleJpaRepository;
-	
-
 	public Page<CccPage> getCCCListByPage(Integer pageNum, Integer pageSize, String sortBy, int dir) {
 		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
 		Pageable page = new PageRequest(pageNum, pageSize, new Sort(d, sortBy));
-		return simpleJpaRepository.findAll(page);
+		return cccPageRepository.findAll(page);
 	}
 
 	/**
@@ -137,7 +133,7 @@ public class CccPageService {
 			}
 		}
 		try {
-			simpleJpaRepository.save(cccList);
+			cccPageRepository.save(cccList);
 			res = cccList.size();
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -148,7 +144,7 @@ public class CccPageService {
 	}
 
 	public CccPage getCccPageById(Long id) {
-		return simpleJpaRepository.findOne(id);
+		return cccPageRepository.findOne(id);
 	}
 
 	public List<CccPage> findByDocNo(String docNo) {
@@ -156,29 +152,25 @@ public class CccPageService {
 	}
 
 	public CccPage saveCccPage(CccPage c) {
-		return simpleJpaRepository.save(c);
+		return cccPageRepository.save(c);
 		
 	}
 
 	/**
 	 * 模糊搜索关键字
 	 */
-	public Page<CccPage> searchCccListByPage(String fieldName, String[] keywordList, int pn, int ps, String sortBy,
+	public Page<CccPage> searchCccByPage(String fieldName, String[] keywordList, int pn, int ps, String sortBy,
 			int dir) {
 		Page<CccPage> p = null;
 		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
 		Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy));
-		String likePattern = "";
-		if(keywordList.length > 0){
-			likePattern.concat("%");
-			for(int i =0;i<keywordList.length;i++){
-				likePattern = likePattern.concat(keywordList[i]+"%");
-			}
-			cccPageRepository.searchCccByKeyword(fieldName,likePattern,page);
-		} else {
-			p = simpleJpaRepository.findAll(page);
-		}
 		
+		if(keywordList.length > 0){
+			List<CccPage> ccc = cccPageRepository.searchCccByKeyword(fieldName,keywordList);
+			p = new PageImpl<CccPage>(ccc, page, ccc.size());
+		} else {
+			p = cccPageRepository.findAll(page);
+		}
 		return p;
 	}
 

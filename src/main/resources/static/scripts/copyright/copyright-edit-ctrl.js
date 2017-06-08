@@ -32,36 +32,39 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
             if(urlId){
             	var param = {id: urlId}; 
             	$http.get('/copyright/detail.do',{params:param}).success(function(res){
-    	        	
-    	        	var crDate =  res.data.crDate?new Date(Number(res.data.crDate)):null;
-    	        	var rgDate =  res.data.rgDate?new Date(Number(res.data.rgDate)):null;
-    	        	var rgExpiryDate =  res.data.rgExpiryDate?new Date(Number(res.data.rgExpiryDate)):null;
-    	        	var epDate =  res.data.epDate?new Date(Number(res.data.epDate)):null;
-    	        	var cdDate =  res.data.crDate?new Date(Number(res.data.cdDate)):null;
-       	
-    	        	$scope.formData = {
-	                    'softwareName': res.data.softwareName,
-	                    'abbreviation': res.data.abbreviation,
-	                    'crNo': res.data.crNo,
-	                    'crDate': crDate,
-	                    'crUrl': res.data.crUrl,
-	                    'crOrganization': res.data.crOrganization,
-	                    'crSoftwareType': res.data.crSoftwareType,
-	                    'rgNo': res.data.rgNo,
-	                    'rgDate': rgDate,
-	                    'rgExpiryDate':rgExpiryDate,
-	                    'rgUrl': res.data.rgUrl,
-	                    'rgOrganization': res.data.rgOrganization,
-	                    'epNo': res.data.epNo,
-	                    'epDate': epDate,
-	                    'epUrl': res.data.epUrl,
-	                    'epOrganization': res.data.epOrganization,
-	                    'cdNo': res.data.cdNo,
-	                    'cdDate': cdDate,
-	                    'cdUrl': res.data.cdUrl,
-	                    'cdOrganization': res.data.cdOrganization,
-	                    'model': res.data.model,
-	                    'charge': res.data.charge
+    	        	if(res.code == 0){
+	    	        	var crDate =  res.data.crDate?new Date(Number(res.data.crDate)):null;
+	    	        	var rgDate =  res.data.rgDate?new Date(Number(res.data.rgDate)):null;
+	    	        	var rgExpiryDate =  res.data.rgExpiryDate?new Date(Number(res.data.rgExpiryDate)):null;
+	    	        	var epDate =  res.data.epDate?new Date(Number(res.data.epDate)):null;
+	    	        	var cdDate =  res.data.crDate?new Date(Number(res.data.cdDate)):null;
+	       	
+	    	        	$scope.formData = {
+		                    'softwareName': res.data.softwareName,
+		                    'abbreviation': res.data.abbreviation,
+		                    'crNo': res.data.crNo,
+		                    'crDate': crDate,
+		                    'crUrl': res.data.crUrl,
+		                    'crOrganization': res.data.crOrganization,
+		                    'crSoftwareType': res.data.crSoftwareType,
+		                    'rgNo': res.data.rgNo,
+		                    'rgDate': rgDate,
+		                    'rgExpiryDate':rgExpiryDate,
+		                    'rgUrl': res.data.rgUrl,
+		                    'rgOrganization': res.data.rgOrganization,
+		                    'epNo': res.data.epNo,
+		                    'epDate': epDate,
+		                    'epUrl': res.data.epUrl,
+		                    'epOrganization': res.data.epOrganization,
+		                    'cdNo': res.data.cdNo,
+		                    'cdDate': cdDate,
+		                    'cdUrl': res.data.cdUrl,
+		                    'cdOrganization': res.data.cdOrganization,
+		                    'model': res.data.model,
+		                    'charge': res.data.charge
+	    	        	}
+    	        	} else{
+    	        		Toastr.error(res.msg);
     	        	}
     		    }).error(function(res, status, headers, config){
     		        Toastr.error("getListByAjax error: "+status);

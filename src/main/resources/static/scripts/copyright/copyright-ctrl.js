@@ -20,17 +20,18 @@ angular.module('enterprise-quality')
                 var param = {pageNum:page,pageSize:size};
                 $http.get('/copyright/list.do',{params:param}).success(function(res){
                 	if(res.code==0){
-                		$scope.list = res.listContent.list;
-                		$scope.pagination.totalElements = res.listContent.totalElements;
-                		for(var i=0; i<$scope.list.length; i++){
-                			$scope.list[i].hasCrURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].crUrl)? true : false;
-                			$scope.list[i].hasCdURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].cdUrl)? true : false;
-                			$scope.list[i].hasRgURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].rgUrl)? true : false;
-                			$scope.list[i].hasEpURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].epUrl)? true : false;
+                		$scope.list = res.listContent?res.listContent.list:null;
+        	            $scope.pagination.totalElements = res.listContent?res.listContent.totalElements:null;
+                		 if($scope.list && $scope.list.length > 0){
+                			 for(var i=0; i<$scope.list.length; i++){
+	                			$scope.list[i].hasCrURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].crUrl)? true : false;
+	                			$scope.list[i].hasCdURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].cdUrl)? true : false;
+	                			$scope.list[i].hasRgURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].rgUrl)? true : false;
+	                			$scope.list[i].hasEpURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].epUrl)? true : false;
+                			 }
                 		}
                 	}else{
-                		//TODO other exceptions
-                		Toastr.error("系统繁忙");
+                		Toastr.error(res.msg);
                 	}
                 }).error(function(res, status, headers, config){
                 	Toastr.error("AjaxError: "+ status);
@@ -46,7 +47,6 @@ angular.module('enterprise-quality')
                     $location.url('/copyright/edit');
                 }
             }
-
 
             /** 
              * 查看详情
@@ -64,9 +64,20 @@ angular.module('enterprise-quality')
     	     *   搜索
     	     */
             $scope.search = function (input) {
-                $location.url('/copyright/search?f='+input.field+'&kw='+input.keyword);
+            	if(input.keyword=='')
+            		Toastr.error('请输入搜索关键字');
+            	else
+            		$location.url('/copyright/search?f='+input.field+'&kw='+input.keyword);
             };
-                 
+            
+            $scope.enterEvent = function(e) {
+                var keycode = window.event?e.keyCode:e.which;
+                if(keycode==13){
+                	e.preventDefault();
+                    $scope.search($scope.searchInput);
+                }
+            }
+            
             /**  
     	     *   导入excel文件列表
     	     */
@@ -105,7 +116,7 @@ angular.module('enterprise-quality')
                 		$scope.removeFile();
                     	getList(1, $scope.pagination.size);
                     } else{
-                    	Common.retCodeHandler(res.code);
+                    	Toastr.error(res.msg);
                     }
                 }).error(function(res) {
                 	Toastr.error('Submit ajax failure');
@@ -123,25 +134,25 @@ angular.module('enterprise-quality')
             	name: '全部',
             	value: ''
             }, {
-            	name:'软件名称',
+            	name:'软件名称',  //softwareName
             	value: '1'
-            }, {
-            	name:'简称',
+            }, {     
+            	name:'简称',  //abbreviation
             	value: '2'
-            }, {
-            	name:'软著登记号',
+            }, {       	
+            	name:'软件型号',   //model
             	value: '3'
             }, {
-            	name:'软件产品登记证书',
+            	name:'软著登记号', //crNo
             	value: '4'
             }, {
-            	name:'软件测评报告号',
+            	name:'软件产品登记证书', //rgNo
             	value: '5'
             }, {
-            	name:'类别界定报告号',
+            	name:'软件测评报告号', //epNo
             	value: '6'
-            }, {            	
-            	name:'软件型号',
+            }, {
+            	name:'类别界定报告号',  //cdNo
             	value: '7'
             }]
             	

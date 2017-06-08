@@ -47,8 +47,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
             		};
             		$scope.fileName = res.data.docFilename;
             	} else{
-            		//TODO other exceptions
-            		Toastr.error("系统繁忙");
+            		Toastr.error(res.msg);
             	}
             }).error(function(res, status, headers, config) {
             	Toastr.error("AjaxError: "+ status);
@@ -111,6 +110,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
                     }
                 }).error(function(res, status, headers, config){
                 	Toastr.error("AjaxError: "+ status);
+                	defer.reject();
                 })
             }
         };

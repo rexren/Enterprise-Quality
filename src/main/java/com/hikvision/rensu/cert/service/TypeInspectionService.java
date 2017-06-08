@@ -220,4 +220,10 @@ public class TypeInspectionService {
 		return typeInspectionRepository.save(t);
 	}
 
+	public Page<TypeInspection> searchTypeInspectionByPage(String fieldName, String[] keywordList,
+			String[] contentKeywordList, int pn, int ps, String sortBy, int dir) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
