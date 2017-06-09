@@ -20,7 +20,8 @@ public class SchedulerIndexService {
 
     private static final Log logger = LogFactory.getLog(SchedulerIndexService.class);
 
-    @Autowired
+    @SuppressWarnings("unused")
+	@Autowired
     private JestClient jestClient;
 
     /**

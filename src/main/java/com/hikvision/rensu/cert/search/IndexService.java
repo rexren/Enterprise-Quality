@@ -61,9 +61,11 @@ public class IndexService {
         execute(bulk);
     }
 
-    private JestResult execute(Action action) {
+    @SuppressWarnings("rawtypes")
+	private JestResult execute(Action action) {
         try {
-            JestResult result = jestClient.execute(action);
+            @SuppressWarnings("unchecked")
+			JestResult result = jestClient.execute(action);
             logger.debug(result.getJsonString());
             if (!result.isSucceeded()) {
                 logger.warn("Failed to execute Elastic Search action: " + result.getErrorMessage()

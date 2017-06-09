@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -172,6 +173,7 @@ public class InspectionController {
 	 * @return res 返回状态
 	 * @author langyicong
 	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/save.do", method = RequestMethod.POST)
 	@ResponseBody
 	public BaseResult saveInspectionForm(@RequestBody MultipartFile file, HttpServletRequest request) {
@@ -242,6 +244,7 @@ public class InspectionController {
 	/**
 	 * 更新单条数据（包括报告详情文件）
 	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/update.do", method = RequestMethod.POST)
 	@ResponseBody
 	public BaseResult updateInspection(@RequestBody MultipartFile file, HttpServletRequest request) {
