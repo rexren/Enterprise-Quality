@@ -7,7 +7,7 @@ import io.searchbox.annotations.JestId;
  * 需要将各类检索的材料，先转换为这个结构，然后index
  * Created by rensu on 2017/5/30.
  */
-public class SearchEntry {
+public class IndexEntry {
 
     @JestId
     private String id;

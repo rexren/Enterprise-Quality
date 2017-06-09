@@ -28,7 +28,7 @@ public class IndexService {
      * Normally we use this method to index entry
      * @param entry the item need to index
      */
-    public void saveToIndex(SearchEntry entry) {
+    public void saveToIndex(IndexEntry entry) {
         Index.Builder indexEntryBuilder = new Index.Builder(entry)
                 .id(entry.getId())
                 .index("doc_index")
@@ -42,7 +42,7 @@ public class IndexService {
      * And we use this to index list of entries
      * @param entries the items need to index
      */
-    public void saveToIndex(List<SearchEntry> entries){
+    public void saveToIndex(List<IndexEntry> entries){
 
         String type = entries.get(0).getType();
 
