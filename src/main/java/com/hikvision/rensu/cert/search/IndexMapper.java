@@ -5,5 +5,5 @@ package com.hikvision.rensu.cert.search;
  * Created by rensu on 2017/6/1.
  */
 public interface IndexMapper<T> {
-    <R extends SearchEntry> R map(T item);
+    <R extends IndexEntry> R map(T item);
 }

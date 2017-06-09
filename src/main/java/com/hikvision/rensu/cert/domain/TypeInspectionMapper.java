@@ -9,8 +9,8 @@ public class TypeInspectionMapper implements IndexMapper<TypeInspection> {
 
     @SuppressWarnings("unchecked")
 	@Override
-    public TypeInspectionSearchEntry map(TypeInspection item) {
-        TypeInspectionSearchEntry t = new TypeInspectionSearchEntry();
+    public TypeInspectionIndexEntry map(TypeInspection item) {
+        TypeInspectionIndexEntry t = new TypeInspectionIndexEntry();
         t.setTitle(item.getName());
         t.setId(item.getDocNo());
         t.setRemark(item.getRemarks());
