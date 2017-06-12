@@ -63,9 +63,17 @@ angular.module('enterprise-quality',[
     	.when('/404',{
     		templateUrl: 'html/404.html'
     	})
+    	.when('/unauthorized', {
+            templateUrl: 'html/unauthorized.html'
+        })
     	.otherwise({
             redirectTo: '/404'
         })
     }
-])
-;
+]) 
+.run(['$rootScope', 'toastr','$http', function ($rootScope, Toastr, $http) {
+	$rootScope.user = window.user;
+	delete window.user;
+}]);
+
+

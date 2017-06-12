@@ -1,7 +1,8 @@
 'use strict';
 
-angular.module('enterprise-quality').controller('sideBarCtrl', 
-    function($scope, $location){
+angular.module('enterprise-quality').controller('sideBarCtrl',
+    function($scope, $rootScope, $http, $location){
+		$scope.userName = $rootScope.user.name;
     	$scope.headerText = '检索分类';
     	$scope.menu = [
     		{
@@ -34,4 +35,5 @@ angular.module('enterprise-quality').controller('sideBarCtrl',
     			$scope.menu[i].active = (i==index)? true: false;
         	}
     	}
+    
     });

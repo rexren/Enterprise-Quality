@@ -1,8 +1,10 @@
 'use strict';
 
-angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$location','$http','$modal','$q','toastr','FileUploadService','common',
-    function($scope, $location, $http, $modal, $q, Toastr, FileUploadService, Common){
-        $scope.pagination = {
+angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$rootScope','$location','$http','$modal','$q','toastr','FileUploadService','common',
+    function($scope, $rootScope, $location, $http, $modal, $q, Toastr, FileUploadService, Common){
+        $scope.authority = $rootScope.user.authorities;
+        console.log($scope.authority);
+		$scope.pagination = {
             page: 1,
             size: 10,
             totalElements: 0

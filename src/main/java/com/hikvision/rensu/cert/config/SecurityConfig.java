@@ -9,15 +9,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import com.hikvision.rensu.cert.constant.StaticParams;
-
+/** 
+ * spring security配置
+ * 修改配置后需要重启程序才能生效
+ * 
+ * @author langyicong
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true) // 允许进入页面方法前检验
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	//@Autowired
-	//private HikAuthenticationProvider provider;// 自定义验证
 
 	@Autowired
 	private UserDetailsService userDetailsService;// 自定义用户服务
@@ -35,24 +37,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	/** 定义安全策略 */
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable(); // 禁用csrf
+		http.csrf().disable();   // 禁用csrf
 		http.authorizeRequests() // 配置安全策略
-				.antMatchers(StaticParams.PATHREGX.CSS, StaticParams.PATHREGX.JS,StaticParams.PATHREGX.IMG)
-				.permitAll()// 无需访问权限
+				/* ANT通配符说明:? 匹配任何单字符; * 匹配0或者任意数量的字符; ** 匹配0或者更多的目录 */
+				.antMatchers("/logout").permitAll()
+				.antMatchers("/bootstrap/**/*.*").permitAll()
+				.antMatchers("/plugins/**/*.*").permitAll()
+				.antMatchers("/dist/**/*.*").permitAll()
+				.antMatchers("/scripts/global/login-ctrl.js").permitAll()
 				.anyRequest().authenticated() //其余的所有请求都需要验证  
-				//.antMatchers(StaticParams.PATHREGX.ADMIN).hasAuthority(StaticParams.USERROLE.ROLE_ADMIN)// admin角色访问权限
-				//.antMatchers(StaticParams.PATHREGX.VIEW).hasAuthority(StaticParams.USERROLE.ROLE_USER)// user角色访问权限
-				//.anyRequest().authenticated()// all others request authentication
-				.and().formLogin().loginPage("/login").failureUrl("/login?error=true").permitAll()
+				.and().formLogin().loginPage("/login").permitAll() 
+				//.failureUrl("/login-error").permitAll()
 				.and().logout().permitAll();
 	}
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		// 将验证过程交给自定义验证工具
-		// auth.authenticationProvider(provider);
+		
 	}
 
 }

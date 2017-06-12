@@ -11,6 +11,7 @@ public enum RetStatus {
 	NAME_DUPLICATED("1005", "名称字段重复"),
 	
 	/* 用户登录/权限错误（预留字段1100-1199） */
+	USER_LOGIN_FAIL("1100", "登录失败"),
 	USER_NOT_LOGGED_IN("1101", "用户未登录"),
 	USER_AUTH_ERROR("1102","用户权限不足"),
 	
