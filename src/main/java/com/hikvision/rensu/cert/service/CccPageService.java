@@ -18,12 +18,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hikvision.rensu.cert.controller.InspectionController;
 import com.hikvision.rensu.cert.domain.CccPage;
 import com.hikvision.rensu.cert.repository.CccPageRepository;
 
 @Service
+@Transactional
 public class CccPageService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);

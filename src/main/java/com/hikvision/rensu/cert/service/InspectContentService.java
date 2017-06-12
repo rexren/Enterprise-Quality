@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
  * Created by rensu on 17/4/28.
  */
 @Service
+@Transactional
 public class InspectContentService {
 
     @Autowired

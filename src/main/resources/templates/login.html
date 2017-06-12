@@ -1,16 +1,27 @@
 <!DOCTYPE html>
-<html ng-app="enterprise-quality">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>登录</title>
+<title>证书检索平台-登录</title>
 </head>
 
 <body>
-    <form method="post" action="/doLogin">
-        <input type="text" name="username" />
-        <input type="password" name="password" />
-        <input type="submit" value="登录" />
+<h1>证书检索平台-登录</h1>
+	<!-- TODO ajax通信，前后端分离 -->
+    <form th:action="@{/login}" method="post">
+    	<div th:if="${error}=='true'" style="font-color:red">
+            Invalid username and password.
+        </div>
+        <div th:text="${error}"></div>
+        <label for="username">Username</label>:
+        <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
+        <label for="password">Password</label>:
+        <input type="password" id="password" name="password" /> <br />
+        <input type="submit" value="Log in" />
     </form>
-    
 </body>
+<script type="text/javascript">
+console.log(window.location.search);
+</script>
 </html>
