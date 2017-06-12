@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('enterprise-quality').controller('CopyrightViewCtrl', ['$scope', '$location', '$http', '$q', 'toastr',
-    function($scope, $location, $http, $q, Toastr) {
-
+angular.module('enterprise-quality').controller('CopyrightViewCtrl', ['$scope', '$rootScope', '$location', '$http', '$q', 'toastr',
+    function($scope, $rootScope, $location, $http, $q, Toastr) {
+		$scope.authority = $rootScope.user.authorities[0].authority;
         /*initialization*/
         $scope.digest = {
             'softwareName': '',

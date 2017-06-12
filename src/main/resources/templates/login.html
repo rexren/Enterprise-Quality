@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -18,7 +18,13 @@
   <!-- /.login-logo -->
   <div class="login-box-body">
     <p class="login-box-msg">证书检索平台 - 登录</p>
-    <form method="post" action="/login">
+    <div th:if="${param.error}">
+        Invalid username and password.
+    </div>
+    <div th:if="${param.logout}">
+        You have been logged out.
+    </div>
+    <form method="post" th:action="@{/login}">
       <div class="form-group">
         <input id="username" type="text" name="username" class="form-control" placeholder="请输入用户名" />
         <span class="glyphicon glyphicon-user form-control-feedback"></span>

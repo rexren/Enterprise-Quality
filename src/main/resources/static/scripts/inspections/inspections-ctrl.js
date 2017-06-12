@@ -2,8 +2,8 @@
 
 angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$rootScope','$location','$http','$modal','$q','toastr','FileUploadService','common',
     function($scope, $rootScope, $location, $http, $modal, $q, Toastr, FileUploadService, Common){
-        $scope.authority = $rootScope.user.authorities;
-        console.log($scope.authority);
+        $scope.authority = $rootScope.user.authorities[0].authority;
+        
 		$scope.pagination = {
             page: 1,
             size: 10,

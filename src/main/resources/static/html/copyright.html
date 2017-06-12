@@ -10,7 +10,7 @@
                  <div class="box-header">
                     <h3 class="box-title"></h3>
                     <div class="box-tools" style="left:10px;">
-                        <form class="form-inline">
+                        <form class="form-inline" ng-if="authority=='ROLE_ADMIN'">
 							<div class="btn-group">
 								<button class="btn btn-default" ng-click="edit()">新增</button>
 								<button class="btn btn-primary" ng-click="importList()">{{fileName?'重新选择':'导入列表'}}</button>
@@ -122,7 +122,7 @@
                             <td>{{item.updateDate | date:'yyyy-MM-dd'}}</td>
                             <td>{{item.operator}}</td>
                             <td>
-                            	<button class="btn btn-link" ng-click="edit(item)">修改</button>
+                            	<button class="btn btn-link" ng-click="edit(item)" ng-if="authority=='ROLE_ADMIN'">修改</button>
                             	<button class="btn btn-link" ng-click="view(item)">查看</button>
 							</td>
                         </tr>

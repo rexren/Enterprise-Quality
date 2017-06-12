@@ -1,8 +1,9 @@
 'use strict';
 
-angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$location','$http','$q','toastr',
-    function($scope, $location, $http, $q, Toastr){
+angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootScope','$location','$http','$q','toastr',
+    function($scope, $rootScope, $location, $http, $q, Toastr){
 	/*initialization*/
+	$scope.authority = $rootScope.user.authorities[0].authority;
     $scope.digest = {
 		"docNo":"",
     	"model":"",

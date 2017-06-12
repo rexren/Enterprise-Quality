@@ -1,7 +1,8 @@
 'use strict';
 
-angular.module('enterprise-quality').controller('InspectionsViewCtrl', 
-	function($scope, $location, $http, $q){
+angular.module('enterprise-quality').controller('InspectionsViewCtrl', ['$scope','$rootScope','$location', '$http', '$q','toastr',
+	function($scope,$rootScope, $location, $http, $q, Toastr){
+		$scope.authority = $rootScope.user.authorities[0].authority;
 		/*initialization*/
 	    $scope.digest = 
 	    {
@@ -85,7 +86,7 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl',
 			        	}
 		        	}
 		    	}else {
-		    		Toastr.error(res.msg);
+		    		Toastr.error('检测报告：'+res.msg);
 		    	}
 		   	}).error(function(res, status, headers, config){
 		   		Toastr.error("getListByAjax error: "+status);
@@ -98,4 +99,4 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl',
         	window.history.back();
         }
 
-    });
+    }]);

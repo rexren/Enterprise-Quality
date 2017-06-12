@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('enterprise-quality')
-    .controller('CopyrightCtrl',['$scope','$location','$http','$modal','$q','toastr','FileUploadService',
-        function($scope, $location, $http, $modal, $q, Toastr, FileUploadService){
-
+    .controller('CopyrightCtrl',['$scope','$rootScope','$location','$http','$modal','$q','toastr','FileUploadService',
+        function($scope, $rootScope, $location, $http, $modal, $q, Toastr, FileUploadService){
+    		$scope.authority = $rootScope.user.authorities[0].authority;
             $scope.pagination = {
                 page: 1,
                 size: 10,

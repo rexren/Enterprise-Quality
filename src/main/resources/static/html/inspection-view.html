@@ -15,7 +15,7 @@
 					<li class="{{viewType==2?'active':''}}" ng-click="changeView(2)">
 						<a ng-href="#{{currentLocation}}?id={{inspectionId}}">检测报告</a>
 					</li>
-					<li class="pull-right">
+					<li class="pull-right" ng-if="authority=='ROLE_ADMIN'">
 						<a ng-href="#/inspections/edit?id={{inspectionId}}" class="text-muted">
 							<i class="fa fa-edit"></i>
 						</a>

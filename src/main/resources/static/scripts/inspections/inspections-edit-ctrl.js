@@ -1,8 +1,12 @@
 'use strict';
 
-angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope', '$location', '$http', '$q', 'toastr', 'FileUploadService', 'common',
-    function($scope, $location, $http, $q, Toastr, FileUploadService, Common) {
-        $scope.formData = {
+angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope','$rootScope', '$location', '$http', '$q', 'toastr', 'FileUploadService', 'common',
+    function($scope,$rootScope, $location, $http, $q, Toastr, FileUploadService, Common) {
+		$scope.authority = $rootScope.user.authorities[0].authority;
+		if($scope.authority!='ROLE_ADMIN'){
+			$location.path('/unauthorized');
+		}
+		$scope.formData = {
             'model': '',
             'name': '',
             'version': '',
