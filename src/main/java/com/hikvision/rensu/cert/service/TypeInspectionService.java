@@ -12,14 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -243,6 +239,7 @@ public class TypeInspectionService {
 			String[] contentKeywordList, int pn, int ps, String sortBy, int dir) throws Exception {
 		
 		List<?> ts = new ArrayList<Object>(typeInspectionRepository.joinSearchTypeInspection(fieldName, keywordList, contentKeywordList));
+		
 		//TODO 整理ts，聚合id
 		return ts;
 	}
