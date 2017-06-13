@@ -1,9 +1,8 @@
 package com.hikvision.rensu.cert.service;
 
-import com.hikvision.rensu.cert.domain.InspectContent;
-import com.hikvision.rensu.cert.domain.TypeInspection;
-import com.hikvision.rensu.cert.repository.InspectContentRepository;
-import com.hikvision.rensu.cert.repository.TypeInspectionRepository;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;
@@ -13,16 +12,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.hikvision.rensu.cert.domain.InspectContent;
+import com.hikvision.rensu.cert.domain.TypeInspection;
+import com.hikvision.rensu.cert.repository.InspectContentRepository;
+import com.hikvision.rensu.cert.repository.TypeInspectionRepository;
 
 /**
  * Created by rensu on 17/4/21.
@@ -32,12 +36,21 @@ import java.util.List;
 public class TypeInspectionService {
 
 	private final static Logger logger = LoggerFactory.getLogger(TypeInspectionService.class);
+
 	@Autowired
 	private TypeInspectionRepository typeInspectionRepository;
 
 	@Autowired
 	private InspectContentRepository inspectContentRepository;
-
+	
+	@Autowired
+	private SystemUserService systemUserService;
+	
+	/*@Autowired
+	private UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+		    .getAuthentication()
+		    .getPrincipal();*/
+	
 	@Autowired
 	private InspectContentService inspectContentService;
 
@@ -64,9 +77,8 @@ public class TypeInspectionService {
 	}
 
 	/**
-	 * 导入型检列表到数据库
-	 *  产品型号 | 软件名称 | 软件版本 | 测试／检验类别 | 受检单位 | 测试依据 | 颁发日期 | 文件编号 |证书系统链接 |
-	 * 认证／测试机构 | 备注
+	 * 导入型检列表到数据库 产品型号 | 软件名称 | 软件版本 | 测试／检验类别 | 受检单位 | 测试依据 | 颁发日期 | 文件编号
+	 * |证书系统链接 | 认证／测试机构 | 备注
 	 *
 	 * @param sheet:
 	 *            【公检&国标】工作薄
@@ -79,7 +91,7 @@ public class TypeInspectionService {
 		int rows = sheet.getLastRowNum() + 1;
 		List<TypeInspection> inspections = new ArrayList<>();
 		/* 找到表头并且 判断表头是否符合条件 */
-		int headRow = -1, startCol = -1, modelCol = -1, nameCol = -1, docNoCol = -1, awardDateCol =-1;
+		int headRow = -1, startCol = -1, modelCol = -1, nameCol = -1, docNoCol = -1, awardDateCol = -1;
 		for (int row = 0; row < rows; row++) {
 			Row r = sheet.getRow(row);
 			int cols = r.getPhysicalNumberOfCells();
@@ -89,7 +101,7 @@ public class TypeInspectionService {
 						r.getCell(col).setCellType(CellType.STRING);
 					}
 					String cellValue = r.getCell(col).getStringCellValue();
-					if (StringUtils.containsAny(cellValue, "型号", "软件名称", "文件编号","颁发日期")) {
+					if (StringUtils.containsAny(cellValue, "型号", "软件名称", "文件编号", "颁发日期")) {
 						headRow = row;
 						if (StringUtils.contains(cellValue, "型号")) {
 							modelCol = col;
@@ -110,7 +122,7 @@ public class TypeInspectionService {
 				break;
 			}
 		}
-		startCol = Math.min(modelCol, Math.min(nameCol,docNoCol));
+		startCol = Math.min(modelCol, Math.min(nameCol, docNoCol));
 		if (headRow < 0 || startCol < 0) {
 			throw new Exception("缺少关键字");
 		}
@@ -119,7 +131,7 @@ public class TypeInspectionService {
 			Row r = sheet.getRow(row);
 			/* for rows those are not empty */
 			if (r.getCell(startCol) != null && r.getCell(startCol).getCellTypeEnum() != CellType.BLANK
-					&& r.getCell(startCol+1).getCellTypeEnum() != CellType.BLANK) {
+					&& r.getCell(startCol + 1).getCellTypeEnum() != CellType.BLANK) {
 				TypeInspection t = null;
 				if (r.getCell(docNoCol) != null) {
 					if (r.getCell(docNoCol).getCellTypeEnum() != CellType.STRING) {
@@ -130,7 +142,10 @@ public class TypeInspectionService {
 						}
 					}
 					if (typeInspectionRepository.findByDocNo(r.getCell(docNoCol).getStringCellValue()).size() > 0) {
-						/* if this docNo exists in db, find it and update other properties */
+						/*
+						 * if this docNo exists in db, find it and update other
+						 * properties
+						 */
 						t = typeInspectionRepository.findByDocNo(r.getCell(docNoCol).getStringCellValue()).get(0);
 					} else {
 
@@ -148,7 +163,7 @@ public class TypeInspectionService {
 				t.setTestType(StringUtils.trim(r.getCell(3).getStringCellValue()));
 				t.setCompany(StringUtils.trim(r.getCell(4).getStringCellValue()));
 				t.setBasis(r.getCell(5).getStringCellValue());
-				
+
 				if (r.getCell(awardDateCol) != null) {
 					if (r.getCell(awardDateCol).getCellTypeEnum() != CellType.NUMERIC) {
 						try {
@@ -163,7 +178,7 @@ public class TypeInspectionService {
 				t.setOrganization(r.getCell(9).getStringCellValue());
 				t.setRemarks(r.getCell(10).getStringCellValue());
 				t.setUpdateAt(new Date());
-				t.setOperator("TESTER"); // TODO 获取当前用户
+				t.setOperator(systemUserService.getCurrentUsername());
 				inspections.add(t);
 			}
 		}
@@ -171,7 +186,7 @@ public class TypeInspectionService {
 			typeInspectionRepository.save(inspections);
 			res = inspections.size();
 		} catch (Exception e) {
-			logger.error("",e);
+			logger.error("", e);
 			throw e;
 		}
 
@@ -220,10 +235,16 @@ public class TypeInspectionService {
 		return typeInspectionRepository.save(t);
 	}
 
-	public Page<TypeInspection> searchTypeInspectionByPage(String fieldName, String[] keywordList,
-			String[] contentKeywordList, int pn, int ps, String sortBy, int dir) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * 模糊搜索关键字
+	 * @throws Exception 
+	 */
+	public List<?> searchTypeInspectionByPage(String fieldName, String[] keywordList,
+			String[] contentKeywordList, int pn, int ps, String sortBy, int dir) throws Exception {
+		
+		List<?> ts = new ArrayList<Object>(typeInspectionRepository.joinSearchTypeInspection(fieldName, keywordList, contentKeywordList));
+		//TODO 整理ts，聚合id
+		return ts;
 	}
 
 }

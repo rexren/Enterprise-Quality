@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hikvision.rensu.cert.constant.RetStatus;
 import com.hikvision.rensu.cert.domain.CccPage;
 import com.hikvision.rensu.cert.service.CccPageService;
+import com.hikvision.rensu.cert.service.SystemUserService;
 import com.hikvision.rensu.cert.support.AjaxResult;
 import com.hikvision.rensu.cert.support.BaseResult;
 import com.hikvision.rensu.cert.support.ListContent;
@@ -34,6 +36,9 @@ public class CccPageController {
 	@Autowired
 	private CccPageService cccPageService;
 
+	@Autowired
+	private SystemUserService systemUserService;
+	
 	/**
 	 * CCC列表页
 	 * 
@@ -60,7 +65,7 @@ public class CccPageController {
 		try {
 			Page<CccPage> p = cccPageService.getCCCListByPage(pn, ps, sortBy, dir);
 			if(null != p){
-				res.setListContent(new ListContent<CccPage>(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
+				res.setListContent(new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
 			}
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());
@@ -110,6 +115,7 @@ public class CccPageController {
 	 * @return res 返回状态
 	 * @author langyicong
 	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/save.do", method = RequestMethod.POST)
 	@ResponseBody
 	public BaseResult saveCccPage(HttpServletRequest request) {
@@ -152,6 +158,7 @@ public class CccPageController {
 	 * @return res 返回状态
 	 * @author langyicong
 	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/update.do", method = RequestMethod.POST)
 	@ResponseBody
 	public BaseResult updateCccPage(HttpServletRequest request) {
@@ -225,7 +232,7 @@ public class CccPageController {
 		c.setOrganization(StringUtils.trim(request.getParameter("organization")));
 		c.setRemarks(StringUtils.trim(request.getParameter("remarks")));
 		c.setUrl(StringUtils.trim(request.getParameter("url")));
-		c.setOperator("TESTER");
+		c.setOperator(systemUserService.getCurrentUsername());
 		return c;
 	}
 
@@ -284,7 +291,7 @@ public class CccPageController {
 		try {
 			Page<CccPage> p = cccPageService.searchCccByPage(fieldName, keywordList, pn, ps, sortBy, dir);
 			if(null != p){
-				res.setListContent(new ListContent<CccPage>(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
+				res.setListContent(new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
 			}
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());

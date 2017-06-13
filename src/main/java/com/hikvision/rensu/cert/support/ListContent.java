@@ -5,16 +5,16 @@ import java.util.List;
 /**
  * Created by langyicong on 2017/5/31.
  */
-public class ListContent <T> {
+public class ListContent {
 	private int pageSize;
 	private Long totalElements;
 	private int totalPages;
-	private List<T> list;
+	private List<?> list;
 	
 	public ListContent() {
 	}
 	
-	public ListContent(int pageSize, Long totalElements, int totalPages, List<T> list) {
+	public ListContent(int pageSize, Long totalElements, int totalPages, List<?> list) {
 		this.pageSize = pageSize;
 		this.totalElements = totalElements;
 		this.totalPages = totalPages;
@@ -40,10 +40,10 @@ public class ListContent <T> {
 		this.totalPages = totalPages;
 	}
 
-	public List<T> getList() {
+	public List<?> getList() {
 		return list;
 	}
-	public void setList(List<T> list) {
+	public void setList(List<?> list) {
 		this.list = list;
 	}
 	

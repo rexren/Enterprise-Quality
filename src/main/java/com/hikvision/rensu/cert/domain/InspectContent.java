@@ -52,6 +52,12 @@ public class InspectContent implements Serializable{
     private String caseDescription;
 
     /**
+     * 备注（选填）
+     */
+    @Column
+    private String remarks;
+
+	/**
      * 测试结果（选填）
      */
     @Column
@@ -109,6 +115,13 @@ public class InspectContent implements Serializable{
 		this.testResult = testResult;
 	}
 
+    public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
 	public InspectContent(){
 		
 	}

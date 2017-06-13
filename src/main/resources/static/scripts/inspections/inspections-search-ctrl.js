@@ -14,7 +14,6 @@ angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scop
             getList($scope.pagination.page, $scope.pagination.size);
         };
 
-        //todo url中读取searchInput
         $scope.searchInput = {
         	'field': $location.search().f,
         	'keyword':$location.search().kw,
@@ -36,11 +35,11 @@ angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scop
 	        params: $scope.searchInput
 	    }).success(function(res) {
 	        if (res.code == 0) {
-	        	$scope.list = res.listContent?res.listContent.list:null;
+	        	$scope.list = res.listContent? res.listContent.list:null;
 	            $scope.pagination.totalElements = res.listContent?res.listContent.totalElements:null;
 	            if($scope.list && $scope.list.length > 0){
 	            	for (var i = 0; i < $scope.list.length; i++) {
-	            		$scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].url) ? true : false;
+	            		$scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].certUrl) ? true : false;
 	            	}
 	            }
 	        } else {

@@ -28,8 +28,12 @@ import com.hikvision.rensu.cert.repository.CopyrightRepository;
 public class CopyrightService {
 	
 	private final static Logger logger = LoggerFactory.getLogger(TypeInspectionService.class);
+	
 	@Autowired
 	private CopyrightRepository copyrightRepository;
+
+	@Autowired
+	private SystemUserService systemUserService;
 	
 	public Page<Copyright> getCopyrightByPage(int pageNum, int pageSize, String sortBy, int dir){
 		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
@@ -156,7 +160,7 @@ public class CopyrightService {
 				c.setCdOrganization(r.getCell(19).getStringCellValue());
 				c.setModel(r.getCell(20).getStringCellValue());
 				c.setCharge(r.getCell(21).getStringCellValue());
-				c.setOperator("TESTER");
+				c.setOperator(systemUserService.getCurrentUsername());
 				copyrights.add(c);
 			}
 		}

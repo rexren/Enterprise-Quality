@@ -8,6 +8,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -86,12 +87,12 @@ public class InspectContentService {
 	 * @author langyicong
 	 * @throws Exception
 	 */
-	public  List<InspectContent> importContentSheet(Sheet contentSheet, Long inspectionId) throws Exception {
+	public  List<InspectContent> importContentSheet(Sheet contentSheet, Long inspectionId) throws InvalidFormatException {
 		int rows = contentSheet.getLastRowNum() + 1;
 		List<InspectContent> contentList = new ArrayList<>(); // 此处不能将row的值作为List的长度，因为工作表中可能会有无内容的行
 
 		/* 寻找表头所在行&每个字段所在列 */
-		int headRow = -1, caseIdCol = -1, caseNameCol = -1, caseDescrCol = -1, testResultCol = -1;
+		int headRow = -1, caseIdCol = -1, caseNameCol = -1, caseDescrCol = -1, testResultCol = -1, remarkCol = -1;
 		for (int row = 0; row < rows; row++) {
 			Row r = contentSheet.getRow(row);
 			int cols = r.getPhysicalNumberOfCells();
@@ -114,6 +115,9 @@ public class InspectContentService {
 					if (StringUtils.contains(cellValue, "测试结果")) {
 						testResultCol = col;
 					}
+					if (StringUtils.contains(cellValue, "备注")) {
+						remarkCol = col;
+					}
 				}
 			}
 			if (row == headRow) {
@@ -122,7 +126,7 @@ public class InspectContentService {
 		}
 
 		if (headRow < 0 || caseIdCol < 0 || caseNameCol < 0 || caseDescrCol < 0) {
-			throw new Exception("缺少关键字");
+			throw new InvalidFormatException("缺少关键字");
 		}
 
 		String cachedCaseId = "";
@@ -150,6 +154,9 @@ public class InspectContentService {
 				}
 				if (testResultCol >= 0) {
 					c.setTestResult(r.getCell(testResultCol).getStringCellValue());
+				}
+				if (remarkCol >= 0) {
+					c.setRemarks(r.getCell(remarkCol).getStringCellValue());
 				}
 				c.setInspectionId(inspectionId);
 				contentList.add(c);

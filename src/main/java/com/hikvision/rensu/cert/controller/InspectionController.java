@@ -32,6 +32,7 @@ import com.hikvision.rensu.cert.constant.RetStatus;
 import com.hikvision.rensu.cert.domain.InspectContent;
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.service.InspectContentService;
+import com.hikvision.rensu.cert.service.SystemUserService;
 import com.hikvision.rensu.cert.service.TypeInspectionService;
 import com.hikvision.rensu.cert.support.AjaxResult;
 import com.hikvision.rensu.cert.support.BaseResult;
@@ -48,13 +49,16 @@ public class InspectionController {
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 
 	private final static String SORT_TYPEINSPECTION_UPDATEAT = "UpdateAt";
-
+	
 	@Autowired
 	private TypeInspectionService typeInspectionService;
 
 	@Autowired
 	private InspectContentService inspectContentService;
 
+	@Autowired
+	private SystemUserService systemUserService;
+	
 	/**
 	 * 获取公检&国标文件列表页
 	 * 
@@ -81,7 +85,7 @@ public class InspectionController {
 		try {
 			Page<TypeInspection> p = typeInspectionService.getInspectionByPage(pn, ps, sortBy, dir);
 			if (null != p) {
-				res.setListContent(new ListContent<TypeInspection>(p.getSize(), p.getTotalElements(), p.getTotalPages(),
+				res.setListContent(new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(),
 						p.getContent()));
 			}
 			res.setCode(RetStatus.SUCCESS.getCode());
@@ -147,7 +151,7 @@ public class InspectionController {
 				List<InspectContent> contents = inspectContentService.getContentsByInspectionId(id);
 				if (contents != null && !contents.isEmpty()) {
 					res.setListContent(
-							new ListContent<InspectContent>(contents.size(), (long) contents.size(), 1, contents));
+							new ListContent(contents.size(), (long) contents.size(), 1, contents));
 					res.setCode(RetStatus.SUCCESS.getCode());
 					res.setMsg(RetStatus.SUCCESS.getInfo());
 				} else {
@@ -274,8 +278,7 @@ public class InspectionController {
 				res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());
 				res.setMsg(RetStatus.DOCNO_DUPLICATED.getInfo());
 				return res;
-			}
-			;
+			};
 			t = setTypeInspectionProperties(request, t); // 更新实体，包括文件名docFileName
 			List<InspectContent> contentlist = null;
 			if (file != null && !file.isEmpty()) {
@@ -359,9 +362,8 @@ public class InspectionController {
 			t.setCertUrl(StringUtils.trim(request.getParameter("certUrl")));
 			t.setOrganization(request.getParameter("organization"));
 			t.setRemarks(request.getParameter("remarks"));
-			t.setOperator(request.getParameter("operator"));
+			t.setOperator(systemUserService.getCurrentUsername());
 			t.setUpdateAt(new Date());
-			t.setOperator("TESTER"); // TODO 获取当前用户
 		}
 		return t;
 	}
@@ -435,11 +437,16 @@ public class InspectionController {
 		String[] contentKeywordList = StringUtils.split(contentKeyword);
 
 		try {
-			Page<TypeInspection> p = typeInspectionService.searchTypeInspectionByPage(fieldName, keywordList,
+			List<?> p = typeInspectionService.searchTypeInspectionByPage(fieldName, keywordList,
 					contentKeywordList, pn, ps, sortBy, dir);
 			if (null != p) {
-				res.setListContent(new ListContent<TypeInspection>(p.getSize(), p.getTotalElements(), p.getTotalPages(),
-						p.getContent()));
+				ListContent resListContent = new ListContent();
+				resListContent.setPageSize(0);
+				resListContent.setTotalElements(new Long(p.size()));
+				resListContent.setTotalPages(1);
+				resListContent.setList((List<?>) p);
+				//public ListContent(int pageSize, Long totalElements, int totalPages, List<T> list) {
+				res.setListContent(resListContent);
 			}
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());

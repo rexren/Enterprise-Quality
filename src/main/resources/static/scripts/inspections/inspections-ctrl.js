@@ -64,7 +64,10 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
 	     *   搜索
 	     */
         $scope.search = function (input) {
-            $location.url('/inspections/search?f='+input.field+'&kw='+input.keyword+'&c='+input.contentKeyword);
+        	if($scope.searchInput.keyword==''&&$scope.searchInput.contentKeyword==''){
+        		Toastr.error('请输入至少一个关键字');
+        	}else
+        		$location.url('/inspections/search?f='+input.field+'&kw='+input.keyword+'&c='+input.contentKeyword);
         };
         
         $scope.enterEvent = function(e) {

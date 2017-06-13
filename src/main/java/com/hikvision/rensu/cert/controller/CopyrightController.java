@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hikvision.rensu.cert.constant.RetStatus;
 import com.hikvision.rensu.cert.domain.Copyright;
 import com.hikvision.rensu.cert.service.CopyrightService;
+import com.hikvision.rensu.cert.service.SystemUserService;
 import com.hikvision.rensu.cert.support.AjaxResult;
 import com.hikvision.rensu.cert.support.BaseResult;
 import com.hikvision.rensu.cert.support.ListContent;
@@ -30,6 +32,9 @@ public class CopyrightController {
 
 	@Autowired
 	private CopyrightService copyrightService;
+	
+	@Autowired
+	private SystemUserService systemUserService;
 
 	/**
 	 * 获取双证列表页
@@ -57,7 +62,7 @@ public class CopyrightController {
 		try {
 			Page<Copyright> p = copyrightService.getCopyrightByPage(pn, ps, sortBy, dir);
 			if(null!=p){
-				res.setListContent(new ListContent<Copyright>(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
+				res.setListContent(new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
 			}
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());
@@ -111,6 +116,7 @@ public class CopyrightController {
 	 * @return res 返回状态
 	 * @author langyicong
 	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/save.do", method = RequestMethod.POST)
 	@ResponseBody
 	public BaseResult saveCopyright(HttpServletRequest request) {
@@ -153,6 +159,7 @@ public class CopyrightController {
 	 * @return res 返回状态
 	 * @author langyicong
 	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/update.do", method = RequestMethod.POST)
 	@ResponseBody
 	public BaseResult updateCopyright(HttpServletRequest request) {
@@ -243,7 +250,7 @@ public class CopyrightController {
 		c.setCdOrganization(StringUtils.trim(request.getParameter("cdOrganization")));
 		c.setModel(StringUtils.trim(request.getParameter("model")));
 		c.setCharge(StringUtils.trim(request.getParameter("charge")));
-		c.setOperator("TESTER");
+		c.setOperator(systemUserService.getCurrentUsername());
 
 		return c;
 	}
@@ -313,7 +320,7 @@ public class CopyrightController {
 			Page<Copyright> p = copyrightService.searchCopyrightByPage(fieldName, keywordList, pn, ps, sortBy, dir);
 			if(null != p){
 			res.setListContent(
-					new ListContent<Copyright>(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
+				new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
 			}
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());
