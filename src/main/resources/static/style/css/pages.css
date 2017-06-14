@@ -17,3 +17,7 @@
 .ccc-search-table tbody tr td:nth-child(1){
 	width: 20%;
 }
+
+.highlight{
+	color: red;
+}

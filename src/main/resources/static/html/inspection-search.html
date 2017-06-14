@@ -21,49 +21,34 @@
 						<table class="table table-hover">
 							<tbody ng-repeat="item in list">
 								<tr>
-									<td colspan="13">{{$index+1}}</td>
+									<td colspan="8">{{$index+1}}</td>
 								</tr>
 								<tr>
 									<th>产品型号</th>
 									<th style="min-width: 100px;">软件名称</th>
-									<th>软件版本</th>
 									<th style="min-width: 60px;">测试类别</th>
-									<th>测试依据</th>
-									<th>颁发日期</th>
-									<th>文件编号</th>
-									<th>链接</th>
+									<th style="min-width: 60px;">测试依据</th>
+									<th style="min-width: 60px;">文件编号</th>
 									<th style="min-width: 60px;">认证机构</th>
 									<th style="min-width: 60px;">备注</th>
-									<th>建立日期</th>
-									<th>更新日期</th>
-									<th>操作人</th>
+									<th style="min-width: 60px;">关键字匹配数</th>
 								</tr>
 								<tr>
-									<td>{{item.model}}</td>
-									<td>{{item.name}}</td>
-									<td>{{item.version}}</td>
-									<td>{{item.testType}}</td>
-									<td>{{item.basis}}</td>
-									<td>{{item.awardDate | date:'yyyy-MM-dd'}}</td>
+									<td ng-bind-html="item.model | highlight: tkeywordsList"></td>
+									<td ng-bind-html="item.name | highlight: tkeywordsList"></td>
+									<td ng-bind-html="item.testType | highlight: tkeywordsList"></td>
+									<td ng-bind-html="item.basis | highlight: tkeywordsList"></td>
 									<td style="word-wrap: break-word;">
-										<a href="#/inspections/view?id={{item.id}}" target="_blank">{{item.docNo}}</a>
+										<a ng-href="#/inspections/view?id={{item.id}}" target="_blank" ng-bind-html="item.docNo | highlight: tkeywordsList"></a>
 									</td>
-									<td>
-										<span ng-if="!item.hasURL">{{item.certUrl}}</span>
-										<a ng-if="item.hasURL" ng-href="{{item.certUrl}}" target="_blank">link</a>
-									</td>
-									<td>{{item.organization}}</td>
-									<td>{{item.remarks}}</td>
-									<td>{{item.createAt | date:'yyyy-MM-dd'}}</td>
-									<td>{{item.updateAt | date:'yyyy-MM-dd'}}</td>
-									<td>{{item.operator}}</td>
+									<td ng-bind-html="item.organization | highlight: tkeywordsList"></td>
+									<td ng-bind-html="item.remarks | highlight: tkeywordsList"></td>
+									<td>{{item.count}}</td>
 								</tr>
 								<tr>
-									<td colspan="13"><span>内容内容内容内容内容内容内容内容内容内容内容内容内容<mark>高亮关键字</mark>内容内容内容内容内容内容内
-											容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容容内容内容内容内容内容内容内容内容内 容内容内容内容<mark>高亮关键字</mark>内容内容内容内容内容内容内容内容内容内容内容内容内容容内容内容内容内容内容内容内容内容内
-											容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容容内容内容内容内容内容内容内容内容内
-											容内容内容内容内容内容内容内容内容内容内容内容内容<mark>高亮关键字</mark>内容内容内容内容
-									</span></td>
+									<td colspan="8" style="max-height:60px; overflow:hidden;text-overflow:ellipsis;">
+										<p ng-bind-html="item.casesCut | highlight: ckeywordsList"></p>
+									</td>
 								</tr>
 							</tbody>
 						</table>

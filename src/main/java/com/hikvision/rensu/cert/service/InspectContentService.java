@@ -129,8 +129,8 @@ public class InspectContentService {
 			throw new InvalidFormatException("缺少关键字");
 		}
 
-		String cachedCaseId = "";
-		String cachedCaseName = "";
+		String cachedCaseId = null;
+		String cachedCaseName = null;
 		for (int row = headRow; row < rows; row++) {
 			Row r = contentSheet.getRow(row);
 			/* for rows those are not empty */

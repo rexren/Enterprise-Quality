@@ -240,7 +240,6 @@ public class TypeInspectionService {
 		
 		List<?> ts = new ArrayList<Object>(typeInspectionRepository.joinSearchTypeInspection(fieldName, keywordList, contentKeywordList));
 		
-		//TODO 整理ts，聚合id
 		return ts;
 	}
 

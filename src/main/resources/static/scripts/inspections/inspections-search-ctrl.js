@@ -19,6 +19,8 @@ angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scop
         	'keyword':$location.search().kw,
         	'contentKeyword':$location.search().c
         };
+        $scope.tkeywordsList=$scope.searchInput.keyword?$scope.searchInput.keyword.split(/\s+/):[];
+        $scope.ckeywordsList=$scope.searchInput.contentKeyword?$scope.searchInput.contentKeyword.split(/\s+/):[];
         
         switch ($scope.searchInput.field) {
 	    	case '1':  $scope.searchField = '产品型号'; break;
@@ -39,7 +41,10 @@ angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scop
 	            $scope.pagination.totalElements = res.listContent?res.listContent.totalElements:null;
 	            if($scope.list && $scope.list.length > 0){
 	            	for (var i = 0; i < $scope.list.length; i++) {
-	            		$scope.list[i].hasURL = /.*(http|https).*/.test($scope.list[i].certUrl) ? true : false;
+	            		$scope.list[i].casesCut = $scope.list[i].cases.substring(0,500);
+	            		if($scope.list[i].cases.length>500){
+	            			$scope.list[i].casesCut +='...';
+	            		}
 	            	}
 	            }
 	        } else {

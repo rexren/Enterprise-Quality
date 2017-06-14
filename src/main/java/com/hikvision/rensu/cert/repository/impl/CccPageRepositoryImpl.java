@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,12 +15,11 @@ import com.hikvision.rensu.cert.repository.CccPageRepository;
 @Repository
 public class CccPageRepositoryImpl extends SimpleJpaRepository<CccPage, Long> implements CccPageRepository {
 
-	private String[] fields = { "model", "productName", "docNo", "remarks" };
-
-	@Autowired
-	public CccPageRepositoryImpl (EntityManager em) {
+	public CccPageRepositoryImpl(EntityManager em) {
 		super(CccPage.class, em);
 	}
+
+	private String[] fields = { "model", "productName", "docNo", "remarks" };
 
 	@SuppressWarnings("unchecked")
 	public List<CccPage> findByDocNo(String docNo) {

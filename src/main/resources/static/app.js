@@ -4,7 +4,8 @@ angular.module('enterprise-quality',[
 	'ngAnimate',
     'ngRoute',
     'ui.bootstrap',
-    'toastr'
+    'toastr',
+    'ngSanitize'
     ])
 .config(['$routeProvider', function($routeProvider){
     $routeProvider

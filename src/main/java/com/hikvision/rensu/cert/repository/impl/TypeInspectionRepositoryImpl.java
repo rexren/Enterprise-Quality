@@ -1,5 +1,8 @@
 package com.hikvision.rensu.cert.repository.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.repository.TypeInspectionRepository;
+import com.hikvision.rensu.cert.support.typeSearchResult;
 
 @Repository
 public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspection, Long>
@@ -31,18 +35,19 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 		return query.getResultList();
 	}
 
+	@SuppressWarnings({ "unchecked" })
 	public List<?> joinSearchTypeInspection(String fieldName, String[] keywords, String[] contentKeywords) {
-		StringBuilder sqlString = new StringBuilder("SELECT ");
-		//TODO DISTINCT(T.id) 或者T.id, C.id
+		StringBuilder sqlString = new StringBuilder("SELECT T.id, ");
 		for (int i = 0; i < tFields.length; i++) {
 			if (i > 0)
 				sqlString.append(", ");
 			sqlString.append("T." + toUnderline(tFields[i]));
 		}
+		sqlString.append(", C.id AS cid");
 		for (int i = 0; i < cFields.length; i++) {
-			if(StringUtils.equals(cFields[i], "remarks")){
+			if (StringUtils.equals(cFields[i], "remarks")) {
 				sqlString.append(", C." + toUnderline(cFields[i]) + " AS tRemarks");
-			} else{
+			} else {
 				sqlString.append(", C." + toUnderline(cFields[i]));
 			}
 		}
@@ -63,7 +68,7 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 
 		if (null != keywords && keywords.length > 0) {
 			if (null != contentKeywords && contentKeywords.length > 0) {
-				sqlString.append("AND ");
+				sqlString.append(" AND ");
 			}
 			sqlString.append("(");
 			if (StringUtils.isBlank(fieldName)) {
@@ -90,9 +95,63 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 
 		System.out.println(sqlString);
 		Query query = getEntityManager().createNativeQuery(sqlString.toString());
-		List<?> res = query.getResultList();
-		//TODO new a class to save the List, and order by 匹配相似度（条目数）
-		return res;
+		List<Object[]> resObj = query.getResultList();
+		List<typeSearchResult> searchResults = new ArrayList<typeSearchResult>();
+		if (resObj.size() > 0) {
+			typeSearchResult s = new typeSearchResult();
+			Long tId = -1L; // 存放上轮id
+			int count = 0; // 存放搜索命中计数
+			StringBuilder thisCase = new StringBuilder();
+			for (Object[] objects : resObj) {
+				/*
+				int i = 0;
+				System.out.println(objects[i++].toString()); // 0:id
+				System.out.println(objects[i++].toString()); // 1:model
+				System.out.println(objects[i++].toString()); // 2:name
+				System.out.println(objects[i++].toString()); // 3:testType
+				System.out.println(objects[i++].toString()); // 4:basis
+				System.out.println(objects[i++].toString()); // 5:docNo
+				System.out.println(objects[i++].toString()); // 6:organization
+				System.out.println(objects[i++].toString()); // 7:remarks
+				System.out.println(objects[i++].toString()); // 8:contentId
+				System.out.println(objects[i++].toString()); // 9:caseDescription
+				System.out.println(objects[i++].toString()); // 10:caseName
+				*/				
+				if (tId != Long.parseLong(objects[0].toString())) {
+					if (tId > 0L) {
+						s.setCases(new String(thisCase.toString())); // 上一轮的thisCase
+						s.setCount(count); // 上一轮count
+						searchResults.add(s); // 上个typeSearchResult对象存入列表
+						/* another typeSearchResult */
+						s = new typeSearchResult();
+						thisCase.setLength(0); // 清空thisCase
+						count = 0;
+					}
+					tId = Long.parseLong(objects[0].toString());
+					s.setId(tId);
+					s.setModel(objects[1].toString());
+					s.setName(objects[2].toString());
+					s.setTestType(objects[3].toString());
+					s.setBasis(objects[4].toString());
+					s.setDocNo(objects[5].toString());
+					s.setOrganization(objects[6].toString());
+					s.setRemarks(objects[7].toString());
+				}
+				if(null!=objects[9]){
+					thisCase.append(StringUtils.replaceAll(objects[10].toString(),"\n"," ") +" "+ objects[9].toString()+" || ");
+				}
+				count++;
+			}
+			s.setCases(new String(thisCase.toString())); // 最后一轮的thisCase
+			s.setCount(count);    // 最后一轮count
+			searchResults.add(s); // 最后一个typeSearchResult对象存入列表
+		}
+		Collections.sort(searchResults, new Comparator<typeSearchResult>() {
+			public int compare(typeSearchResult t1, typeSearchResult t2){
+				return t1.getCount()>t2.getCount()?-1:t1.getCount()<t2.getCount()?1:0;
+			}
+		});
+		return searchResults;
 	}
 
 	private String toUnderline(String s) {

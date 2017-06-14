@@ -1,13 +1,12 @@
 package com.hikvision.rensu.cert.repository;
 
-import com.hikvision.rensu.cert.domain.InspectContent;
-import com.hikvision.rensu.cert.domain.TypeInspection;
-import com.hikvision.rensu.cert.repository.base.BasicDAO;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+
+import com.hikvision.rensu.cert.domain.InspectContent;
+import com.hikvision.rensu.cert.repository.base.BasicDAO;
 
 /**
  * Created by rensu on 17/4/28.
