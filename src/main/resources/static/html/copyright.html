@@ -43,84 +43,81 @@
                         <thead>
                         <tr>
                             <th>序号</th>
-                            <th>软件名称</th>
-                            <th>简称</th>
+                            <th style="min-width: 60px;">软件名称</th>
+                            <th style="min-width: 60px;">简称</th>
                             <!--软件著作权-->
-                            <th>软著登记号</th>
+                            <th style="min-width: 70px;">软著登记号</th>
                             <!--<th>签发日期</th>-->
-                            <th>链接</th>
+                            <th style="min-width: 60px;">链接</th>
                             <!--<th>认证机构</th>-->
                             <!--<th>软件类型</th>-->
                             <!--软件产品登记证书-->
-                            <th>软件产品登记证书</th>
+                            <th style="min-width: 60px;">软件产品登记证书</th>
                             <!--<th>登记日期</th>-->
                             <!--<th>登记有效期</th>-->
-                            <th>链接</th>
+                            <th style="min-width: 60px;">链接</th>
                             <!--<th>认证机构</th>-->
                             <!--软件测评报告-->
-                            <th>软件测评报告号</th>
+                            <th style="min-width: 70px;">软件测评报告号</th>
                             <!--<th>签发日期</th>-->
-                            <th>链接</th>
+                            <th style="min-width: 60px;">链接</th>
                             <!--<th>认证机构</th>-->
                             <!--类别界定报告-->
-                            <th>类别界定报告号</th>
+                            <th style="min-width: 60px;">类别界定报告号</th>
                             <!--<th>鉴定日期</th>-->
-                            <th>链接</th>
+                            <th style="min-width: 60px;">链接</th>
                             <!--<th>认证机构</th>-->
                             <!--其它-->
                             <th>软件型号</th>
-                            <th>负责人</th>
-                            <th>建立日期</th>
-                            <th>更新日期</th>
-                            <th>操作人</th>
+                            <th style="min-width: 50px;">负责人</th>
                             <th style="width:60px">操作</th>
                         </tr>
                         </thead>
                         <tbody>
+                        <tr ng-if="list.length == 0">
+							<td colspan="14" style="text-align: center;">没有查询到结果</td>
+						</tr>
                         <tr ng-repeat="item in list" >
                             <td>{{$index+1}}</td>
                             <td>{{item.softwareName}}</td>
                             <td>{{item.abbreviation}}</td>
                             <!--软件著作权-->
-                            <td style="word-wrap: break-word;">{{item.crNo}}</td>
+                            <td style="word-wrap: break-word; word-break:break-all;">{{item.crNo}}</td>
                             <!--<td>{{item.crDate}}</td>-->
                             <td>
                             	<span ng-if="!item.hasCrURL">{{item.crUrl}}</span>
-                            	<a ng-if="item.hasCrURL" ng-href="{{item.crUrl}}" target="_blank">link</a>
+                            	<a ng-if="item.hasCrURL" ng-href="{{item.crUrl}}" target="_blank">OA资质报告下载</a>
                             </td>
                             <!--<td>{{item.crOrganization}}</td>-->
                             <!--<td>{{item.crSoftwareType}}</td>-->
                             <!--软件产品登记证书-->
-                            <td style="word-wrap: break-word;">{{item.rgNo}}</td>
+                            <td style="word-wrap: break-word; word-break:break-all;">{{item.rgNo}}</td>
                             <!--<td>{{item.rgDate}}</td>-->
                             <!--<td>{{item.rgExpiryDate}}</td>-->
                             <td>
                             	<span ng-if="!item.hasRgURL">{{item.rgUrl}}</span>
-                            	<a ng-if="item.hasRgURL" ng-href="{{item.rgUrl}}" target="_blank">link</a>
+                            	<a ng-if="item.hasRgURL" ng-href="{{item.rgUrl}}" target="_blank">OA资质报告下载</a>
                             </td>
                             <!--<td>{{item.rgOrganization}}</td>-->
                             <!--软件测评报告-->
-                            <td style="word-wrap: break-word;">{{item.epNo}}</td>
+                            <td style="word-wrap: break-word; word-break:break-all;">{{item.epNo}}</td>
                             <!--<td>{{item.epDate}}</td>-->
                             <td>
                             	<span ng-if="!item.hasEpURL">{{item.epUrl}}</span>
-                            	<a ng-if="item.hasEpURL" ng-href="{{item.epUrl}}" target="_blank">link</a>
+                            	<a ng-if="item.hasEpURL" ng-href="{{item.epUrl}}" target="_blank">OA资质报告下载</a>
                             </td>
                             <!--<td>{{item.epOrganization}}</td>-->
                             <!--界定类别报告-->
-                            <td style="word-wrap: break-word;">{{item.cdNo}}</td>
+                            <td style="word-wrap: break-word; word-break:break-all;">{{item.cdNo}}</td>
                             <!--<td>{{item.cdDate}}</td>-->
                             <td>
                             	<span ng-if="!item.hasCdURL">{{item.cdUrl}}</span>
-                            	<a ng-if="item.hasCdURL" ng-href="{{item.cdUrl}}" target="_blank">link</a>
+                            	<a ng-if="item.hasCdURL" ng-href="{{item.cdUrl}}" target="_blank">OA资质报告下载</a>
                             </td>
                             <!--<td>{{item.cdOrganization}}</td>-->
                             <!--其它-->
                             <td>{{item.model}}</td>
                             <td>{{item.charge}}</td>
-                            <td>{{item.createDate | date:'yyyy-MM-dd'}}</td>
-                            <td>{{item.updateDate | date:'yyyy-MM-dd'}}</td>
-                            <td>{{item.operator}}</td>
                             <td>
                             	<button class="btn btn-link" ng-click="edit(item)" ng-if="authority=='ROLE_ADMIN'">修改</button>
                             	<button class="btn btn-link" ng-click="view(item)">查看</button>

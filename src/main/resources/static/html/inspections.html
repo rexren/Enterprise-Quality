@@ -24,7 +24,7 @@
 							</div>
 							
 							<div class="form-group pull-right">
-								<label class="control-label"> </label>
+								<label class="control-label">&emsp;</label>
 								<input type="text" class="form-control" placeholder="内容检索，空格分隔" ng-model="searchInput.contentKeyword" ng-keydown="enterEvent($event)">
 							</div>
 							
@@ -33,7 +33,8 @@
 								<input type="text" class="form-control" placeholder="输入关键字" ng-model="searchInput.keyword" ng-keydown="enterEvent($event)">
 							</div>
 							<div class="form-group pull-right">
-								<select class="form-control" style="width: 150px" ng-model="searchInput.field" ng-options="f.value as f.name for f in fields"></select>
+								<label class="control-label"></label>
+								<select class="form-control" style="width: 110px" ng-model="searchInput.field" ng-options="f.value as f.name for f in fields"></select>
 							</div>
 						</form>
 					</div>
@@ -55,22 +56,21 @@
 								<th>软件版本</th>
 								<th style="min-width: 60px;">测试类别</th>
 								<th style="min-width: 100px;">受检单位</th>
-								<th>测试依据</th>
+								<th style="min-width: 100px;">测试依据</th>
 								<th>颁发日期</th>
-								<th>文件编号</th>
-								<th>链接</th>
-								<th>内容索引</th>
+								<th style="min-width: 60px;">文件编号</th>
+								<th style="min-width: 80px;">链接</th>
 								<th style="min-width: 60px;">认证机构</th>
 								<th style="min-width: 60px;">备注</th>
-								<th>建立日期</th>
-								<th>更新日期</th>
-								<th>操作人</th>
+								<!-- <th>建立日期</th> -->
+								<!-- <th>更新日期</th> -->
+								<!-- <th>操作人</th> -->
 								<th>操作</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr ng-if="list.length == 0">
-								<td colspan="17" style="text-align: center;">没有查询到结果</td>
+								<td colspan="13" style="text-align: center;">没有查询到结果</td>
 							</tr>
 							<tr ng-repeat="item in list" ng-if="list.length> 0">
 								<td>{{$index+1}}</td>
@@ -79,18 +79,19 @@
 								<td>{{item.version}}</td>
 								<td>{{item.testType}}</td>
 								<td>{{item.company}}</td>
-								<td>{{item.basis}}</td>
+								<td style="word-wrap: break-word; word-break:break-all;">{{item.basis}}</td>
 								<td>{{item.awardDate | date:'yyyy-MM-dd'}}</td>
-								<td style="word-wrap: break-word;">{{item.docNo}}</td>
-								<td><span ng-if="!item.hasURL">{{item.certUrl}}</span> <a
-									ng-if="item.hasURL" ng-href="{{item.certUrl}}" target="_blank">link</a>
+								<td style="word-wrap: break-word; word-break:break-all;">{{item.docNo}}
+								<i ng-if="!!item.docFilename && authority=='ROLE_ADMIN'" class="fa fa-check"></i>
 								</td>
-								<td>{{item.docFilename}}</td>
+								<td><span ng-if="!item.hasURL">{{item.certUrl}}</span> <a
+									ng-if="item.hasURL" ng-href="{{item.certUrl}}" target="_blank">OA资质报告下载</a>
+								</td>
 								<td>{{item.organization}}</td>
 								<td>{{item.remarks}}</td>
-								<td>{{item.createAt | date:'yyyy-MM-dd'}}</td>
-								<td>{{item.updateAt | date:'yyyy-MM-dd'}}</td>
-								<td>{{item.operator}}</td>
+								<!-- <td>{{item.createAt | date:'yyyy-MM-dd'}}</td> -->
+								<!-- <td>{{item.updateAt | date:'yyyy-MM-dd'}}</td> -->
+								<!-- <td>{{item.operator}}</td> -->
 								<td>
 									<button class="btn btn-link" ng-click="edit(item)" ng-if="authority=='ROLE_ADMIN'">修改</button>
 									<button class="btn btn-link" ng-click="view(item)">查看</button>

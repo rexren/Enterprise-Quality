@@ -53,9 +53,4 @@ public class HomeController {
 		return "logout";
 	}
 	
-	@RequestMapping(value = "/logoutsuccess")
-	public String logoutSuccess(){
-		return "logout success";
-	}
-	
 }

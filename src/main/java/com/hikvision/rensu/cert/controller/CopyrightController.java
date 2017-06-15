@@ -1,6 +1,7 @@
 package com.hikvision.rensu.cert.controller;
 
 import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.hikvision.rensu.cert.constant.RetStatus;
 import com.hikvision.rensu.cert.domain.Copyright;
 import com.hikvision.rensu.cert.service.CopyrightService;
@@ -29,6 +31,7 @@ public class CopyrightController {
 
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 	private final static String SORTBY_UPDATEDATE = "UpdateDate";
+	private final static String SORTBY_AWARDDATE = "awardDate";
 
 	@Autowired
 	private CopyrightService copyrightService;
@@ -276,7 +279,7 @@ public class CopyrightController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORTBY_UPDATEDATE; // 默认按照更新时间倒序
+			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期排序
 		}
 		String fieldName;
 		if (field == null) {

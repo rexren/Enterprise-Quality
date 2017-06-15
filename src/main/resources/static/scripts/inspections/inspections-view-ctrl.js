@@ -37,8 +37,6 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl', ['$scope'
         	var param = {id: $scope.inspectionId};
 	        $http.get('/inspections/detail.do',{params:param}).success(function(res){
 	        	if(res.code == 0){
-	        		var adate = Date.parse(Date(res.data.awardDate));
-	        		adate = adate>32503651200? new Date(adate) : new Date(adate*1000);
 	        		$scope.digest = {
         				'model': res.data.model,
         				'name': res.data.name,
@@ -46,7 +44,9 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl', ['$scope'
         				'testType': res.data.testType,
         				'company': res.data.company,
         				'basis': res.data.basis,
-        				'awardDate': adate,
+        				'awardDate': res.data.awardDate,
+        				'createDate': res.data.createAt,
+        				'updateDate': res.data.updateAt,
         				'docNo': res.data.docNo,
         				'docFilename': res.data.docFilename,
         				'certUrl': res.data.certUrl,
@@ -54,7 +54,7 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl', ['$scope'
         				'remarks': res.data.remarks,
         				'operator': res.data.operator
 	        		};
-	        		$scope.fileName = res.docFilename;
+	        		$scope.fileName = res.data.docFilename;
 	        	} else{
 	        		Toastr.error(res.msg);
             	} 

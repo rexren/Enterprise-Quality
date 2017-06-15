@@ -19,10 +19,10 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootS
     if(cccId){
     	var param = {id: cccId};
         $http.get('/ccc/detail.do',{params:param}).success(function(res){
-        	var awardDate =  res.data.awardDate?new Date(Number(res.data.awardDate)):null;
-    		var expiryDate =  res.data.expiryDate?new Date(Number(res.data.expiryDate)):null;
-
-        	$scope.digest = {
+        	//var awardDate =  res.data.awardDate?new Date(Number(res.data.awardDate)):null;
+    		//var expiryDate =  res.data.expiryDate?new Date(Number(res.data.expiryDate)):null;
+        	angular.extend($scope.digest, res.data);
+        	/*$scope.digest = {
 				"docNo":res.data.docNo,
 	        	"model":res.data.model,
 	        	"productName":res.data.productName,
@@ -31,7 +31,7 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootS
 	        	"url":res.data.url,
 	        	"organization":res.data.organization,
 	        	"remarks":res.data.remarks
-        	}
+        	}*/
         	$scope.hasURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.digest.url)? true : false;
 	
 	    }).error(function(res, status, headers, config){

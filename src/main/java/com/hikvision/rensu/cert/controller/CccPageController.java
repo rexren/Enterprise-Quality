@@ -1,6 +1,7 @@
 package com.hikvision.rensu.cert.controller;
 
 import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +32,9 @@ import com.hikvision.rensu.cert.support.ListResult;
 @RequestMapping("/ccc")
 public class CccPageController {
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
+	
 	private final static String SORT_TYPEINSPECTION_UPDATEDATE = "updateDate";
+	private final static String SORT_TYPEINSPECTION_AWARDDATE = "awardDate";
 
 	@Autowired
 	private CccPageService cccPageService;
@@ -59,7 +62,7 @@ public class CccPageController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORT_TYPEINSPECTION_UPDATEDATE; // 默认按照更新时间倒序
+			sortBy = SORT_TYPEINSPECTION_AWARDDATE; // 默认按照更新时间倒序
 		}
 		ListResult res = new ListResult();
 		try {
@@ -257,7 +260,7 @@ public class CccPageController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORT_TYPEINSPECTION_UPDATEDATE; // 默认按照更新时间倒序
+			sortBy = SORT_TYPEINSPECTION_AWARDDATE; // 默认按照颁发日期排序
 		}
 		String fieldName;
 		if (field == null) {

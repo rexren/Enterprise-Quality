@@ -24,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 由于导入文件并没有区分类型，所以其实正确的做法应该在一个新的类中导入 Created by rensu on 2017/5/28.
@@ -71,7 +73,7 @@ public class FileUploadController {
 						// TODO: news can be done without sheet.
 					}
 				}
-				return new ImportResult(RetStatus.SUCCESS.getCode(), RetStatus.SUCCESS.getInfo(),numOfInpections,numOfCopyRight,numOf3C);
+				return new ImportResult(RetStatus.SUCCESS.getCode(), RetStatus.SUCCESS.getInfo(), numOfInpections, numOfCopyRight, numOf3C);
 			} catch (IOException e) {
 				logger.error("", e);
 				return StringUtils.contains(e.getMessage(), "EncryptionInfo")
@@ -82,6 +84,10 @@ public class FileUploadController {
 				return new ImportResult(RetStatus.FILE_INVALID.getCode(), RetStatus.FILE_INVALID.getInfo());
 			} catch (Exception e) {
 				logger.error("", e);
+				if(StringUtils.contains(e.getCause().getCause().toString(), "duplicate")){
+					String cause = e.getCause().getCause().toString().toString();
+					return new ImportResult(RetStatus.DOCNO_DUPLICATED.getCode(),cause.substring(cause.indexOf("详细")+3));
+				}
 				return new ImportResult(RetStatus.FILE_PARSING_ERROR.getCode(), RetStatus.FILE_PARSING_ERROR.getInfo());
 			} finally {
 				IOUtils.closeQuietly(xlsxFile);

@@ -7,6 +7,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.repository.base.BasicDAO;
+import com.hikvision.rensu.cert.support.typeSearchResult;
 
 /**
  * Created by rensu on 2017/4/22.
@@ -16,6 +17,6 @@ public interface TypeInspectionRepository extends JpaRepository<TypeInspection, 
 	
 	public List<TypeInspection> findByDocNo(String docNo);
 
-	public List<?> joinSearchTypeInspection(String fieldName, String[] keywordList, String[] contentKeywordList);
+	public List<typeSearchResult> joinSearchTypeInspection(String fieldName, String[] keywordList, String[] contentKeywordList);
 	
 }

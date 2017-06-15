@@ -8,9 +8,7 @@ angular.module('enterprise-quality').filter("highlight",function($sce) {
 				var type = keywordList[i];
 				var reg = new RegExp(type, 'gi');
 				if (type.length != 0 && e.indexOf(type) > -1) {
-					//console.log(reg);
 					result = result.replace(reg, '<span class=\'highlight\'>'+ type + '</span>');
-					//console.log(result);
 				}
 			}
 		}

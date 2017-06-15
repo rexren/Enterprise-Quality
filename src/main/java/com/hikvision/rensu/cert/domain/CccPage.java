@@ -77,7 +77,6 @@ public class CccPage implements Serializable{
     @Column
     private Date createDate;
 
-
     /**
      * 更新时间
      */

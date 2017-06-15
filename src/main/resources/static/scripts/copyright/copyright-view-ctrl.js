@@ -43,36 +43,7 @@ angular.module('enterprise-quality').controller('CopyrightViewCtrl', ['$scope', 
                 params: param
             }).success(function(res) {
             	if(res.code == 0){
-	                var crDate = res.data.crDate ? new Date(Number(res.data.crDate)) : null;
-	                var rgDate = res.data.rgDate ? new Date(Number(res.data.rgDate)) : null;
-	                var rgExpiryDate = res.data.rgExpiryDate ? new Date(Number(res.data.rgExpiryDate)) : null;
-	                var epDate = res.data.epDate ? new Date(Number(res.data.epDate)) : null;
-	                var cdDate = res.data.crDate ? new Date(Number(res.data.cdDate)) : null;
-	
-	                $scope.digest = {
-	                    'softwareName': res.data.softwareName,
-	                    'abbreviation': res.data.abbreviation,
-	                    'crNo': res.data.crNo,
-	                    'crDate': crDate,
-	                    'crUrl': res.data.crUrl,
-	                    'crOrganization': res.data.crOrganization,
-	                    'crSoftwareType': res.data.crSoftwareType,
-	                    'rgNo': res.data.rgNo,
-	                    'rgDate': rgDate,
-	                    'rgExpiryDate': rgExpiryDate,
-	                    'rgUrl': res.data.rgUrl,
-	                    'rgOrganization': res.data.rgOrganization,
-	                    'epNo': res.data.epNo,
-	                    'epDate': epDate,
-	                    'epUrl': res.data.epUrl,
-	                    'epOrganization': res.data.epOrganization,
-	                    'cdNo': res.data.cdNo,
-	                    'cdDate': cdDate,
-	                    'cdUrl': res.data.cdUrl,
-	                    'cdOrganization': res.data.cdOrganization,
-	                    'model': res.data.model,
-	                    'charge': res.data.charge
-	                }
+	                angular.extend($scope.digest, res.data);
 	                $scope.hasCrURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.digest.crUrl) ? true : false;
 	                $scope.hasCdURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.digest.cdUrl) ? true : false;
 	                $scope.hasRgURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.digest.rgUrl) ? true : false;

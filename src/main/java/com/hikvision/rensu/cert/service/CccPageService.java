@@ -33,6 +33,9 @@ public class CccPageService {
 	@Autowired
 	private CccPageRepository cccPageRepository;
 	
+	@Autowired
+	private SystemUserService systemUserService;
+	
 	public Page<CccPage> getCCCListByPage(Integer pageNum, Integer pageSize, String sortBy, int dir) {
 		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
 		Pageable page = new PageRequest(pageNum, pageSize, new Sort(d, sortBy));
@@ -130,6 +133,7 @@ public class CccPageService {
 				c.setUrl(StringUtils.trim(r.getCell(5).getStringCellValue()));
 				c.setOrganization(StringUtils.trim(r.getCell(6).getStringCellValue()));
 				c.setRemarks(StringUtils.trim(r.getCell(7).getStringCellValue()));
+				c.setOperator(systemUserService.getCurrentUsername());
 				
 				cccList.add(c);
 			}

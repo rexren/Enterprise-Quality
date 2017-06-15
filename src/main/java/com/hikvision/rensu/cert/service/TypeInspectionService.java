@@ -23,6 +23,7 @@ import com.hikvision.rensu.cert.domain.InspectContent;
 import com.hikvision.rensu.cert.domain.TypeInspection;
 import com.hikvision.rensu.cert.repository.InspectContentRepository;
 import com.hikvision.rensu.cert.repository.TypeInspectionRepository;
+import com.hikvision.rensu.cert.support.typeSearchResult;
 
 /**
  * Created by rensu on 17/4/21.
@@ -137,14 +138,11 @@ public class TypeInspectionService {
 							throw e;
 						}
 					}
-					if (typeInspectionRepository.findByDocNo(r.getCell(docNoCol).getStringCellValue()).size() > 0) {
-						/*
-						 * if this docNo exists in db, find it and update other
-						 * properties
-						 */
-						t = typeInspectionRepository.findByDocNo(r.getCell(docNoCol).getStringCellValue()).get(0);
+					List<TypeInspection> thisDocNoList = typeInspectionRepository.findByDocNo(StringUtils.trim(r.getCell(docNoCol).getStringCellValue()));
+					if (thisDocNoList.size() > 0) {
+						/* if this docNo exists in db, find it and update other properties */
+						t = thisDocNoList.get(0);
 					} else {
-
 						t = new TypeInspection();
 						t.setCreateAt(new Date());
 						t.setDocNo(StringUtils.trim(r.getCell(docNoCol).getStringCellValue()));
@@ -181,11 +179,10 @@ public class TypeInspectionService {
 		try {
 			typeInspectionRepository.save(inspections);
 			res = inspections.size();
-		} catch (Exception e) {
+		}catch (Exception e) {
 			logger.error("", e);
 			throw e;
 		}
-
 		return res;
 	}
 
@@ -235,12 +232,10 @@ public class TypeInspectionService {
 	 * 模糊搜索关键字
 	 * @throws Exception 
 	 */
-	public List<?> searchTypeInspectionByPage(String fieldName, String[] keywordList,
+	public List<typeSearchResult> searchTypeInspectionByPage(String fieldName, String[] keywordList,
 			String[] contentKeywordList, int pn, int ps, String sortBy, int dir) throws Exception {
-		
-		List<?> ts = new ArrayList<Object>(typeInspectionRepository.joinSearchTypeInspection(fieldName, keywordList, contentKeywordList));
-		
-		return ts;
+		List<typeSearchResult> res = typeInspectionRepository.joinSearchTypeInspection(fieldName, keywordList, contentKeywordList);
+		return res;
 	}
 
 }

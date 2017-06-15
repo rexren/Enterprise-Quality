@@ -50,7 +50,7 @@
 							</tr>
 							<tr>
 								<td>颁发日期</td>
-								<td>{{digest.awardDate | date:'yyyy-MM-dd'}}</td>
+								<td>{{digest.awardDate |  date:'yyyy-MM-dd'}}</td>
 							</tr>
 							<tr>
 								<td>文件编号</td>
@@ -72,6 +72,18 @@
 							<tr>
 								<td>备注</td>
 								<td>{{digest.remarks}}</td>
+							</tr>
+							<tr>
+								<td>建立时间</td>
+								<td>{{digest.createDate | date:'yyyy-MM-dd HH:mm'}}</td>
+							</tr>
+							<tr>
+								<td>更新时间</td>
+								<td>{{digest.updateDate | date:'yyyy-MM-dd HH:mm'}}</td>
+							</tr>
+							<tr>
+								<td>操作人</td>
+								<td>{{digest.operator}}</td>
 							</tr>
 						</table>
 					</div>

@@ -41,7 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();   // 禁用csrf
-		http.authorizeRequests() // 配置安全策略
+		http
+			.authorizeRequests() // 配置安全策略
 				/* ANT通配符说明:? 匹配任何单字符; * 匹配0或者任意数量的字符; ** 匹配0或者更多的目录 */
 				.antMatchers("/logout").permitAll()
 				.antMatchers("/bootstrap/**/*.*").permitAll()
@@ -49,9 +50,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/dist/**/*.*").permitAll()
 				.antMatchers("/scripts/global/login-ctrl.js").permitAll()
 				.anyRequest().authenticated() //其余的所有请求都需要验证  
-				.and().formLogin().loginPage("/login").permitAll() 
+				.and()
+			.formLogin()
+				.loginPage("/login")
+				.defaultSuccessUrl("/#/") //TODO 用户被强制登出后再次登入访问什么页面
+				.permitAll() 
 				//.failureUrl("/login-error").permitAll()
-				.and().logout().permitAll();
+				.and()
+			.logout()
+				.permitAll();
 	}
 
 	@Autowired

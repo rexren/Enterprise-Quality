@@ -36,7 +36,7 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	public List<?> joinSearchTypeInspection(String fieldName, String[] keywords, String[] contentKeywords) {
+	public List<typeSearchResult> joinSearchTypeInspection(String fieldName, String[] keywords, String[] contentKeywords) {
 		StringBuilder sqlString = new StringBuilder("SELECT T.id, ");
 		for (int i = 0; i < tFields.length; i++) {
 			if (i > 0)
@@ -52,6 +52,7 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 			}
 		}
 		sqlString.append(" FROM type_inspection as T LEFT JOIN inspect_content as C ON T.id = C.inspection_id WHERE ");
+		/*TODO 返回类型分为【只搜索外部信息】和【搜索报告内部信息】两种*/
 		if (null != contentKeywords && contentKeywords.length > 0) {
 			sqlString.append("(");
 			/* 循环查询inspectContent全部三个关键字段 */
