@@ -2,7 +2,8 @@
 
 angular.module('enterprise-quality').controller('CopyrightSearchCtrl', ['$scope','$rootScope','$location','$http','$q','toastr',
     function($scope, $rootScope, $location, $http, $q, Toastr){
-		$scope.authority = $rootScope.user.authorities[0].authority;
+		$scope.authority = $rootScope.user.authorities[0]?$rootScope.user.authorities[0].authority: null;
+    
         $scope.pagination = {
             page: 1,
             size: 20,
@@ -42,10 +43,14 @@ angular.module('enterprise-quality').controller('CopyrightSearchCtrl', ['$scope'
 		            }
 	            }
 	        } else {
-	            Toastr.error(res.msg);
+	        	if(res.msg){
+	        		Toastr.error(res.msg);
+	        	} else {
+	        		Toastr.error('登录过期，请重新登录');
+	        	}
 	        }
 	    }).error(function(res, status) {
-	        Toastr.error("getListByAjax error: " + status);
+	        Toastr.error("网络错误");
 	    })
 	    
     }]);

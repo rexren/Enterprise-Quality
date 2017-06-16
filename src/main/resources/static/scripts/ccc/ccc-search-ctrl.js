@@ -1,8 +1,9 @@
 'use strict';
 
-angular.module('enterprise-quality').controller('CccSearchCtrl', ['$scope','$location','$http','$q','toastr',
-    function($scope, $location, $http, $q, Toastr){
-	
+angular.module('enterprise-quality').controller('CccSearchCtrl', ['$scope','$rootScope','$location','$http','$q','toastr',
+    function($scope,$rootScope, $location, $http, $q, Toastr){
+		$scope.authority = $rootScope.user.authorities[0]?$rootScope.user.authorities[0].authority: null;
+    
         $scope.pagination = {
             page: 1,
             size: 20,

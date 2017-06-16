@@ -3,7 +3,8 @@
 angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootScope','$location','$http','$q','toastr',
     function($scope, $rootScope, $location, $http, $q, Toastr){
 	/*initialization*/
-	$scope.authority = $rootScope.user.authorities[0].authority;
+	$scope.authority = $rootScope.user.authorities[0]?$rootScope.user.authorities[0].authority: null;
+    
     $scope.digest = {
 		"docNo":"",
     	"model":"",
@@ -22,16 +23,6 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootS
         	//var awardDate =  res.data.awardDate?new Date(Number(res.data.awardDate)):null;
     		//var expiryDate =  res.data.expiryDate?new Date(Number(res.data.expiryDate)):null;
         	angular.extend($scope.digest, res.data);
-        	/*$scope.digest = {
-				"docNo":res.data.docNo,
-	        	"model":res.data.model,
-	        	"productName":res.data.productName,
-	        	"awardDate":awardDate,
-	        	"expiryDate":expiryDate,
-	        	"url":res.data.url,
-	        	"organization":res.data.organization,
-	        	"remarks":res.data.remarks
-        	}*/
         	$scope.hasURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.digest.url)? true : false;
 	
 	    }).error(function(res, status, headers, config){

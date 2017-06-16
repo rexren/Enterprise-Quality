@@ -2,7 +2,8 @@
 
 angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScope','$location', '$http', '$modal', '$q', 'toastr', 'FileUploadService', 'common',
     function($scope, $rootScope, $location, $http, $modal, $q, Toastr, FileUploadService, Common) {
-		$scope.authority = $rootScope.user.authorities[0].authority;
+		$scope.authority = $rootScope.user.authorities[0]?$rootScope.user.authorities[0].authority: null;
+    
         $scope.pagination = {
             page: 1,
             size: 10,

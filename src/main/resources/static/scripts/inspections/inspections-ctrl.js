@@ -2,7 +2,7 @@
 
 angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$rootScope','$location','$http','$modal','$q','toastr','FileUploadService','common',
     function($scope, $rootScope, $location, $http, $modal, $q, Toastr, FileUploadService, Common){
-        $scope.authority = $rootScope.user.authorities[0].authority;
+        $scope.authority = $rootScope.user.authorities[0]?$rootScope.user.authorities[0].authority: null;
         
 		$scope.pagination = {
             page: 1,
@@ -15,7 +15,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
             $scope.pagination.page = page;
             getList($scope.pagination.page, $scope.pagination.size);
         };
-
+ 
         function getList(page, size) {
             var param = {pageNum:page,pageSize:size};
             $http.get('/inspections/list.do',{params:param}).success(function(res){
@@ -28,10 +28,15 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
     	            	}
             		}
             	}else{
-            		Toastr.error(res.msg);
+            		if(res.msg){
+    	        		Toastr.error(res.msg);
+    	        	} else {
+    	        		Toastr.error('登录过期，请刷新重新登录');
+    	        		window.location.href='/login';  //TODO 不起作用？
+    	        	}
             	}
             }).error(function(res, status, headers, config){
-            	Toastr.error("AjaxError: "+ status);
+            	Toastr.error("网络错误");
             })
         };
         
@@ -115,11 +120,17 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
             		$scope.removeFile();
                 	getList(1, $scope.pagination.size);
                 } else{
-                	Toastr.error(res.msg);
+                	if(res.msg){
+    	        		Toastr.error(res.msg);
+    	        	} else {
+    	        		Toastr.error('登录过期，请刷新重新登录');
+    	        		window.location.href='/login';
+    	        	}
                 }
             }).error(function(res) {
             	Toastr.error('网络错误');
                 defer.reject();
+                window.location.href='/login';
             });
             return defer.promise;
         };

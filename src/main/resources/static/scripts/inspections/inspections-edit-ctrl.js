@@ -2,7 +2,7 @@
 
 angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope','$rootScope', '$location', '$http', '$q', 'toastr', 'FileUploadService', 'common',
     function($scope,$rootScope, $location, $http, $q, Toastr, FileUploadService, Common) {
-		$scope.authority = $rootScope.user.authorities[0].authority;
+		$scope.authority = $rootScope.user.authorities[0]?$rootScope.user.authorities[0].authority: null;
 		if($scope.authority!='ROLE_ADMIN'){
 			$location.path('/unauthorized');
 		}

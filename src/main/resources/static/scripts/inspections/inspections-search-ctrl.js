@@ -2,8 +2,8 @@
 
 angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scope','$rootScope','$location','$http','$q','toastr',
     function($scope, $rootScope, $location, $http, $q, Toastr){
-		$scope.authority = $rootScope.user.authorities[0].authority;
-        $scope.pagination = {
+		$scope.authority = $rootScope.user.authorities[0]?$rootScope.user.authorities[0].authority: null;
+    	$scope.pagination = {
             page: 1,
             size: 20,
             totalElements: 0

@@ -2,8 +2,8 @@
 
 angular.module('enterprise-quality').controller('CccEditCtrl',['$scope','$rootScope','$location','$http','$modal','$q','toastr','FileUploadService','common',
     function($scope, $rootScope, $location, $http, $modal, $q, Toastr, FileUploadService, Common){
-		$scope.authority = $rootScope.user.authorities[0].authority;
-    	if($scope.authority!='ROLE_ADMIN'){
+		$scope.authority = $rootScope.user.authorities[0]?$rootScope.user.authorities[0].authority: null;
+        if($scope.authority!='ROLE_ADMIN'){
 			$location.path('/unauthorized');
 		}
         $scope.formData = {

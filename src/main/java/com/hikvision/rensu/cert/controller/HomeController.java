@@ -20,11 +20,11 @@ import com.hikvision.rensu.cert.support.BaseResult;
  */
 @Controller
 public class HomeController {
-	
+
 	/**
 	 * 默认登陆页面
-	 * @param request
-	 * @return
+	 * @param
+	 * @return 登录页
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(){
@@ -32,10 +32,21 @@ public class HomeController {
 	}
 	
 	/**
+	 * 默认登陆成功页面
+	 * @param
+	 * @return 登录页
+	 */
+	@RequestMapping(value = "/login-success", method = RequestMethod.GET)
+	public String successLogin(){
+		return "redirect:/index.html";
+	}
+	
+	/**
 	 * 获取当前用户
 	 * @param request
 	 * @return user
 	 */
+	//TODO 只返回用户名、id和role
 	@ResponseBody
 	@RequestMapping("/user")
 	public Principal user(Principal user) {

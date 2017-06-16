@@ -2,7 +2,7 @@
 
 angular.module('enterprise-quality').controller('InspectionsViewCtrl', ['$scope','$rootScope','$location', '$http', '$q','toastr',
 	function($scope,$rootScope, $location, $http, $q, Toastr){
-		$scope.authority = $rootScope.user.authorities[0].authority;
+		$scope.authority = $rootScope.user.authorities[0]?$rootScope.user.authorities[0].authority: null;
 		/*initialization*/
 	    $scope.digest = 
 	    {
