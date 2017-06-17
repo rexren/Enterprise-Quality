@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 /** 
  * spring security配置
- * 修改配置后需要重启程序才能生效
  * 
  * @author langyicong
  */
@@ -48,7 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	/* 临时方法 运行加密算法 */
 	public static void main(String[] args) {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
-        System.out.println(encoder.encode("111111")); 
+		System.out.println(encoder.encode("111111")); 
+		System.out.println(encoder.encode("123456")); 
 	}
 
 	@Override
@@ -58,7 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	/** 定义安全策略 */
-
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();   // 禁用csrf
@@ -74,13 +73,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 			.formLogin()
 				.loginPage("/login")
-				/*TODO How to redirect to 'index.html' instead of the requsting url
-				when the user is forced to re-login (neither timeout or restart the service)?
-				Think it both from the perspective of front-end and back-end... */
-				.successForwardUrl("/login-success")
-				.defaultSuccessUrl("/login-success") 
+				/* boolean alwaysUse = true - the defaultSuccesUrl should be used after authentication 
+				 * despite if a protected page had been previously visited*/
+				.defaultSuccessUrl("/login-success", true) 
 				.permitAll() 
-				//.failureUrl("/login-error").permitAll()
 				.and()
 			.logout()
 				.permitAll();

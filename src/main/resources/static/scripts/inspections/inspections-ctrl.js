@@ -32,7 +32,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
     	        		Toastr.error(res.msg);
     	        	} else {
     	        		Toastr.error('登录过期，请刷新重新登录');
-    	        		window.location.href='/login';  //TODO 不起作用？
+    	        		window.location.href='/login';
     	        	}
             	}
             }).error(function(res, status, headers, config){

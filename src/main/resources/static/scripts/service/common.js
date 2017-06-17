@@ -12,6 +12,8 @@ angular.module('enterprise-quality')
   .service('common', ['$q','$http','toastr',
     function ($q,$http,Toastr) {
     	var service = {
+    		// TODO 统一处理所有的请求（包括登录超时）
+    	
     		retCodeHandler: function(retCode){
 	        	switch (retCode) {
 	        	case '1001':

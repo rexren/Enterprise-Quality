@@ -36,7 +36,7 @@ public class HomeController {
 	 * @param
 	 * @return 登录页
 	 */
-	@RequestMapping(value = "/login-success", method = RequestMethod.GET)
+	@RequestMapping("/login-success")
 	public String successLogin(){
 		return "redirect:/index.html";
 	}
