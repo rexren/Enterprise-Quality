@@ -28,7 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private UserDetailsService userDetailsService;// 自定义用户服务
 
 	@Bean
-	@Autowired
 	public AuthenticationProvider authenticationProvider(){
 	    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 	    authenticationProvider.setUserDetailsService(userDetailsService);
@@ -38,8 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Bean
-	@Autowired
-    public PasswordEncoder passwordEncoder(){  
+    public PasswordEncoder passwordEncoder(){
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder;  
     }
