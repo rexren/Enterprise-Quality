@@ -1,19 +1,25 @@
 package com.hikvision.rensu.cert.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hikvision.rensu.cert.constant.RetStatus;
-import com.hikvision.rensu.cert.support.BaseResult;
+import com.hikvision.rensu.cert.domain.SystemUser;
+import com.hikvision.rensu.cert.domain.UserRole;
+import com.hikvision.rensu.cert.security.userdetails.HikUserDetails;
+import com.hikvision.rensu.cert.service.SystemUserService;
+import com.hikvision.rensu.cert.service.UserRoleService;
+import com.hikvision.rensu.cert.support.UserResult;
 
 /**
  * Created by rensu on 17/4/1.
@@ -21,6 +27,12 @@ import com.hikvision.rensu.cert.support.BaseResult;
 @Controller
 public class HomeController {
 
+	@Autowired
+	private SystemUserService systemUserService;
+
+	@Autowired
+	private UserRoleService userRoleService;
+	
 	/**
 	 * 默认登陆页面
 	 * @param
@@ -49,8 +61,26 @@ public class HomeController {
 	//TODO 只返回用户名、id和role
 	@ResponseBody
 	@RequestMapping("/user")
-	public Principal user(Principal user) {
-		return user;
+	public UserResult user(Principal user) {
+		UserResult res = new UserResult();
+		res.setName(user.getName());
+		SystemUser sysUser;
+		try {
+			sysUser = systemUserService.findByName(user.getName()).get(0);
+			if(sysUser == null){
+				//TODO 处理无用户
+				// throw new UsernameNotFoundException("no user found");
+			}
+			else{
+				res.setAuthorities(userRoleService.getRoleByUserId(sysUser.getId()));
+				res.setCode(RetStatus.SUCCESS.getCode());
+				res.setMsg(RetStatus.SUCCESS.getInfo());
+			}
+		} catch (Exception e) {
+			//TODO error
+		}
+		
+		return res;
 	}
 
 	/**
