@@ -27,7 +27,7 @@ import com.hikvision.rensu.cert.support.UserResult;
  */
 @Controller
 public class HomeController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 
 	@Autowired
@@ -35,29 +35,32 @@ public class HomeController {
 
 	@Autowired
 	private UserRoleService userRoleService;
-	
+
 	/**
 	 * 默认登陆页面
+	 * 
 	 * @param
 	 * @return 登录页
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String login(){
+	public String login() {
 		return "login";
 	}
-	
+
 	/**
 	 * 默认登陆成功页面
+	 * 
 	 * @param
 	 * @return 登录页
 	 */
 	@RequestMapping("/login-success")
-	public String successLogin(){
+	public String successLogin() {
 		return "redirect:/index.html";
 	}
-	
+
 	/**
 	 * 获取当前用户
+	 * 
 	 * @param request
 	 * @return user
 	 */
@@ -69,14 +72,13 @@ public class HomeController {
 		SystemUser sysUser;
 		try {
 			sysUser = systemUserService.findByName(user.getName()).get(0);
-			if(sysUser == null){
+			if (sysUser == null) {
 				res.setCode(RetStatus.USER_NOT_FOUND.getCode());
 				res.setMsg(RetStatus.USER_NOT_FOUND.getInfo());
-			}
-			else{
+			} else {
 				List<UserRole> roleList = userRoleService.getRoleByUserId(sysUser.getId());
 				List<String> roles = new ArrayList<String>();
-				for(int i = 0; i < roleList.size(); i++){
+				for (int i = 0; i < roleList.size(); i++) {
 					roles.add(roleList.get(i).getRole());
 				}
 				res.setRoles(roles);
@@ -85,6 +87,7 @@ public class HomeController {
 				res.setMsg(RetStatus.SUCCESS.getInfo());
 			}
 		} catch (Exception e) {
+			logger.error("",e);
 			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
 			res.setMsg(e.getMessage());
 		}
@@ -93,13 +96,14 @@ public class HomeController {
 
 	/**
 	 * 默认登出页面
+	 * 
 	 * @param request
 	 * @param response
 	 * @return
 	 */
 	@RequestMapping(value = "/logout")
-	public String doLogout(HttpServletRequest request, HttpServletResponse response){
+	public String doLogout(HttpServletRequest request, HttpServletResponse response) {
 		return "logout";
 	}
-	
+
 }
