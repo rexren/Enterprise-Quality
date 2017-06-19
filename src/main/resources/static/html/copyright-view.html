@@ -10,6 +10,7 @@
 			<div class="box box-info">
 				<div class="box-header with-border">
 					<h3 class="box-title">查看详情</h3>
+					<span class="view-search-hint" ng-if="searchInput.keyword"> 检索关键字：{{searchField}}={{searchInput.keyword}}</span>
 					<div class="btn-group pull-right">
 						<button type="submit" class="btn btn-info" ng-click="edit()" ng-if="authority=='ROLE_ADMIN'">编辑</button>
                         <button class="btn btn-default" ng-click="back()">返回</button>
@@ -25,15 +26,15 @@
 						<tbody>
 							<tr>
 								<td>软件名称</td>
-								<td>{{digest.softwareName}}</td>
+								<td ng-bind-html="digest.softwareName | highlight: keywordsList"></td>
 							</tr>
 							<tr>
 								<td>软件简称</td>
-								<td>{{digest.abbreviation}}</td>
+								<td ng-bind-html="digest.abbreviation | highlight: keywordsList"></td>
 							</tr>
 							<tr>
 								<td>软件型号</td>
-								<td>{{digest.model}}</td>
+								<td ng-bind-html="digest.model | highlight: keywordsList"></td>
 							</tr>
 							<tr>
 								<td>负责人</td>
@@ -64,7 +65,7 @@
 						<tbody>
 							<tr>
 								<td>软著登记号</td>
-								<td>{{digest.crNo}}</td>
+								<td ng-bind-html="digest.crNo | highlight: keywordsList"></td>
 							</tr>
 							<tr>
 								<td>软著签发日期</td>
@@ -98,7 +99,7 @@
 						<tbody>
 							<tr>
 								<td>证书编号</td>
-								<td>{{digest.rgNo}}</td>
+								<td ng-bind-html="digest.rgNo | highlight: keywordsList"></td>
 							</tr>
 							<tr>
 								<td>登记日期</td>
@@ -131,7 +132,7 @@
 						<tbody>
 							<tr>
 								<td>测评报告号</td>
-								<td>{{digest.epNo}}</td>
+								<td ng-bind-html="digest.epNo | highlight: keywordsList"></td>
 							</tr>
 							<tr>
 								<td>签发日期</td>
@@ -161,7 +162,7 @@
 						<tbody>
 							<tr>
 								<td>界定报告号</td>
-								<td>{{digest.cdNo}}</td>
+								<td ng-bind-html="digest.cdNo | highlight: keywordsList"></td>
 							</tr>
 							<tr>
 								<td>鉴定日期</td>

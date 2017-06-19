@@ -10,6 +10,7 @@
 			<div class="box box-info">
 				<div class="box-header with-border">
 					<h3 class="box-title">查看详情</h3>
+					<span class="view-search-hint" ng-if="searchInput.keyword"> 检索关键字：{{searchField}}={{searchInput.keyword}}</span>
 					<div class="btn-group pull-right">
 						<button type="submit" class="btn btn-info" ng-click="edit()" ng-if="authority=='ROLE_ADMIN'">编辑</button>
                         <button class="btn btn-default" ng-click="back()">返回</button>
@@ -25,15 +26,15 @@
 						<tbody>
 							<tr>
 								<td>文件编号</td>
-								<td>{{digest.docNo}}</td>
+								<td ng-bind-html="digest.docNo | highlight: keywordsList"></td>
 							</tr>
 							<tr>
 								<td>产品型号</td>
-								<td>{{digest.model}}</td>
+								<td ng-bind-html="digest.model | highlight: keywordsList"></td>
 							</tr>
 							<tr>
 								<td>产品名称</td>
-								<td>{{digest.productName}}</td>
+								<td ng-bind-html="digest.productName | highlight: keywordsList"></td>
 							</tr>
 							<tr>
 								<td>颁发日期</td>
@@ -55,7 +56,7 @@
 							</tr>
 							<tr>
 								<td>备注</td>
-								<td>{{digest.organization}}</td>
+								<td ng-bind-html="digest.remarks | highlight: keywordsList"></td>
 							</tr>
 							<tr>
 								<td>建立时间</td>

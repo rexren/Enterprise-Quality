@@ -33,7 +33,6 @@ import com.hikvision.rensu.cert.support.ListResult;
 public class CccPageController {
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 	
-	private final static String SORT_TYPEINSPECTION_UPDATEDATE = "updateDate";
 	private final static String SORT_TYPEINSPECTION_AWARDDATE = "awardDate";
 
 	@Autowired

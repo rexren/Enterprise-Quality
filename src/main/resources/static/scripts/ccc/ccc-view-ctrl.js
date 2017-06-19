@@ -3,8 +3,8 @@
 angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootScope','$location','$http','$q','toastr',
     function($scope, $rootScope, $location, $http, $q, Toastr){
 	/*initialization*/
-	$scope.authority = $rootScope.user.authorities[0]?$rootScope.user.authorities[0].authority: null;
-    
+	$scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
+	
     $scope.digest = {
 		"docNo":"",
     	"model":"",
@@ -17,6 +17,22 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootS
     };
     
     var cccId = $location.search().id;
+    
+    $scope.searchInput = {
+        "field": $location.search().f,
+        "keyword":$location.search().kw
+    };
+    $scope.keywordsList = $scope.searchInput.keyword?$scope.searchInput.keyword.split(/\s+/):[];
+    
+    switch ($scope.searchInput.field) {
+		case '':  $scope.searchField = '全部'; break;
+		case '1':  $scope.searchField = '文件编号'; break;
+		case '2':  $scope.searchField = '产品型号'; break;
+		case '3':  $scope.searchField = '产品名称'; break;
+		case '4':  $scope.searchField = '备注'; break;
+		default: $scope.searchField = '全部'; break;
+	}
+    
     if(cccId){
     	var param = {id: cccId};
         $http.get('/ccc/detail.do',{params:param}).success(function(res){
@@ -37,7 +53,7 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootS
     
     // back
     $scope.back = function(){
-        $location.url('/ccc');
+    	window.history.back();
     }
 	    
 }]);

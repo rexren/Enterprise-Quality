@@ -15,39 +15,77 @@
 				<div class="box-body">
 					<div class="box-body table-responsive no-padding">
 						<table class="table table-hover">
-							<tbody ng-repeat="item in list">
-								<tr>
-									<td colspan="10">{{$index+1}}</td>
-								</tr>
-								<tr>
-									<th>软件名称</th>
-                            		<th>简称</th>
-                            		<th>软著登记号</th>
-                            		<th>软件产品登记证书</th>
-                            		<th>软件测评报告号</th>
-                            		<th>类别界定报告号</th>
-                            		<th>软件型号</th>
-                            		<th style="min-width:80px;">负责人</th>
-		                            <th style="min-width:100px;">建立日期</th>
-		                            <th style="min-width:100px;">更新日期</th>
-								</tr>
-								<tr>
-									<td><a ng-href="#/copyright/view?id={{item.id}}" target="_blank">{{item.softwareName}}</a></td>
-                            		<td>{{item.abbreviation}}</td>
-									<td style="word-wrap: break-word;">{{item.crNo}}</td>
-									<td style="word-wrap: break-word;">{{item.rgNo}}</td>
-									<td style="word-wrap: break-word;">{{item.epNo}}</td>
-                            		<td style="word-wrap: break-word;">{{item.cdNo}}</td>
-									<td>{{item.model}}</td>
-									<td>{{item.charge}}</td>
-		                            <td>{{item.createDate | date:'yyyy-MM-dd'}}</td>
-		                            <td>{{item.updateDate | date:'yyyy-MM-dd'}}</td>
-								</tr>
-							</tbody>
+						<thead>
+	                        <tr>
+	                            <th>序号</th>
+	                            <th style="min-width: 60px;">软件名称</th>
+	                            <th style="min-width: 60px;">简称</th>
+	                            <th style="min-width: 70px;">软著登记号</th>
+	                            <th style="min-width: 60px;">链接</th>
+	                            <th style="min-width: 60px;">软件产品登记证书</th>
+	                            <th style="min-width: 60px;">链接</th>
+	                            <th style="min-width: 70px;">软件测评报告号</th>
+	                            <th style="min-width: 60px;">链接</th>
+	                            <th style="min-width: 60px;">类别界定报告号</th>
+	                            <th style="min-width: 60px;">链接</th>
+	                            <th>软件型号</th>
+	                            <th style="min-width: 50px;">负责人</th>
+	                            <th style="width:60px">操作</th>
+	                        </tr>
+                        </thead>
+                        <tbody>
+	                        <tr ng-if="list.length == 0">
+								<td colspan="14" style="text-align: center;">没有查询到结果</td>
+							</tr>
+							
+							<tr ng-repeat="item in list">
+								<td>{{$index+1}}</td>
+                            	<td ng-bind-html="item.softwareName | highlight: keywordsList"></td>
+                            	<td ng-bind-html="item.abbreviation | highlight: keywordsList"></td>
+	                            <td style="word-wrap: break-word; word-break:break-all;"
+	                            		ng-bind-html="item.crNo | highlight: keywordsList"></td>
+                            	<td>
+                            		<span ng-if="!item.hasCrURL">{{item.crUrl}}</span>
+                            		<a ng-if="item.hasCrURL" ng-href="{{item.crUrl}}" target="_blank">OA资质报告下载</a>
+                           	 	</td>
+                            	<td style="word-wrap: break-word; word-break:break-all;"
+                            			ng-bind-html="item.rgNo | highlight: keywordsList"></td>
+	                            <td>
+	                            	<span ng-if="!item.hasRgURL">{{item.rgUrl}}</span>
+	                            	<a ng-if="item.hasRgURL" ng-href="{{item.rgUrl}}" target="_blank">OA资质报告下载</a>
+	                            </td>
+	                            <td style="word-wrap: break-word; word-break:break-all;"
+	                            		ng-bind-html="item.epNo | highlight: keywordsList"></td>
+	                            <td>
+	                            	<span ng-if="!item.hasEpURL">{{item.epUrl}}</span>
+	                            	<a ng-if="item.hasEpURL" ng-href="{{item.epUrl}}" target="_blank">OA资质报告下载</a>
+	                            </td>
+                            	<td style="word-wrap: break-word; word-break:break-all;" 
+                            			ng-bind-html="item.cdNo | highlight: keywordsList"></td>
+	                            <td>
+	                            	<span ng-if="!item.hasCdURL">{{item.cdUrl}}</span>
+	                            	<a ng-if="item.hasCdURL" ng-href="{{item.cdUrl}}" target="_blank">OA资质报告下载</a>
+	                            </td>
+	                            <td ng-bind-html="item.model | highlight: keywordsList"></td>
+	                            <td>{{item.charge}}</td>
+	                            <td>
+	                            	<a ng-href="#/copyright/edit?id={{item.id}}" target="_blank" ng-if="authority=='ROLE_ADMIN'">修改</a>
+	                            	<a ng-href="#/copyright/view?id={{item.id}}&f={{searchField}}&kw={{searchInput.keyword}}" target="_blank">查看</a>
+								</td>
+							</tr>
+						</tbody>
 						</table>
 					</div>
+					<!-- 
+					<div class="box-footer clearfix">
+						<paging class="smallpagination pagination-sm no-margin pull-right"
+							page="pagination.page" page-size="pagination.size"
+							total="pagination.totalElements" adjacent="1" dots="..."
+							hide-if-empty="true" show-prev-next="true" show-first-last="true"
+							paging-action="onPageChange(page)"> </paging>
+					</div>
+ 					-->
 				</div>
-
 			</div>
 		</div>
 	</div>

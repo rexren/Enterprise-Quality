@@ -14,6 +14,7 @@ public enum RetStatus {
 	USER_LOGIN_FAIL("1100", "登录失败"),
 	USER_NOT_LOGGED_IN("1101", "用户未登录"),
 	USER_AUTH_ERROR("1102","用户权限不足"),
+	USER_NOT_FOUND("1103","用户不存在"),
 	
 	/* 文件解析错误（预留字段1200-1299） */
 	/* 1200-1209：文件自身格式问题 */

@@ -1,14 +1,11 @@
 package com.hikvision.rensu.cert.support;
 
-
 import java.util.List;
-
-import com.hikvision.rensu.cert.domain.UserRole;
 
 public class UserResult extends BaseResult{
 	private long id;
 	private String name;
-	private List<UserRole> authorities;
+	private List<String> roles;
 	
 	public long getId() {
 		return id;
@@ -22,14 +19,14 @@ public class UserResult extends BaseResult{
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public List<UserRole> getAuthorities() {
-		return authorities;
+	public List<String> getRoles() {
+		return roles;
 	}
-	public void setAuthorities(List<UserRole> authorities) {
-		this.authorities = authorities;
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
 	}
 	public UserResult() {
 		super();
 	}
+	
 }

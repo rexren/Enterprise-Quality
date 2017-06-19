@@ -49,12 +49,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		System.out.println(encoder.encode("123456"));
 	}
 
-    //TODO: these should put in configureGlobal
-	@Override
+	/*These codes could be put in either @Autowired whateverName or @Override configure*/
+	/*@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService);
 		auth.authenticationProvider(authenticationProvider());
-	}
+	}*/
 
 	/** 定义安全策略 */
 	@Override
@@ -81,9 +81,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll();
 	}
 
+	// Whatever the function name is
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
+		auth.userDetailsService(userDetailsService);
+		auth.authenticationProvider(authenticationProvider());
 	}
 
 }
