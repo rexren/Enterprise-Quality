@@ -1,6 +1,7 @@
 package com.hikvision.rensu.cert.controller;
 
 import java.security.Principal;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hikvision.rensu.cert.constant.RetStatus;
 import com.hikvision.rensu.cert.domain.SystemUser;
 import com.hikvision.rensu.cert.service.SystemUserService;
-import com.hikvision.rensu.cert.support.AjaxResult;
+import com.hikvision.rensu.cert.service.UserRoleService;
+import com.hikvision.rensu.cert.support.UserResult;
 
 /**
  * Created by rensu on 17/4/1.
@@ -27,6 +29,10 @@ public class HomeController {
 
 	@Autowired
 	private SystemUserService systemUserService;
+
+	@Autowired
+	private UserRoleService userRoleService;
+	
 	/**
 	 * 默认登陆页面
 	 * @param
@@ -55,17 +61,25 @@ public class HomeController {
 	//TODO 另建class，只返回用户名、id和role
 	@ResponseBody
 	@RequestMapping("/user")
-	public AjaxResult<SystemUser> user(Principal user) {
-		AjaxResult<SystemUser> res = new AjaxResult<SystemUser>();
+	public UserResult user(Principal user) {
+		UserResult res = new UserResult();
+		res.setName(user.getName());
+		SystemUser sysUser;
 		try {
-			res.setData(systemUserService.findByName(user.getName()).get(0));
-			res.setCode(RetStatus.SUCCESS.getCode());
-			res.setMsg(RetStatus.SUCCESS.getInfo());
+			sysUser = systemUserService.findByName(user.getName()).get(0);
+			if(sysUser == null){
+				//TODO 处理无用户
+				// throw new UsernameNotFoundException("no user found");
+			}
+			else{
+				res.setAuthorities(userRoleService.getRoleByUserId(sysUser.getId()));
+				res.setCode(RetStatus.SUCCESS.getCode());
+				res.setMsg(RetStatus.SUCCESS.getInfo());
+			}
 		} catch (Exception e) {
-			logger.error("", e);
-			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
-			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+			//TODO error
 		}
+		
 		return res;
 	}
 

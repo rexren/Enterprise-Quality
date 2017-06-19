@@ -14,9 +14,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-/** 
+/**
  * spring security配置
- * 
+ *
  * @author langyicong
  */
 @Configuration
@@ -28,7 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private UserDetailsService userDetailsService;// 自定义用户服务
 
 	@Bean
-	@Autowired
 	public AuthenticationProvider authenticationProvider(){
 	    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 	    authenticationProvider.setUserDetailsService(userDetailsService);
@@ -36,21 +35,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	    authenticationProvider.setPasswordEncoder(passwordEncoder());
 	    return authenticationProvider;
 	}
-	
+
 	@Bean
-	@Autowired
-    public PasswordEncoder passwordEncoder(){  
+    public PasswordEncoder passwordEncoder(){
         PasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder;  
+        return encoder;
     }
-	
+
 	/* 临时方法 运行加密算法 */
 	public static void main(String[] args) {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
-		System.out.println(encoder.encode("111111")); 
-		System.out.println(encoder.encode("123456")); 
+		System.out.println(encoder.encode("111111"));
+		System.out.println(encoder.encode("123456"));
 	}
 
+    //TODO: these should put in configureGlobal
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService);
@@ -69,14 +68,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/plugins/**/*.*").permitAll()
 				.antMatchers("/dist/**/*.*").permitAll()
 				.antMatchers("/scripts/global/login-ctrl.js").permitAll()
-				.anyRequest().authenticated() //其余的所有请求都需要验证  
+				.anyRequest().authenticated() //其余的所有请求都需要验证
 				.and()
 			.formLogin()
 				.loginPage("/login")
 				/* boolean alwaysUse = true - the defaultSuccesUrl should be used after authentication 
 				 * despite if a protected page had been previously visited*/
-				.defaultSuccessUrl("/login-success", true) 
-				.permitAll() 
+				.defaultSuccessUrl("/login-success", true)
+				.permitAll()
 				.and()
 			.logout()
 				.permitAll();
@@ -84,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		
+
 	}
 
 }
