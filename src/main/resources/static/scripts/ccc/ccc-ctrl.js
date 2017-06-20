@@ -33,7 +33,12 @@ angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScop
 	            	}
                 }
             } else {
-                Toastr.error(res.msg);
+            	if(res.msg){
+	        		Toastr.error(res.msg);
+	        	} else {
+	        		Toastr.error('登录过期，请刷新重新登录');
+	        		window.location.href='/login';
+	        	}
             }
         }).error(function(res, status) {
         	Toastr.error("getListByAjax error: " + status);
@@ -116,7 +121,12 @@ angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScop
                 $scope.removeFile();
                 getList(1, $scope.pagination.size);
             } else {
-            	Toastr.error(res.msg);
+            	if(res.msg){
+	        		Toastr.error(res.msg);
+	        	} else {
+	        		Toastr.error('登录过期，请刷新重新登录');
+	        		window.location.href='/login';
+	        	}
             }
         }).error(function(res) {
             Toastr.error('Submit ajax failure');

@@ -63,7 +63,12 @@ angular.module('enterprise-quality').controller('CopyrightViewCtrl', ['$scope', 
                 $scope.hasRgURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.digest.rgUrl) ? true : false;
                 $scope.hasEpURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.digest.epUrl) ? true : false;
         	} else {
-        		Toastr.error(res.msg);
+        		if(res.msg){
+	        		Toastr.error(res.msg);
+	        	} else {
+	        		Toastr.error('登录过期，请刷新重新登录');
+	        		window.location.href='/login';
+	        	}
         	}
         }).error(function(res, status, headers, config) {
             Toastr.error("getListByAjax error: " + status);

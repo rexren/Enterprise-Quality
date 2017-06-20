@@ -15,11 +15,11 @@
 					<li class="{{viewType==2?'active':''}}" ng-click="changeView(2)">
 						<a ng-href="#{{currentLocation}}?id={{inspectionId}}">检测报告</a>
 					</li>
-					<li class="pull-right" ng-if="authority=='ROLE_ADMIN'">
-						<a ng-href="#/inspections/edit?id={{inspectionId}}" class="text-muted">
-							<i class="fa fa-edit"></i>
-						</a>
+					<li class="pull-right">
+						<button ng-if="authority=='ROLE_ADMIN'" type="submit" class="btn btn-info" ng-click="edit()" ng-if="authority=='ROLE_ADMIN'">编辑</button>
+                        <button class="btn btn-default" ng-click="back()">返回</button>
 					</li>
+					
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane {{viewType==1?'active':''}}">

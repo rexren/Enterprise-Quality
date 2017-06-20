@@ -21,23 +21,31 @@ angular.module('enterprise-quality').controller('CccEditCtrl',['$scope','$rootSc
     var urlId = $location.search().id;
     if(urlId){
     	var param = {id: urlId}; 
-    	$http.get('/ccc/detail.do',{params:param}).success(function(res) {	
-    		var awardDate =  res.data.awardDate?new Date(Number(res.data.awardDate)):null;
-    		var expiryDate =  res.data.expiryDate?new Date(Number(res.data.expiryDate)):null;
-			
-    		$scope.formData = {
-				"docNo":res.data.docNo,
-            	"model":res.data.model,
-            	"productName":res.data.productName,
-            	"awardDate":awardDate,
-            	"expiryDate":expiryDate,
-            	"url":res.data.url,
-            	"organization":res.data.organization,
-            	"remarks":res.data.remarks
-			}
-    		console.log($scope.formData);
+    	$http.get('/ccc/detail.do',{params:param}).success(function(res) {
+    		if(res.code == 0){
+    			var awardDate =  res.data.awardDate?new Date(Number(res.data.awardDate)):null;
+    			var expiryDate =  res.data.expiryDate?new Date(Number(res.data.expiryDate)):null;
+    			
+    			$scope.formData = {
+    					"docNo":res.data.docNo,
+    					"model":res.data.model,
+    					"productName":res.data.productName,
+    					"awardDate":awardDate,
+    					"expiryDate":expiryDate,
+    					"url":res.data.url,
+    					"organization":res.data.organization,
+    					"remarks":res.data.remarks
+    			}
+    		}else{
+    			if(res.msg){
+	        		Toastr.error(res.msg);
+	        	} else {
+	        		Toastr.error('登录过期，请刷新重新登录');
+	        		window.location.href='/login';
+	        	}
+    		}
 		}).error(function(res, status, headers, config){
-	        Toastr.error("getListByAjax error: "+status);
+	        Toastr.error("Ajax error: "+status);
 	    })
 	    targetUrl = '/ccc/update.do';
     }
@@ -69,7 +77,12 @@ angular.module('enterprise-quality').controller('CccEditCtrl',['$scope','$rootSc
     				Toastr.success('保存成功');
                 	$location.url('/ccc');
     			}else{
-            		Toastr.error(res.msg);
+    				if(res.msg){
+    	        		Toastr.error(res.msg);
+    	        	} else {
+    	        		Toastr.error('登录过期，请刷新重新登录');
+    	        		window.location.href='/login';
+    	        	}
             	}
     		}).error(function(res, status, headers, config) {
             	Toastr.error("AjaxError: "+ status);

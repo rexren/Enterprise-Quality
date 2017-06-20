@@ -69,7 +69,12 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
                     'charge': res.data.charge
 	        	}
         	} else{
-        		Toastr.error(res.msg);
+        		if(res.msg){
+	        		Toastr.error(res.msg);
+	        	} else {
+	        		Toastr.error('登录过期，请刷新重新登录');
+	        		window.location.href='/login';
+	        	}
         	}
 	    }).error(function(res, status, headers, config){
 	        Toastr.error("getListByAjax error: "+status);
@@ -102,7 +107,12 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
     				Toastr.success('保存成功');
                 	$location.url('/copyright');
     			}else{
-            		Toastr.error(res.msg);
+    				if(res.msg){
+    	        		Toastr.error(res.msg);
+    	        	} else {
+    	        		Toastr.error('登录过期，请刷新重新登录');
+    	        		window.location.href='/login';
+    	        	}
             	}
     		}).error(function(res, status, headers, config) {
             	Toastr.error("AjaxError: "+ status);

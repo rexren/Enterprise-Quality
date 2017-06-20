@@ -36,13 +36,19 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootS
     if(cccId){
     	var param = {id: cccId};
         $http.get('/ccc/detail.do',{params:param}).success(function(res){
-        	//var awardDate =  res.data.awardDate?new Date(Number(res.data.awardDate)):null;
-    		//var expiryDate =  res.data.expiryDate?new Date(Number(res.data.expiryDate)):null;
-        	angular.extend($scope.digest, res.data);
-        	$scope.hasURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.digest.url)? true : false;
-	
+        	if(res.code==0){
+        		angular.extend($scope.digest, res.data);
+        		$scope.hasURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.digest.url)? true : false;
+        	}else{
+        		if(res.msg){
+	        		Toastr.error(res.msg);
+	        	} else {
+	        		Toastr.error('登录过期，请刷新重新登录');
+	        		window.location.href='/login';
+	        	}
+        	}
 	    }).error(function(res, status, headers, config){
-	        Toastr.error("getListByAjax error: "+status);
+	        Toastr.error("Ajax error: "+status);
 	    })
     }
 

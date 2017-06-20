@@ -11,8 +11,8 @@
 				<div class="box-header">
 					<h3 class="box-title"></h3>
 					<div class="box-tools" style="left: 10px;">
-						<form class="form-inline" ng-if="authority=='ROLE_ADMIN'">
-							<div class="btn-group">
+						<form class="form-inline">
+							<div class="btn-group" ng-if="authority=='ROLE_ADMIN'">
 								<button class="btn btn-default" ng-click="edit()">新增</button>
 								<button class="btn btn-primary" ng-click="importList()">{{fileName?'重新选择':'导入列表'}}</button>
 							</div>
@@ -40,7 +40,7 @@
 					</div>
 				</div>
 
-				<div class="box-header" ng-if="fileName">
+				<div class="box-header" ng-if="fileName" ng-if="authority=='ROLE_ADMIN'">
 					<span>{{fileName}}</span>
 					<button class="btn btn-default" ng-click="submit()">上传</button>
 					<button class="btn btn-danger" ng-click="removeFile()">删除</button>
