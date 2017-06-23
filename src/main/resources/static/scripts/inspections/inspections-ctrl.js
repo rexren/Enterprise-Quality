@@ -3,7 +3,7 @@
 angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$rootScope','$location','$http','$modal','$q','toastr','FileUploadService','common',
     function($scope, $rootScope, $location, $http, $modal, $q, Toastr, FileUploadService, Common){
         $scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
-        
+        $scope.isLoading = false;
 		$scope.pagination = {
             page: 1,
             size: 10,
@@ -18,6 +18,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
  
         function getList(page, size) {
             var param = {pageNum:page,pageSize:size};
+            $scope.isLoading = true;
             $http.get('/inspections/list.do',{params:param}).success(function(res){
             	if(res.code==0){
             		$scope.list = res.listContent?res.listContent.list:null;
@@ -35,8 +36,10 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
     	        		window.location.href='/login';
     	        	}
             	}
+            	$scope.isLoading = false;
             }).error(function(res, status, headers, config){
             	Toastr.error("网络错误");
+            	$scope.isLoading = false;
             })
         };
         
@@ -103,6 +106,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
 	     *  file upload
 	     */
         $scope.submit = function () {
+        	$scope.isLoading = true;
             var defer = $q.defer();
             var fd = new FormData();
             fd.append('file',$scope.file);
@@ -127,7 +131,9 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
     	        		window.location.href='/login';
     	        	}
                 }
+            	$scope.isLoading = false;
             }).error(function(res) {
+            	$scope.isLoading = false;
             	Toastr.error('网络错误');
                 defer.reject();
                 window.location.href='/login';
