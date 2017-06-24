@@ -3,6 +3,7 @@
 angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope','$rootScope', '$location', '$http', '$q', 'toastr', 'FileUploadService', 'common',
     function($scope,$rootScope, $location, $http, $q, Toastr, FileUploadService, Common) {
 		$scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
+		$scope.isLoading = false;
     	if($scope.authority!='ROLE_ADMIN'){
 			$location.path('/unauthorized');
 		}
@@ -29,6 +30,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
             var param = {
                 id: $scope.inspectionId
             };
+            $scope.isLoading = true;
             $http.get('/inspections/detail.do', {
                 params: param
             }).success(function(res) {
@@ -58,8 +60,10 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
     	        		window.location.href='/login';
     	        	}
             	}
+            	$scope.isLoading = false;
             }).error(function(res, status, headers, config) {
             	Toastr.error("AjaxError: "+ status);
+            	$scope.isLoading = false;
             });
             targetUrl = '/inspections/update.do';
         }
@@ -102,6 +106,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
                 }
             	var awardTimeStamp = Date.parse($scope.formData.awardDate);
             	fd.set('awardDate', awardTimeStamp);
+            	$scope.isLoading = true;
                 $http({
                     method: 'POST',
                     url: targetUrl,
@@ -122,9 +127,11 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
         	        		window.location.href='/login';
         	        	}
                     }
+                    $scope.isLoading = false;
                 }).error(function(res, status, headers, config){
                 	Toastr.error("AjaxError: "+ status);
                 	defer.reject();
+                	$scope.isLoading = false;
                 })
             }
         };

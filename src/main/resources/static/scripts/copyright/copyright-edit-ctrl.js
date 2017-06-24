@@ -7,6 +7,7 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
 	if($scope.authority!='ROLE_ADMIN'){
 		$location.path('/unauthorized');
 	}
+	$scope.isLoading = false;
     $scope.formData = {
         'softwareName': '',
         'abbreviation': '',
@@ -36,13 +37,14 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
     var urlId = $location.search().id;
     if(urlId){
     	var param = {id: urlId}; 
+    	$scope.isLoading = true;
     	$http.get('/copyright/detail.do',{params:param}).success(function(res){
         	if(res.code == 0){
 	        	var crDate =  res.data.crDate?new Date(Number(res.data.crDate)):null;
 	        	var rgDate =  res.data.rgDate?new Date(Number(res.data.rgDate)):null;
 	        	var rgExpiryDate =  res.data.rgExpiryDate?new Date(Number(res.data.rgExpiryDate)):null;
 	        	var epDate =  res.data.epDate?new Date(Number(res.data.epDate)):null;
-	        	var cdDate =  res.data.crDate?new Date(Number(res.data.cdDate)):null;
+	        	var cdDate =  res.data.cdDate?new Date(Number(res.data.cdDate)):null;
    	
 	        	$scope.formData = {
                     'softwareName': res.data.softwareName,
@@ -76,8 +78,10 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
 	        		window.location.href='/login';
 	        	}
         	}
+        	$scope.isLoading = false;
 	    }).error(function(res, status, headers, config){
 	        Toastr.error("getListByAjax error: "+status);
+	        $scope.isLoading = false;
 	    })
 	    targetUrl = '/copyright/update.do';
     }
@@ -86,6 +90,7 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
     	if($scope.formData.softwareName==''){
     		Toastr.error("请输入软件名称");
     	} else{
+    		$scope.isLoading = true;
     		var params = angular.extend({},$scope.formData);
     		params['crDate'] = Date.parse($scope.formData.crDate);
     		params['rgDate'] = Date.parse($scope.formData.rgDate);
@@ -114,8 +119,10 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
     	        		window.location.href='/login';
     	        	}
             	}
+    			$scope.isLoading = false;
     		}).error(function(res, status, headers, config) {
             	Toastr.error("AjaxError: "+ status);
+            	$scope.isLoading = false;
             });
     	}
     };

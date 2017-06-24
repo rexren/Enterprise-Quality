@@ -3,7 +3,7 @@
 angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScope','$location', '$http', '$modal', '$q', 'toastr', 'FileUploadService', 'common',
     function($scope, $rootScope, $location, $http, $modal, $q, Toastr, FileUploadService, Common) {
 	$scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
-
+	$scope.isLoading = false;
     $scope.pagination = {
         page: 1,
         size: 10,
@@ -21,6 +21,7 @@ angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScop
             pageNum: page,
             pageSize: size
         };
+        $scope.isLoading = true;
         $http.get('/ccc/list.do', {
             params: param
         }).success(function(res) {
@@ -40,8 +41,10 @@ angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScop
 	        		window.location.href='/login';
 	        	}
             }
+            $scope.isLoading = false;
         }).error(function(res, status) {
         	Toastr.error("getListByAjax error: " + status);
+        	$scope.isLoading = false;
         })
     }
 
@@ -107,6 +110,7 @@ angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScop
         var defer = $q.defer();
         var fd = new FormData();
         fd.append('file', $scope.file);
+        $scope.isLoading = true;
         $http({
             method: 'POST',
             url: '/fileupload/indexlist.do',
@@ -128,8 +132,10 @@ angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScop
 	        		window.location.href='/login';
 	        	}
             }
+            $scope.isLoading = false;
         }).error(function(res) {
             Toastr.error('Submit ajax failure');
+            $scope.isLoading = false;
         });
         return defer.promise;
     };

@@ -30,7 +30,7 @@ angular.module('enterprise-quality').controller('CccSearchCtrl', ['$scope','$roo
     	case '4':  $scope.searchField = '备注'; break;
     	default: $scope.searchField = '全部'; break;
     }
-    
+    $scope.isLoading = true;
     $http.get('/ccc/search.do', {
         params: $scope.searchInput
     }).success(function(res) {
@@ -50,8 +50,10 @@ angular.module('enterprise-quality').controller('CccSearchCtrl', ['$scope','$roo
         		Toastr.error('登录过期，请重新登录');
         	}
         }
+        $scope.isLoading = false;
     }).error(function(res, status) {
         Toastr.error("网络错误");
+        $scope.isLoading = false;
     })
     
 }]);

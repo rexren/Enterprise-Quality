@@ -3,7 +3,7 @@
 angular.module('enterprise-quality').controller('CopyrightViewCtrl', ['$scope', '$rootScope', '$location', '$http', '$q', 'toastr',
     function($scope, $rootScope, $location, $http, $q, Toastr) {
 	$scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
-
+	$scope.isLoading = false;
     /*initialization*/
     $scope.digest = {
         'softwareName': '',
@@ -53,6 +53,7 @@ angular.module('enterprise-quality').controller('CopyrightViewCtrl', ['$scope', 
         var param = {
             id: crId
         };
+        $scope.isLoading = true;
         $http.get('/copyright/detail.do', {
             params: param
         }).success(function(res) {
@@ -70,8 +71,10 @@ angular.module('enterprise-quality').controller('CopyrightViewCtrl', ['$scope', 
 	        		window.location.href='/login';
 	        	}
         	}
+        	$scope.isLoading = false;
         }).error(function(res, status, headers, config) {
             Toastr.error("getListByAjax error: " + status);
+            $scope.isLoading = false;
         })
     }
     

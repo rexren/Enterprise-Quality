@@ -4,7 +4,7 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootS
     function($scope, $rootScope, $location, $http, $q, Toastr){
 	/*initialization*/
 	$scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
-	
+	$scope.isLoading = false;
     $scope.digest = {
 		"docNo":"",
     	"model":"",
@@ -35,6 +35,7 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootS
     
     if(cccId){
     	var param = {id: cccId};
+    	$scope.isLoading = true;
         $http.get('/ccc/detail.do',{params:param}).success(function(res){
         	if(res.code==0){
         		angular.extend($scope.digest, res.data);
@@ -47,8 +48,10 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootS
 	        		window.location.href='/login';
 	        	}
         	}
+        	$scope.isLoading = false;
 	    }).error(function(res, status, headers, config){
 	        Toastr.error("Ajax error: "+status);
+	        $scope.isLoading = false;
 	    })
     }
 

@@ -15,9 +15,10 @@ angular.module('enterprise-quality')
             $scope.pagination.page = page;
             getList($scope.pagination.page, $scope.pagination.size);
         };
-
+        $scope.isLoading = false;
         function getList(page, size) {
             var param = {pageNum:page,pageSize:size};
+            $scope.isLoading = true;
             $http.get('/copyright/list.do',{params:param}).success(function(res){
             	if(res.code==0){
             		$scope.list = res.listContent?res.listContent.list:null;
@@ -38,8 +39,10 @@ angular.module('enterprise-quality')
     	        		window.location.href='/login';
     	        	}
             	}
+            	$scope.isLoading = false;
             }).error(function(res, status, headers, config){
             	Toastr.error("AjaxError: "+ status);
+            	$scope.isLoading = false;
             })
         }
         
@@ -107,6 +110,7 @@ angular.module('enterprise-quality')
 	     *  file upload
 	     */
         $scope.submit = function () {
+        	$scope.isLoading = true;
             var defer = $q.defer();
             var fd = new FormData();
             fd.append('file',$scope.file);
@@ -131,8 +135,10 @@ angular.module('enterprise-quality')
     	        		window.location.href='/login';
     	        	}
                 }
+            	$scope.isLoading = false;
             }).error(function(res) {
             	Toastr.error('Submit ajax failure');
+            	$scope.isLoading = false;
                 defer.reject();
             });
             return defer.promise;

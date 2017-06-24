@@ -3,6 +3,7 @@
 angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scope','$rootScope','$location','$http','$q','toastr',
     function($scope, $rootScope, $location, $http, $q, Toastr){
 		$scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
+		$scope.isLoading = true;
     	$scope.pagination = {
             page: 1,
             size: 20,
@@ -55,8 +56,10 @@ angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scop
 	        		window.location.href='/login';
 	        	}
 	        }
+	        $scope.isLoading = false;
 	    }).error(function(res, status) {
 	        Toastr.error("getListByAjax error: " + status);
+	        $scope.isLoading = false;
 	    })
         
     }]);

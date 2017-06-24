@@ -7,6 +7,9 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
+            	<div class="overlay" ng-if="isLoading">
+	            	<i class="fa fa-refresh fa-spin"></i>
+	            </div>
                 <div class="box-header with-border">
                     <h3 class="box-title">{{inspectionId?"编辑":"新建"}}</h3>
                     <div class="btn-group pull-right">

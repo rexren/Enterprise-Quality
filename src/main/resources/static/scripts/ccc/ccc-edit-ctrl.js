@@ -6,6 +6,7 @@ angular.module('enterprise-quality').controller('CccEditCtrl',['$scope','$rootSc
 	if($scope.authority!='ROLE_ADMIN'){
 		$location.path('/unauthorized');
 	}
+	$scope.isLoading = false;
     $scope.formData = {
     	"docNo":"",
     	"model":"",
@@ -21,20 +22,21 @@ angular.module('enterprise-quality').controller('CccEditCtrl',['$scope','$rootSc
     var urlId = $location.search().id;
     if(urlId){
     	var param = {id: urlId}; 
+    	$scope.isLoading = true;
     	$http.get('/ccc/detail.do',{params:param}).success(function(res) {
     		if(res.code == 0){
     			var awardDate =  res.data.awardDate?new Date(Number(res.data.awardDate)):null;
     			var expiryDate =  res.data.expiryDate?new Date(Number(res.data.expiryDate)):null;
     			
     			$scope.formData = {
-    					"docNo":res.data.docNo,
-    					"model":res.data.model,
-    					"productName":res.data.productName,
-    					"awardDate":awardDate,
-    					"expiryDate":expiryDate,
-    					"url":res.data.url,
-    					"organization":res.data.organization,
-    					"remarks":res.data.remarks
+					"docNo":res.data.docNo,
+					"model":res.data.model,
+					"productName":res.data.productName,
+					"awardDate":awardDate,
+					"expiryDate":expiryDate,
+					"url":res.data.url,
+					"organization":res.data.organization,
+					"remarks":res.data.remarks
     			}
     		}else{
     			if(res.msg){
@@ -44,8 +46,10 @@ angular.module('enterprise-quality').controller('CccEditCtrl',['$scope','$rootSc
 	        		window.location.href='/login';
 	        	}
     		}
+    		$scope.isLoading = false;
 		}).error(function(res, status, headers, config){
 	        Toastr.error("Ajax error: "+status);
+	        $scope.isLoading = false;
 	    })
 	    targetUrl = '/ccc/update.do';
     }
@@ -65,6 +69,7 @@ angular.module('enterprise-quality').controller('CccEditCtrl',['$scope','$rootSc
     		if (urlId) {
     			params = angular.extend(params, {'id': urlId});
             }
+    		$scope.isLoading = true;
     		$http({
     			method  : 'POST',
     			url     : targetUrl,
@@ -84,8 +89,10 @@ angular.module('enterprise-quality').controller('CccEditCtrl',['$scope','$rootSc
     	        		window.location.href='/login';
     	        	}
             	}
+    			$scope.isLoading = false;
     		}).error(function(res, status, headers, config) {
             	Toastr.error("AjaxError: "+ status);
+            	$scope.isLoading = false;
             });
         }
     };

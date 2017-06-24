@@ -32,7 +32,7 @@ angular.module('enterprise-quality').controller('CopyrightSearchCtrl', ['$scope'
     	case '7':  $scope.searchField = '类别界定报告号'; break;
     	default: $scope.searchField = '全部'; break;
     }
-    
+    $scope.isLoading = true;
     $http.get('/copyright/search.do', {
         params: $scope.searchInput
     }).success(function(res) {
@@ -54,8 +54,10 @@ angular.module('enterprise-quality').controller('CopyrightSearchCtrl', ['$scope'
         		Toastr.error('登录过期，请重新登录');
         	}
         }
+        $scope.isLoading = false;
     }).error(function(res, status) {
         Toastr.error("网络错误");
+        $scope.isLoading = false;
     })
 
 }]);

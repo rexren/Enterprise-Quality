@@ -35,6 +35,7 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl', ['$scope'
         $scope.inspectionId = $location.search().id;
         if($scope.inspectionId){
         	var param = {id: $scope.inspectionId};
+        	$scope.isLoading = true;
 	        $http.get('/inspections/detail.do',{params:param}).success(function(res){
 	        	if(res.code == 0){
 	        		$scope.digest = {
@@ -62,9 +63,11 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl', ['$scope'
     	        		Toastr.error('登录过期，请刷新重新登录');
     	        		window.location.href='/login';
     	        	}
-            	} 
+            	}
+	        	$scope.isLoading = false;
 		    }).error(function(res, status, headers, config){
 		    	Toastr.error("getListByAjax error: "+status);
+		    	$scope.isLoading = false;
 		    });
 
 		    $http.get('/inspections/contents.do',{params:param}).success(function(res){

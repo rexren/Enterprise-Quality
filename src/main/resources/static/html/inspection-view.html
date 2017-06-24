@@ -6,8 +6,13 @@
 <section class="content">
 	<div class="row">
 		<div class="col-md-12">
+		
+			<div class="overlay" ng-if="isLoading">
+            	<i class="fa fa-refresh fa-spin"></i>
+            </div>
 			<!-- Custom Tabs -->
 			<div class="nav-tabs-custom">
+	            
 				<ul class="nav nav-tabs">
 					<li class="{{viewType==1?'active':''}}" ng-click="changeView(1)">
 						<a ng-href="#{{currentLocation}}?id={{inspectionId}}">检测摘要</a>
