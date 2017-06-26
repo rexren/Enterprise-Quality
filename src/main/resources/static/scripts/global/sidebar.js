@@ -6,6 +6,11 @@ angular.module('enterprise-quality').controller('sideBarCtrl',
     	$scope.headerText = '检索分类';
     	$scope.menu = [
     		{
+    			title: '更新记录',
+    			href: '/updatelogs',
+    			icon:'fa-newspaper-o',
+    			active: false
+    		}, {
     			title: '公检&国标',
     			href: '/inspections',
     			icon:'fa-laptop',

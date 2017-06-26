@@ -9,13 +9,13 @@ angular.module('enterprise-quality')
             size: 10,
             totalElements: 0
         };
+        $scope.isLoading = false;
         getList($scope.pagination.page, $scope.pagination.size);
 
         $scope.onPageChange = function(page){
             $scope.pagination.page = page;
             getList($scope.pagination.page, $scope.pagination.size);
         };
-        $scope.isLoading = false;
         function getList(page, size) {
             var param = {pageNum:page,pageSize:size};
             $scope.isLoading = true;

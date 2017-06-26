@@ -1,6 +1,6 @@
 <section class="content-header">
     <h1>3C
-        <small>CCC璁よ瘉姹囨�昏〃</small>
+        <small>CCC认证汇总表</small>
     </h1>
 </section>
 <section class="content">
@@ -15,8 +15,8 @@
                     <div class="box-tools" style="left:10px;">
                         <form class="form-inline">
 							<div class="btn-group" ng-if="authority=='ROLE_ADMIN'">
-								<button class="btn btn-default" ng-click="edit()">鏂板</button>
-								<button class="btn btn-primary" ng-click="importList()">{{fileName?'閲嶆柊閫夋嫨':'瀵煎叆鍒楄〃'}}</button>
+								<button class="btn btn-default" ng-click="edit()">新增</button>
+								<button class="btn btn-primary" ng-click="importList()">{{fileName?'重新选择':'导入列表'}}</button>
 							</div>
 							
 							<div class="btn-group pull-right">
@@ -27,7 +27,7 @@
 							
 							<div class="form-group pull-right">
 								<label class="control-label"> </label>
-								<input type="text" class="form-control" placeholder="杈撳叆鍏抽敭瀛�" ng-model="searchInput.keyword" ng-keydown="enterEvent($event)">
+								<input type="text" class="form-control" placeholder="输入关键字" ng-model="searchInput.keyword" ng-keydown="enterEvent($event)">
 							</div>
 							<div class="form-group pull-right">
 								<select class="form-control" style="width: 150px" ng-model="searchInput.field" ng-options="f.value as f.name for f in fields"></select>
@@ -37,29 +37,29 @@
                 </div>
                 <div class="box-header" ng-if="fileName" ng-if="authority=='ROLE_ADMIN'">
 	                <span>{{fileName}}</span>
-	                <button class="btn btn-default" ng-click="submit()">涓婁紶</button>
-	                <button class="btn btn-danger" ng-click="removeFile()">鍒犻櫎</button>
+	                <button class="btn btn-default" ng-click="submit()">上传</button>
+	                <button class="btn btn-danger" ng-click="removeFile()">删除</button>
                 </div>
 
                 <div class="box-body">
                     <table class="table table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th>搴忓彿</th>
-                            <th style="min-width: 60px;">鏂囦欢缂栧彿</th>
-                            <th style="min-width: 100px;">浜у搧鍨嬪彿</th>
-                            <th style="min-width: 60px;">浜у搧鍚嶇О</th>
-                            <th>棰佸彂鏃ユ湡</th>
-                            <th>鏈夋晥鏃ユ湡</th>
-                            <th style="min-width: 50px;">閾炬帴</th>
-                            <th style="min-width: 50px;">璁よ瘉鏈烘瀯</th>
-                            <th style="min-width: 50px;">澶囨敞</th>
-                            <th>鎿嶄綔</th>
+                            <th>序号</th>
+                            <th style="min-width: 60px;">文件编号</th>
+                            <th style="min-width: 100px;">产品型号</th>
+                            <th style="min-width: 60px;">产品名称</th>
+                            <th>颁发日期</th>
+                            <th>有效日期</th>
+                            <th style="min-width: 50px;">链接</th>
+                            <th style="min-width: 50px;">认证机构</th>
+                            <th style="min-width: 50px;">备注</th>
+                            <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr ng-if="list.length == 0">
-							<td colspan="10" style="text-align: center;">娌℃湁鏌ヨ鍒扮粨鏋�</td>
+							<td colspan="10" style="text-align: center;">没有查询到结果</td>
 						</tr>
                         <tr ng-repeat="item in list" >
                             <td>{{$index+1}}</td>
@@ -70,13 +70,13 @@
                             <td>{{item.expiryDate | date:'yyyy-MM-dd'}}</td>
                             <td>
                             	<span ng-if="!item.hasURL">{{item.url}}</span>
-                            	<a ng-if="item.hasURL" ng-href="{{item.url}}" target="_blank">OA璧勮川鎶ュ憡涓嬭浇</a>
+                            	<a ng-if="item.hasURL" ng-href="{{item.url}}" target="_blank">OA资质报告下载</a>
                             </td>
                             <td>{{item.organization}}</td>
                             <td>{{item.remarks}}</td>
                             <td>
-                            	<button class="btn btn-link" ng-click="edit(item)" ng-if="authority=='ROLE_ADMIN'">淇敼</button>
-                            	<button class="btn btn-link" ng-click="view(item)">鏌ョ湅</button>
+                            	<button class="btn btn-link" ng-click="edit(item)" ng-if="authority=='ROLE_ADMIN'">修改</button>
+                            	<button class="btn btn-link" ng-click="view(item)">查看</button>
 							</td>
                         </tr>
                         </tbody>

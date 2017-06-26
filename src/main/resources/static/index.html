@@ -70,7 +70,7 @@
 					<li ng-repeat="m in menu track by $index" ng-click="change($index)" 
 						class="{{m.active?'active':''}}">
 						<a ng-href="#{{m.href}}"> 
-							<i class="fa {{icon}}"></i>
+							<i class="fa {{m.icon}}"></i>
 							<span ng-bind="m.title"></span>
 						</a>
 					</li>
@@ -110,7 +110,7 @@
 	<script src="scripts/service/file-upload.js"></script>
 	<script src="scripts/service/common.js"></script>
 	<script src="scripts/filter/highlight-filter.js"></script>
-	<script src="scripts/home/home-ctrl.js"></script>
+	<script src="scripts/home/update-logs-ctrl.js"></script>
 	<script src="scripts/inspections/inspections-ctrl.js"></script>
 	<script src="scripts/inspections/inspections-edit-ctrl.js"></script>
 	<script src="scripts/inspections/inspections-view-ctrl.js"></script>

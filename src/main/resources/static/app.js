@@ -10,8 +10,11 @@ angular.module('enterprise-quality',[
 .config(['$routeProvider', function($routeProvider){
     $routeProvider
     	.when('/',{
-    		templateUrl:'html/home.html',
-    		controller:'HomeCtrl'
+    		redirectTo: '/updatelogs'
+    	})
+    	.when('/updatelogs',{
+    		templateUrl:'html/updatelogs.html',
+    		controller:'UpdateLogsCtrl'
     	})
     	.when('/inspections',{
     		templateUrl: 'html/inspections.html',
