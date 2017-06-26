@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public static void main(String[] args) {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
 		System.out.println(encoder.encode("111111"));
-		System.out.println(encoder.encode("123456"));
+		System.out.println(encoder.encode("126726015"));
 	}
 
 	/*These codes could be put in either @Autowired whateverName or @Override configure*/

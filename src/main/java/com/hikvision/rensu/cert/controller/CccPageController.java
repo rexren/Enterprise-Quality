@@ -33,7 +33,7 @@ import com.hikvision.rensu.cert.support.ListResult;
 public class CccPageController {
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 	
-	private final static String SORT_TYPEINSPECTION_AWARDDATE = "awardDate";
+	private final static String SORTBY_AWARDDATE = "awardDate";
 
 	@Autowired
 	private CccPageService cccPageService;
@@ -61,7 +61,7 @@ public class CccPageController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORT_TYPEINSPECTION_AWARDDATE; // 默认按照更新时间倒序
+			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期倒序
 		}
 		ListResult res = new ListResult();
 		try {
@@ -259,7 +259,7 @@ public class CccPageController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORT_TYPEINSPECTION_AWARDDATE; // 默认按照颁发日期排序
+			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期排序
 		}
 		String fieldName;
 		if (field == null) {

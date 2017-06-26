@@ -13,7 +13,7 @@ angular.module('enterprise-quality',[
     		redirectTo: '/updatelogs'
     	})
     	.when('/updatelogs',{
-    		templateUrl:'html/updatelogs.html',
+    		templateUrl:'html/update-logs.html',
     		controller:'UpdateLogsCtrl'
     	})
     	.when('/inspections',{

@@ -48,8 +48,7 @@ public class InspectionController {
 
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 
-	private final static String SORT_TYPEINSPECTION_UPDATEAT = "UpdateAt";
-	private final static String SORT_TYPEINSPECTION_AWARDDATE = "awardDate";
+	private final static String SORTBY_AWARDDATE = "awardDate";
 	
 	@Autowired
 	private TypeInspectionService typeInspectionService;
@@ -80,7 +79,7 @@ public class InspectionController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORT_TYPEINSPECTION_UPDATEAT; // 默认按照更新时间倒序
+			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期倒序
 		}
 		ListResult res = new ListResult();
 		try {
@@ -390,7 +389,7 @@ public class InspectionController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORT_TYPEINSPECTION_AWARDDATE; // 默认按照颁发日期排序倒序
+			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期排序倒序
 		}
 		ListResult res = new ListResult();
 
