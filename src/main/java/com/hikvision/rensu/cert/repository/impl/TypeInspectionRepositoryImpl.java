@@ -21,6 +21,8 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 		implements TypeInspectionRepository {
 
 	private String[] tFields = { "model", "name", "testType", "basis", "docNo", "organization", "remarks" };
+	
+	private String[] tFieldsAll = { "id", "version", "certUrl", "company", "awardDate", "model", "name", "testType", "basis", "docNo", "organization", "remarks" };
 
 	private String[] cFields = { "caseDescription", "caseName", "remarks" };
 
@@ -37,11 +39,11 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 
 	@SuppressWarnings({ "unchecked" })
 	public List<typeSearchResult> joinSearchTypeInspection(String fieldName, String[] keywords, String[] contentKeywords) {
-		StringBuilder sqlString = new StringBuilder("SELECT T.id, ");
-		for (int i = 0; i < tFields.length; i++) {
+		StringBuilder sqlString = new StringBuilder("SELECT ");
+		for (int i = 0; i < tFieldsAll.length; i++) {
 			if (i > 0)
 				sqlString.append(", ");
-			sqlString.append("T." + toUnderline(tFields[i]));
+			sqlString.append("T." + toUnderline(tFieldsAll[i]));
 		}
 		sqlString.append(", C.id AS cid");
 		for (int i = 0; i < cFields.length; i++) {
@@ -104,20 +106,24 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 			int count = 0; // 存放搜索命中计数
 			StringBuilder thisCase = new StringBuilder();
 			for (Object[] objects : resObj) {
-				/*
+				// "id", ["version", "certUrl", "company", "awardDate"], "model"
 				int i = 0;
 				System.out.println(objects[i++].toString()); // 0:id
-				System.out.println(objects[i++].toString()); // 1:model
-				System.out.println(objects[i++].toString()); // 2:name
-				System.out.println(objects[i++].toString()); // 3:testType
-				System.out.println(objects[i++].toString()); // 4:basis
-				System.out.println(objects[i++].toString()); // 5:docNo
-				System.out.println(objects[i++].toString()); // 6:organization
-				System.out.println(objects[i++].toString()); // 7:remarks
-				System.out.println(objects[i++].toString()); // 8:contentId
-				System.out.println(objects[i++].toString()); // 9:caseDescription
-				System.out.println(objects[i++].toString()); // 10:caseName
-				*/				
+				System.out.println(objects[i++].toString()); // 1:version
+				System.out.println(objects[i++].toString()); // 2:certUrl
+				System.out.println(objects[i++].toString()); // 3:company
+				System.out.println(objects[i++].toString()); // 4:awardDate
+				System.out.println(objects[i++].toString()); // 5:model
+				System.out.println(objects[i++].toString()); // 6:name
+				System.out.println(objects[i++].toString()); // 7:testType
+				System.out.println(objects[i++].toString()); // 8:basis
+				System.out.println(objects[i++].toString()); // 9:docNo
+				System.out.println(objects[i++].toString()); // 10:organization
+				System.out.println(objects[i++].toString()); // 11:remarks
+				//System.out.println(objects[i++].toString()); // 12:contentId
+				//System.out.println(objects[i++].toString()); // 13:caseDescription
+				//System.out.println(objects[i++].toString()); // 14:caseName
+					
 				if (tId != Long.parseLong(objects[0].toString())) {
 					if (tId > 0L) {
 						s.setCases(new String(thisCase.toString())); // 上一轮的thisCase
