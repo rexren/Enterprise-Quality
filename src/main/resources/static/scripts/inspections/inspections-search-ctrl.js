@@ -40,12 +40,16 @@ angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scop
 	        if (res.code == 0) {
 	        	$scope.list = res.listContent? res.listContent.list:null;
 	            $scope.pagination.totalElements = res.listContent?res.listContent.totalElements:null;
+	            
 	            if($scope.list && $scope.list.length > 0){
 	            	for (var i = 0; i < $scope.list.length; i++) {
+	            		/*截取500个字符*/
 	            		$scope.list[i].casesCut = $scope.list[i].cases.substring(0,500);
 	            		if($scope.list[i].cases.length>500){
 	            			$scope.list[i].casesCut +='...';
 	            		}
+	            		/* 链接判断 */
+	            		$scope.list[i].typeInspection.hasURL = /.*(http|https).*/.test($scope.list[i].typeInspection.certUrl)? true : false;  
 	            	}
 	            }
 	        } else {

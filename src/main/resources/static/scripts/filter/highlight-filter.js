@@ -3,7 +3,7 @@
 angular.module('enterprise-quality').filter("highlight",function($sce) {
 	return function(e, keywordList) {
 		var result = e;
-		if (keywordList.length > 0) {
+		if (keywordList && keywordList.length > 0) {
 			for(var i = 0; i < keywordList.length; i++){
 				var type = keywordList[i];
 				var reg = new RegExp(type, 'gi'); 

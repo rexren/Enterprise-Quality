@@ -13,7 +13,7 @@
 	            </div>
 				<div class="box-header">
 					<h4>
-						{{searchInput.keyword?'检索关键字：'+searchField+'：'+searchInput.keyword:''}} {{searchInput.contentKeyword?'内容关键字='+searchInput.contentKeyword:''}}
+						{{searchInput.keyword?'检索关键字：'+searchField+', '+searchInput.keyword:''}} {{searchInput.contentKeyword?'内容关键字='+searchInput.contentKeyword:''}}
 					</h4>
 					共{{pagination.totalElements}}条
 				</div>
@@ -23,33 +23,51 @@
 						<table class="table table-hover">
 							<tbody ng-repeat="item in list">
 								<tr>
-									<td colspan="8">{{$index+1}}</td>
-								</tr>
-								<tr>
+									<th>序号</th>
 									<th>产品型号</th>
 									<th style="min-width: 100px;">软件名称</th>
+									<th>软件版本</th>
 									<th style="min-width: 60px;">测试类别</th>
-									<th style="min-width: 60px;">测试依据</th>
+									<th style="min-width: 100px;">受检单位</th>
+									<th style="min-width: 100px;">测试依据</th>
+									<th>颁发日期</th>
 									<th style="min-width: 60px;">文件编号</th>
+									<th style="min-width: 80px;">链接</th>
 									<th style="min-width: 60px;">认证机构</th>
 									<th style="min-width: 60px;">备注</th>
 									<th style="min-width: 60px;">关键字匹配数</th>
+									<th style="min-width: 50px;">操作</th>
+								</tr>
+								<tr ng-if="list.length == 0">
+									<td colspan="14" style="text-align: center;">没有查询到结果</td>
 								</tr>
 								<tr>
-									<td ng-bind-html="item.model | highlight: tkeywordsList"></td>
-									<td ng-bind-html="item.name | highlight: tkeywordsList"></td>
-									<td ng-bind-html="item.testType | highlight: tkeywordsList"></td>
-									<td ng-bind-html="item.basis | highlight: tkeywordsList"></td>
-									<td style="word-wrap: break-word;">
-										<a ng-href="#/inspections/view?id={{item.id}}" target="_blank" ng-bind-html="item.docNo | highlight: tkeywordsList"></a>
+									<td>{{$index+1}}</td>
+									<td ng-bind-html="item.typeInspection.model | highlight: tkeywordsList"></td>
+									<td ng-bind-html="item.typeInspection.name | highlight: tkeywordsList"></td>
+									<td>{{item.typeInspection.version}}</td>
+									<td ng-bind-html="item.typeInspection.testType | highlight: tkeywordsList"></td>
+									<td>{{item.typeInspection.company}}</td>
+									<td ng-bind-html="item.typeInspection.basis | highlight: tkeywordsList"></td>
+									<td>{{item.typeInspection.awardDate | date:'yyyy-MM-dd'}}</td>
+									<td style="word-wrap: break-word; word-break:break-all;" ng-bind-html="item.typeInspection.docNo | highlight: tkeywordsList"></td>
+									<td><span ng-if="!item.typeInspection.hasURL">{{item.certUrl}}</span> <a
+										ng-if="item.typeInspection.hasURL" ng-href="{{item.typeInspection.certUrl}}" target="_blank">OA资质报告下载</a>
 									</td>
-									<td ng-bind-html="item.organization | highlight: tkeywordsList"></td>
-									<td ng-bind-html="item.remarks | highlight: tkeywordsList"></td>
+									<td ng-bind-html="item.typeInspection.organization | highlight: tkeywordsList"></td>
+									<td ng-bind-html="item.typeInspection.remarks | highlight: tkeywordsList"></td>
 									<td>{{item.count}}</td>
+									<td>
+		                            	<a ng-href="#/inspections/edit?id={{item.typeInspection.id}}" target="_blank" ng-if="authority=='ROLE_ADMIN'">修改</a>
+		                            	<a ng-href="#/inspections/view?id={{item.typeInspection.id}}&f={{searchField}}&kw={{searchInput.keyword}}&c={{searchInput.contentKeyword}}&v=1" target="_blank">查看</a>
+									</td>
 								</tr>
-								<tr>
-									<td colspan="8" style="max-height:60px; overflow:hidden;text-overflow:ellipsis;">
+								<tr ng-if="searchInput.contentKeyword">
+									<td colspan="13" style="max-height:60px; overflow:hidden;text-overflow:ellipsis;">
 										<p ng-bind-html="item.casesCut | highlight: ckeywordsList"></p>
+									</td>
+									<td>
+		                            	<a ng-href="#/inspections/view?id={{item.typeInspection.id}}&f={{searchField}}&kw={{searchInput.keyword}}&c={{searchInput.contentKeyword}}&v=2" target="_blank">查看</a>
 									</td>
 								</tr>
 							</tbody>

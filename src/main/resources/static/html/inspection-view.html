@@ -1,5 +1,6 @@
 <section class="content-header">
 	<h1>检测项详情  <small>{{digest.model}} {{digest.docNo}}</small></h1>
+	<span class="view-search-hint" ng-if="searchInput.keyword"> 检索关键字：{{searchField}}={{searchInput.keyword}}</span>
 </section>
 
 <!-- 查看页 -->
@@ -14,15 +15,17 @@
 			<div class="nav-tabs-custom">
 	            
 				<ul class="nav nav-tabs">
-					<li class="{{viewType==1?'active':''}}" ng-click="changeView(1)">
-						<a ng-href="#{{currentLocation}}?id={{inspectionId}}">检测摘要</a>
+					<li class="{{viewType==1?'active':''}}">
+						<a ng-href="#{{currentLocation}}?id={{inspectionId}}&f={{searchField}}&kw={{searchInput.keyword}}&c={{searchInput.contentKeyword}}&v=1">
+							检测摘要</a>
 					</li>
 					<li class="{{viewType==2?'active':''}}" ng-click="changeView(2)">
-						<a ng-href="#{{currentLocation}}?id={{inspectionId}}">检测报告</a>
+						<a ng-href="#{{currentLocation}}?id={{inspectionId}}&f={{searchField}}&kw={{searchInput.keyword}}&c={{searchInput.contentKeyword}}&v=2">
+						检测报告</a>
 					</li>
 					<li class="pull-right">
 						<button ng-if="authority=='ROLE_ADMIN'" type="submit" class="btn btn-info" ng-click="edit()" ng-if="authority=='ROLE_ADMIN'">编辑</button>
-                        <button class="btn btn-default" ng-click="back()">返回</button>
+                        <button class="btn btn-default" ng-if="!searchInput.keyword"  ng-click="back()">返回</button>
 					</li>
 					
 				</ul>
@@ -31,7 +34,7 @@
 						<table class="table table-striped">
 							<tr>
 								<td>产品型号</td>
-								<td>{{digest.model}}</td>
+								<td ng-bind-html="digest.model | highlight: keywordsList"></td>
 							</tr>
 							<tr>
 								<td>软件名称</td>

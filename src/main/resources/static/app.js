@@ -10,7 +10,7 @@ angular.module('enterprise-quality',[
 .config(['$routeProvider', function($routeProvider){
     $routeProvider
     	.when('/',{
-    		redirectTo: '/updatelogs'
+    		redirectTo: '/inspections'
     	})
     	.when('/updatelogs',{
     		templateUrl:'html/update-logs.html',

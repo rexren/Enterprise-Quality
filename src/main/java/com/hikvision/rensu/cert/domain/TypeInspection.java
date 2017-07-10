@@ -129,10 +129,6 @@ public class TypeInspection implements Serializable{
 		this.organization = organization;
 	}
 
-    public TypeInspection(){
-    }
-
-
     public Long getId() {
         return id;
     }
@@ -262,6 +258,9 @@ public class TypeInspection implements Serializable{
 	public void setUpdateAt(Date updateAt) {
 		this.updateAt = updateAt;
 	}
+	
+    public TypeInspection(){
+    }
 
 	@Override
 	public String toString() {

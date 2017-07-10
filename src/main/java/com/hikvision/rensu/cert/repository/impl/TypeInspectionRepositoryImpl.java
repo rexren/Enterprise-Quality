@@ -3,6 +3,7 @@ package com.hikvision.rensu.cert.repository.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -45,6 +46,7 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 				sqlString.append(", ");
 			sqlString.append("T." + toUnderline(tFieldsAll[i]));
 		}
+		/*搜索报告内部信息*/
 		sqlString.append(", C.id AS cid");
 		for (int i = 0; i < cFields.length; i++) {
 			if (StringUtils.equals(cFields[i], "remarks")) {
@@ -54,7 +56,7 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 			}
 		}
 		sqlString.append(" FROM type_inspection as T LEFT JOIN inspect_content as C ON T.id = C.inspection_id WHERE ");
-		/*TODO 返回类型分为【只搜索外部信息】和【搜索报告内部信息】两种*/
+		
 		if (null != contentKeywords && contentKeywords.length > 0) {
 			sqlString.append("(");
 			/* 循环查询inspectContent全部三个关键字段 */
@@ -106,13 +108,12 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 			int count = 0; // 存放搜索命中计数
 			StringBuilder thisCase = new StringBuilder();
 			for (Object[] objects : resObj) {
-				// "id", ["version", "certUrl", "company", "awardDate"], "model"
-				int i = 0;
+				/* int i = 0;
 				System.out.println(objects[i++].toString()); // 0:id
 				System.out.println(objects[i++].toString()); // 1:version
 				System.out.println(objects[i++].toString()); // 2:certUrl
 				System.out.println(objects[i++].toString()); // 3:company
-				System.out.println(objects[i++].toString()); // 4:awardDate
+				System.out.println(objects[i++].toString()); // 4:(Date)awardDate
 				System.out.println(objects[i++].toString()); // 5:model
 				System.out.println(objects[i++].toString()); // 6:name
 				System.out.println(objects[i++].toString()); // 7:testType
@@ -120,12 +121,14 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 				System.out.println(objects[i++].toString()); // 9:docNo
 				System.out.println(objects[i++].toString()); // 10:organization
 				System.out.println(objects[i++].toString()); // 11:remarks
-				//System.out.println(objects[i++].toString()); // 12:contentId
-				//System.out.println(objects[i++].toString()); // 13:caseDescription
-				//System.out.println(objects[i++].toString()); // 14:caseName
-					
+				System.out.println(objects[i++].toString()); // 12:contentId
+				System.out.println(objects[i++].toString()); // 13:caseDescription
+				System.out.println(objects[i++].toString()); // 14:caseName
+				*/
+				
+				/* 如果搜索结果中的tId与上轮不同*/
 				if (tId != Long.parseLong(objects[0].toString())) {
-					if (tId > 0L) {
+					if (tId > 0L) { //排除第一个
 						s.setCases(new String(thisCase.toString())); // 上一轮的thisCase
 						s.setCount(count); // 上一轮count
 						searchResults.add(s); // 上个typeSearchResult对象存入列表
@@ -134,18 +137,24 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 						thisCase.setLength(0); // 清空thisCase
 						count = 0;
 					}
-					tId = Long.parseLong(objects[0].toString());
-					s.setId(tId);
-					s.setModel(objects[1].toString());
-					s.setName(objects[2].toString());
-					s.setTestType(objects[3].toString());
-					s.setBasis(objects[4].toString());
-					s.setDocNo(objects[5].toString());
-					s.setOrganization(objects[6].toString());
-					s.setRemarks(objects[7].toString());
+					tId = Long.parseLong(objects[0].toString());  //暂存本轮tId
+					TypeInspection t = new TypeInspection();
+					t.setId(tId);
+					t.setVersion(objects[1].toString());
+					t.setCertUrl(objects[2].toString());
+					t.setCompany(objects[3].toString());
+					t.setAwardDate((Date) objects[4]);
+					t.setModel(objects[5].toString());
+					t.setName(objects[6].toString());
+					t.setTestType(objects[7].toString());
+					t.setBasis(objects[8].toString());
+					t.setDocNo(objects[9].toString());
+					t.setOrganization(objects[10].toString());
+					t.setRemarks(objects[11].toString());
+					s.setTypeInspection(t);
 				}
-				if(null!=objects[9]){
-					thisCase.append(StringUtils.replaceAll(objects[10].toString(),"\n"," ") +" "+ objects[9].toString()+" || ");
+				if(null!=objects[13]){
+					thisCase.append(StringUtils.replaceAll(objects[14].toString(),"\n"," ") +" "+ objects[13].toString()+" || ");
 				}
 				count++;
 			}
@@ -192,5 +201,4 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 
 		return sb.toString();
 	}
-
 }
