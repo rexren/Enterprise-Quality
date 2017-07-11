@@ -13,7 +13,7 @@
 	            </div>
 				<div class="box-header">
 					<h4>
-						{{searchInput.keyword?'检索关键字：'+searchField+', '+searchInput.keyword:''}} {{searchInput.contentKeyword?'内容关键字='+searchInput.contentKeyword:''}}
+						{{searchInput.keyword?('检索关键字：'+searchField+'='+searchInput.keyword):''}} {{searchInput.contentKeyword?('内容关键字='+searchInput.contentKeyword):''}}
 					</h4>
 					共{{pagination.totalElements}}条
 				</div>

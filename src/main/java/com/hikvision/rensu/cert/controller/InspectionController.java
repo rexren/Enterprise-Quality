@@ -79,7 +79,7 @@ public class InspectionController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期倒序
+			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期和ID排序倒序
 		}
 		ListResult res = new ListResult();
 		try {
@@ -389,7 +389,7 @@ public class InspectionController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期排序倒序
+			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期和ID排序倒序
 		}
 		ListResult res = new ListResult();
 

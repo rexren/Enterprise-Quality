@@ -67,9 +67,6 @@
 								<th style="min-width: 80px;">链接</th>
 								<th style="min-width: 60px;">认证机构</th>
 								<th style="min-width: 60px;">备注</th>
-								<!-- <th>建立日期</th> -->
-								<!-- <th>更新日期</th> -->
-								<!-- <th>操作人</th> -->
 								<th>操作</th>
 							</tr>
 						</thead>
@@ -94,9 +91,6 @@
 								</td>
 								<td>{{item.organization}}</td>
 								<td>{{item.remarks}}</td>
-								<!-- <td>{{item.createAt | date:'yyyy-MM-dd'}}</td> -->
-								<!-- <td>{{item.updateAt | date:'yyyy-MM-dd'}}</td> -->
-								<!-- <td>{{item.operator}}</td> -->
 								<td>
 									<button class="btn btn-link" ng-click="edit(item)" ng-if="authority=='ROLE_ADMIN'">修改</button>
 									<button class="btn btn-link" ng-click="view(item)">查看</button>

@@ -59,7 +59,7 @@ public class CopyrightController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORTBY_CRDATE; // 默认按照软著签发日期倒序
+			sortBy = SORTBY_CRDATE; // 默认按照软著签发日期和id倒序
 		}
 		ListResult res = new ListResult();
 		try {
@@ -279,7 +279,7 @@ public class CopyrightController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORTBY_CRDATE; // 默认按照软著签发日期排序
+			sortBy = SORTBY_CRDATE; // 默认按照软著签发日期和id倒序
 		}
 		String fieldName;
 		if (field == null) {

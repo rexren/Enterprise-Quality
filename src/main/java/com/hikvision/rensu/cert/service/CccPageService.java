@@ -38,7 +38,7 @@ public class CccPageService {
 	
 	public Page<CccPage> getCCCListByPage(Integer pageNum, Integer pageSize, String sortBy, int dir) {
 		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
-		Pageable page = new PageRequest(pageNum, pageSize, new Sort(d, sortBy));
+		Pageable page = new PageRequest(pageNum, pageSize, new Sort(d, sortBy, "id"));
 		return cccPageRepository.findAll(page);
 	}
 
@@ -169,10 +169,10 @@ public class CccPageService {
 			int dir) {
 		Page<CccPage> p = null;
 		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
-		Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy));
+		Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy, "id"));
 		
 		if(keywordList.length > 0){
-			List<CccPage> ccc = cccPageRepository.searchCccByKeyword(fieldName,keywordList);
+			List<CccPage> ccc = cccPageRepository.searchCccByKeyword(fieldName, keywordList);
 			p = new PageImpl<CccPage>(ccc, page, ccc.size());
 		} else {
 			p = cccPageRepository.findAll(page);

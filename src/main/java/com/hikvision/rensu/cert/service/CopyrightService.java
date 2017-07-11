@@ -37,7 +37,7 @@ public class CopyrightService {
 	
 	public Page<Copyright> getCopyrightByPage(int pageNum, int pageSize, String sortBy, int dir){
 		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
-		Pageable page = new PageRequest(pageNum, pageSize, new Sort(d, sortBy));
+		Pageable page = new PageRequest(pageNum, pageSize, new Sort(d, sortBy, "id"));
         return copyrightRepository.findAll(page);
 	}
 
@@ -196,7 +196,7 @@ public class CopyrightService {
 			int dir) {
 		Page<Copyright> p = null;
 		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
-		Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy));
+		Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy, "id"));
 		
 		if(keywordList.length > 0){
 			List<Copyright> crs = copyrightRepository.searchCopyrightByKeyword(fieldName, keywordList);

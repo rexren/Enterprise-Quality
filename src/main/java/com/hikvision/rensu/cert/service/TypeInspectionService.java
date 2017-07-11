@@ -53,7 +53,7 @@ public class TypeInspectionService {
 
 	public Page<TypeInspection> getInspectionByPage(int pageNum, int pageSize, String sortBy, int dir) {
 		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
-		Pageable page = new PageRequest(pageNum, pageSize, new Sort(d, sortBy));
+		Pageable page = new PageRequest(pageNum, pageSize, new Sort(d, sortBy, "id"));
 		return typeInspectionRepository.findAll(page);
 	}
 
