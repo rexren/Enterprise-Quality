@@ -75,6 +75,7 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl', ['$scope'
         				'remarks': res.data.remarks,
         				'operator': res.data.operator
 	        		};
+	        		$scope.digest.hasURL = /.*(http|https).*/.test($scope.digest.certUrl)? true : false;
 	        		$scope.fileName = res.data.docFilename;
 	        	} else{
 	        		if(res.msg){

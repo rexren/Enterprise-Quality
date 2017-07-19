@@ -121,7 +121,7 @@ angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScop
             }
         }).success(function(res) {
             if (res.code == 0) {
-                Toastr.success('更新公检记录' + res.numOfInspections + "条，双证记录" + res.numOfCopyRight + "条，3C记录" + res.numOf3C + "条");
+                Toastr.success('更新资质记录' + res.numOfInspections + "条，双证记录" + res.numOfCopyRight + "条，3C记录" + res.numOf3C + "条");
                 $scope.removeFile();
                 getList(1, $scope.pagination.size);
             } else {

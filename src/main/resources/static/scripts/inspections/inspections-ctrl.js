@@ -72,9 +72,9 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
 	     *   搜索
 	     */
         $scope.search = function (input) {
-        	if($scope.searchInput.keyword==''&&$scope.searchInput.contentKeyword==''){
+        	if($scope.searchInput.keyword==''&&$scope.searchInput.contentKeyword=='')
         		Toastr.error('请输入至少一个关键字');
-        	}else
+        	else
         		$location.url('/inspections/search?f='+input.field+'&kw='+input.keyword+'&c='+input.contentKeyword);
         };
         
@@ -120,7 +120,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
                 }
             }).success(function(res) {
             	if(res.code == 0){
-            		Toastr.success('更新公检记录'+res.numOfInspections+"条，双证记录"+res.numOfCopyRight+"条，3C记录"+res.numOf3C+"条");
+            		Toastr.success('更新资质记录'+res.numOfInspections+"条，双证记录"+res.numOfCopyRight+"条，3C记录"+res.numOf3C+"条");
             		$scope.removeFile();
                 	getList(1, $scope.pagination.size);
                 } else{

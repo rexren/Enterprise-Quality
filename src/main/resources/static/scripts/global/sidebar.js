@@ -11,7 +11,7 @@ angular.module('enterprise-quality').controller('sideBarCtrl',
     			icon:'fa-newspaper-o',
     			active: false
     		}, {
-    			title: '公检&国标',
+    			title: '资质查询',
     			href: '/inspections',
     			icon:'fa-laptop',
     			active: false
