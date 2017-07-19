@@ -94,19 +94,25 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
             } else if ($scope.formData.docNo == '') {
             	Toastr.error('请输入文件编号');
             } else {
+            	$scope.isLoading = true;
                 var defer = $q.defer();
                 var fd = new FormData();
                 fd.append('file', $scope.file);
                 fd.append('fileName', $scope.fileName);
+                /*var awardTimeStamp = Date.parse($scope.formData.awardDate);
+            	fd.set('awardDate', awardTimeStamp);*/
                 if ($scope.inspectionId) {
                     fd.append('id', $scope.inspectionId);
                 }
-                for (var i in $scope.formData) {
-                    fd.append(i, $scope.formData[i]);
+                for (var item in $scope.formData) {
+                	if(item!='awardDate'){
+                		fd.append(item, $scope.formData[item]);
+                	}else{
+                		fd.append('awardDate', Date.parse($scope.formData[item]));
+                	}
+                    
                 }
-            	var awardTimeStamp = Date.parse($scope.formData.awardDate);
-            	fd.set('awardDate', awardTimeStamp);
-            	$scope.isLoading = true;
+            	
                 $http({
                     method: 'POST',
                     url: targetUrl,

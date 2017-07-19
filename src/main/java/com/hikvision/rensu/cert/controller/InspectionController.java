@@ -19,6 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -79,7 +83,7 @@ public class InspectionController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期倒序
+			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期和ID排序倒序
 		}
 		ListResult res = new ListResult();
 		try {
@@ -389,7 +393,7 @@ public class InspectionController {
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期排序倒序
+			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期和ID排序倒序
 		}
 		ListResult res = new ListResult();
 
@@ -439,14 +443,18 @@ public class InspectionController {
 		try {
 			List<?> p = typeInspectionService.searchTypeInspectionByPage(fieldName, keywordList,
 					contentKeywordList, pn, ps, sortBy, dir);
+			Pageable page = new PageRequest(pn, ps, new Sort(sortBy, "id"));
+			
+			@SuppressWarnings("unchecked")
+			PageImpl<?> resPage = new PageImpl(p, page, p.size()); 
+			
 			if (null != p) {
 				ListContent resListContent = new ListContent();
 				resListContent.setPageSize(0);
 				resListContent.setTotalElements(new Long(p.size()));
 				resListContent.setTotalPages(1);
 				resListContent.setList((List<?>) p);
-				//public ListContent(int pageSize, Long totalElements, int totalPages, List<T> list) {
-				res.setListContent(resListContent);
+				res.setListContent(new ListContent(resPage.getSize(), resPage.getTotalElements(), resPage.getTotalPages(), resPage.getContent()));
 			}
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());

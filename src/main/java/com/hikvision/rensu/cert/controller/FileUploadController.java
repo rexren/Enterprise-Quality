@@ -1,16 +1,14 @@
 package com.hikvision.rensu.cert.controller;
 
-import com.hikvision.rensu.cert.constant.RetStatus;
-import com.hikvision.rensu.cert.service.CccPageService;
-import com.hikvision.rensu.cert.service.CopyrightService;
-import com.hikvision.rensu.cert.service.TypeInspectionService;
-import com.hikvision.rensu.cert.support.ImportResult;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +20,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.hikvision.rensu.cert.constant.RetStatus;
+import com.hikvision.rensu.cert.service.CccPageService;
+import com.hikvision.rensu.cert.service.CopyrightService;
+import com.hikvision.rensu.cert.service.TypeInspectionService;
+import com.hikvision.rensu.cert.support.ImportResult;
 
 /**
  * 由于导入文件并没有区分类型，所以其实正确的做法应该在一个新的类中导入 Created by rensu on 2017/5/28.
@@ -69,8 +68,6 @@ public class FileUploadController {
 						numOfCopyRight = copyrightService.importCopyRightSheet(workbook.getSheetAt(i));
 					} else if (StringUtils.contains(workbook.getSheetName(i), "3C")) {
 						numOf3C = cccPageService.importCCCSheet(workbook.getSheetAt(i));
-					//} else if (StringUtils.contains(workbook.getSheetName(i), "更新说明")) {
-						// TODO: news can be done without sheet.
 					}
 				}
 				return new ImportResult(RetStatus.SUCCESS.getCode(), RetStatus.SUCCESS.getInfo(), numOfInpections, numOfCopyRight, numOf3C);

@@ -32,6 +32,16 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl', ['$scope'
         $scope.tkeywordsList=$scope.searchInput.keyword?$scope.searchInput.keyword.split(/\s+/):[];
         $scope.ckeywordsList=$scope.searchInput.contentKeyword?$scope.searchInput.contentKeyword.split(/\s+/):[];
         
+        switch ($scope.searchInput.field) {
+	    	case '1':  $scope.searchField = '产品型号'; break;
+	    	case '2':  $scope.searchField = '软件名称'; break;
+	    	case '3':  $scope.searchField = '测试类别'; break;
+	    	case '4':  $scope.searchField = '测试依据'; break;
+	    	case '5':  $scope.searchField = '文件编号'; break;
+	    	case '6':  $scope.searchField = '认证机构'; break;
+	    	case '7':  $scope.searchField = '备注'; break;
+	    	default: $scope.searchField = '全部'; break;
+	    }
 	    $scope.changeView = function(viewNo){
 	    	$scope.viewType = viewNo;
 	    }
