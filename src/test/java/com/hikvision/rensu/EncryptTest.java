@@ -10,6 +10,8 @@ import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EncryptTest {
 
@@ -39,6 +41,8 @@ public class EncryptTest {
 
     @Test
     public void md5_SystemWideSaltSource() {
+
+        Map<String, String> s = new ConcurrentHashMap<>();
         Md5PasswordEncoder md5 = new Md5PasswordEncoder();
         md5.setEncodeHashAsBase64(false);
 
