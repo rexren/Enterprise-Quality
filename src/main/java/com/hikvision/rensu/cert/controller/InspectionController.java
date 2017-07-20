@@ -55,7 +55,7 @@ public class InspectionController {
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 
 	private final static String SORTBY_AWARDDATE = "awardDate";
-	
+
 	@Autowired
 	private TypeInspectionService typeInspectionService;
 
@@ -64,7 +64,7 @@ public class InspectionController {
 
 	@Autowired
 	private SystemUserService systemUserService;
-	
+
 	/**
 	 * 获取公检&国标文件列表页
 	 * 
@@ -91,8 +91,8 @@ public class InspectionController {
 		try {
 			Page<TypeInspection> p = typeInspectionService.getInspectionByPage(pn, ps, sortBy, dir);
 			if (null != p) {
-				res.setListContent(new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(),
-						p.getContent()));
+				res.setListContent(
+						new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
 			}
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());
@@ -101,6 +101,41 @@ public class InspectionController {
 			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
 			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
 		}
+		return res;
+	}
+
+	/**
+	 * 删除单条型检数据（不包括列表）
+	 * 
+	 * @param id
+	 *            型检id
+	 * @return 操作状态
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/delete.do", method = RequestMethod.GET)
+	@ResponseBody
+	public BaseResult deleteInspecionById(Long id) {
+		BaseResult res = new BaseResult();
+
+		if (null == id) {
+			res.setCode(RetStatus.PARAM_ILLEGAL.getCode());
+			res.setMsg(RetStatus.PARAM_ILLEGAL.getInfo());
+			return res;
+		}
+		try {
+			typeInspectionService.deleteTypeInspectionById(id);
+			res.setCode(RetStatus.SUCCESS.getCode());
+			res.setMsg(RetStatus.SUCCESS.getInfo());
+		} catch (IllegalArgumentException e) {
+			logger.error("", e);
+			res.setCode(RetStatus.USER_NOT_FOUND.getCode());
+			res.setMsg(RetStatus.USER_NOT_FOUND.getInfo());
+		} catch (Exception e) {
+			logger.error("", e);
+			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+		}
+
 		return res;
 	}
 
@@ -147,29 +182,31 @@ public class InspectionController {
 	 */
 	@RequestMapping(value = "/contents.do", method = RequestMethod.GET)
 	@ResponseBody
-	public ListResult getContentsByInspectionId(Long id) {
+	public ListResult getContentsByInspectionId(HttpServletRequest request) {
 		ListResult res = new ListResult();
-		if (null == id) {
-			res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
-			res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
-		} else {
-			try {
-				List<InspectContent> contents = inspectContentService.getContentsByInspectionId(id);
-				if (contents != null && !contents.isEmpty()) {
-					res.setListContent(
-							new ListContent(contents.size(), (long) contents.size(), 1, contents));
-					res.setCode(RetStatus.SUCCESS.getCode());
-					res.setMsg(RetStatus.SUCCESS.getInfo());
-				} else {
-					res.setCode(RetStatus.SUCCESS.getCode());
-					res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
-				}
-			} catch (Exception e) {
-				logger.error("", e);
-				res.setCode(RetStatus.SYSTEM_ERROR.getCode());
-				res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
-			}
+		if (null == request || StringUtils.isBlank(request.getParameter("id"))) {
+			res.setCode(RetStatus.PARAM_ILLEGAL.getCode());
+			res.setMsg(RetStatus.PARAM_ILLEGAL.getInfo());
+			return res;
 		}
+		Long id = NumberUtils.toLong(request.getParameter("id"));
+
+		try {
+			List<InspectContent> contents = inspectContentService.getContentsByInspectionId(id);
+			if (contents != null && !contents.isEmpty()) {
+				res.setListContent(new ListContent(contents.size(), (long) contents.size(), 1, contents));
+				res.setCode(RetStatus.SUCCESS.getCode());
+				res.setMsg(RetStatus.SUCCESS.getInfo());
+			} else {
+				res.setCode(RetStatus.SUCCESS.getCode());
+				res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+		}
+
 		return res;
 	}
 
@@ -284,7 +321,8 @@ public class InspectionController {
 				res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());
 				res.setMsg(RetStatus.DOCNO_DUPLICATED.getInfo());
 				return res;
-			};
+			}
+			;
 			t = setTypeInspectionProperties(request, t); // 更新实体，包括文件名docFileName
 			List<InspectContent> contentlist = null;
 			if (file != null && !file.isEmpty()) {
@@ -443,14 +481,16 @@ public class InspectionController {
 		String[] contentKeywordList = StringUtils.split(contentKeyword);
 
 		try {
-			List<typeSearchResult> p = typeInspectionService.searchTypeInspectionByPage(fieldName, keywordList,contentKeywordList);
-			
+			List<typeSearchResult> p = typeInspectionService.searchTypeInspectionByPage(fieldName, keywordList,
+					contentKeywordList);
+
 			Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
 			Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy, "id"));
-			
+
 			if (null != p) {
-				PageImpl<typeSearchResult> resPage = new PageImpl<typeSearchResult>(p, page, p.size()); 
-				res.setListContent(new ListContent(resPage.getSize(), resPage.getTotalElements(), resPage.getTotalPages(), resPage.getContent()));
+				PageImpl<typeSearchResult> resPage = new PageImpl<typeSearchResult>(p, page, p.size());
+				res.setListContent(new ListContent(resPage.getSize(), resPage.getTotalElements(),
+						resPage.getTotalPages(), resPage.getContent()));
 			}
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());

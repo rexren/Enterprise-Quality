@@ -7,6 +7,7 @@ public enum RetStatus {
 	/* 请求数据格式（预留字段1000-1099） */
 	FORM_DATA_INVALID("1001", "表单验证不通过"),
 	FORM_DATA_MISSING("1002", "表单验证缺少关键字段"),
+	PARAM_ILLEGAL("1003", "参数不合法"),
 	DOCNO_DUPLICATED("1004", "docNo字段重复"),
 	NAME_DUPLICATED("1005", "名称字段重复"),
 	

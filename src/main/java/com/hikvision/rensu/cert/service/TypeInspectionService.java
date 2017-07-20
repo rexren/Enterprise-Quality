@@ -194,7 +194,6 @@ public class TypeInspectionService {
 	 *            待插入数据库的检测报告内容表（子表）
 	 * @return TypeInspection实体
 	 */
-	@Transactional
 	public TypeInspection saveTypeInspection(TypeInspection t, List<InspectContent> contentList) {
 		if (contentList != null && contentList.size() > 0) {
 			inspectContentRepository.save(contentList);
@@ -210,7 +209,6 @@ public class TypeInspectionService {
 	 *            待插入数据库的检测报告内容表（子表）
 	 * @return TypeInspection实体
 	 */
-	@Transactional
 	public TypeInspection updateTypeInspection(TypeInspection t, List<InspectContent> contentList) {
 		Long inspectionId = t.getId();
 		/* 若文件名为空，删除子表 */
@@ -234,8 +232,15 @@ public class TypeInspectionService {
 	 */
 	public List<typeSearchResult> searchTypeInspectionByPage(String fieldName, String[] keywordList,
 			String[] contentKeywordList) throws Exception {
-		List<typeSearchResult> res = typeInspectionRepository.joinSearchTypeInspection(fieldName, keywordList, contentKeywordList);
-		return res;
+		return typeInspectionRepository.joinSearchTypeInspection(fieldName, keywordList, contentKeywordList);
+	}
+	
+	/**
+	 * 删除单条记录
+	 * @throws Exception 
+	 */
+	public void deleteTypeInspectionById(Long id) throws IllegalArgumentException {
+		typeInspectionRepository.delete(id);
 	}
 
 }

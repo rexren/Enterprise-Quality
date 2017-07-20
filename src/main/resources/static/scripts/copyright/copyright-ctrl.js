@@ -149,6 +149,41 @@ angular.module('enterprise-quality')
             $scope.fileName = '';
 		};
 
+		// 删除条目
+		$scope.delete = function(itemId) {
+			// 打开弹窗
+			var modalInstance = $modal.open({
+		        animation: true,
+		        templateUrl: '/html/modal-delete.html',
+		        controller: 'deleteModalCtrl',
+		        size: 'sm',
+		        resolve: {
+		            data: function () {
+		              return itemId;
+		            }
+		          }
+		    });
+			// 弹窗在关闭的时候执行的
+			modalInstance.result.then(function () {
+				// $modalInstance.close 
+				$scope.isLoading = false;
+				$http.get('/copyright/delete.do',{params:{id:itemId}}).success(function(res){
+					if(res.code == 0){
+						Toastr.success('删除成功');
+						getList($scope.pagination.page, $scope.pagination.size);
+					}else{
+						Toastr.error('删除失败，'+res.msg);
+					}
+				}).error(function(res, status, headers, config) {
+	            	Toastr.error("AjaxError: "+ status);
+	            	$scope.isLoading = false;
+	            });
+			}, function () {
+				// $modalInstance.dismiss 
+				$scope.isLoading = false;
+			});
+	    };
+	    
         $scope.fields = [{
         	name: '全部',
         	value: ''

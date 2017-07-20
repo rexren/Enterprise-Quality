@@ -76,6 +76,41 @@ public class CopyrightController {
 		}
 		return res;
 	}
+	
+	/**
+	 * 删除单条型检数据（不包括列表）
+	 * 
+	 * @param id
+	 *            型检id
+	 * @return 操作状态
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/delete.do", method = RequestMethod.GET)
+	@ResponseBody
+	public BaseResult deleteCopyrightById(Long id) {
+		BaseResult res = new BaseResult();
+
+		if (null == id) {
+			res.setCode(RetStatus.PARAM_ILLEGAL.getCode());
+			res.setMsg(RetStatus.PARAM_ILLEGAL.getInfo());
+			return res;
+		}
+		try {
+			copyrightService.deleteCopyrightById(id);
+			res.setCode(RetStatus.SUCCESS.getCode());
+			res.setMsg(RetStatus.SUCCESS.getInfo());
+		} catch (IllegalArgumentException e) {
+			logger.error("", e);
+			res.setCode(RetStatus.USER_NOT_FOUND.getCode());
+			res.setMsg(RetStatus.USER_NOT_FOUND.getInfo());
+		} catch (Exception e) {
+			logger.error("", e);
+			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+		}
+
+		return res;
+	}
 
 	/**
 	 * 获取双证单条数据

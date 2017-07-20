@@ -122,8 +122,11 @@
                             <td>{{item.model}}</td>
                             <td>{{item.charge}}</td>
                             <td>
-                            	<button class="btn btn-link" ng-click="edit(item)" ng-if="authority=='ROLE_ADMIN'">修改</button>
-                            	<button class="btn btn-link" ng-click="view(item)">查看</button>
+	                            <div class="btn-group-vertical btn-group">
+	                            	<button class="btn btn-link" ng-click="edit(item)" ng-if="authority=='ROLE_ADMIN'">修改</button>
+	                            	<button class="btn btn-link" ng-click="view(item)">查看</button>
+									<button class="btn btn-link btn-link-danger" ng-click="delete(item.id)" ng-if="authority=='ROLE_ADMIN'">删除</button>
+								</div>
 							</td>
                         </tr>
                         </tbody>

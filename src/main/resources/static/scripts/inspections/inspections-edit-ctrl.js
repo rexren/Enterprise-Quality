@@ -143,7 +143,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
             }
         };
 
-
+        // 删除文件
         $scope.removeFile = function() {
             $scope.file = {};
             $scope.fileName = '';

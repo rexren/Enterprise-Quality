@@ -206,4 +206,9 @@ public class CopyrightService {
 		}
 		return p;
 	}
+
+	public void deleteCopyrightById(Long id) throws IllegalArgumentException {
+		copyrightRepository.delete(id);
+		
+	}
 }
