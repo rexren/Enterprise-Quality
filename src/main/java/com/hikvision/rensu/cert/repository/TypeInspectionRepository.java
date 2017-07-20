@@ -17,6 +17,9 @@ public interface TypeInspectionRepository extends JpaRepository<TypeInspection, 
 	
 	public List<TypeInspection> findByDocNo(String docNo);
 
+	/**
+	 * 关键字联合查询，并且按照命中率排序
+	 * */
 	public List<typeSearchResult> joinSearchTypeInspection(String fieldName, String[] keywordList, String[] contentKeywordList);
 	
 }

@@ -16,7 +16,8 @@
 					<span class="view-search-hint" ng-if="searchInput.keyword"> 检索关键字：{{searchField}}={{searchInput.keyword}}</span>
 					<div class="btn-group pull-right">
 						<button type="submit" class="btn btn-info" ng-click="edit()" ng-if="authority=='ROLE_ADMIN'">编辑</button>
-                        <button class="btn btn-default" ng-if="!searchInput.keyword" ng-click="back()">返回</button>
+                        <button ng-if="!searchInput.keyword" class="btn btn-default" ng-click="back()">返回</button>
+                        <button ng-if="searchInput.keyword" class="btn btn-default" ng-click="close()">关闭</button>
                     </div>
 				</div>
 				<div class="box-body">

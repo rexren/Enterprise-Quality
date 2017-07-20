@@ -21,13 +21,14 @@
 						<a ng-href="#{{currentLocation}}?id={{inspectionId}}&f={{searchField}}&kw={{searchInput.keyword}}&c={{searchInput.contentKeyword}}&v=1">
 							检测报告</a>
 					</li>
-					<li class="{{viewType==2?'active':''}}" ng-click="changeView(2)">
+					<li class="{{viewType==2?'active':''}}">
 						<a ng-href="#{{currentLocation}}?id={{inspectionId}}&f={{searchField}}&kw={{searchInput.keyword}}&c={{searchInput.contentKeyword}}&v=2">
 						检测项</a>
 					</li>
 					<li class="pull-right">
 						<button ng-if="authority=='ROLE_ADMIN'" type="submit" class="btn btn-info" ng-click="edit()" ng-if="authority=='ROLE_ADMIN'">编辑</button>
-                        <button class="btn btn-default" ng-if="!searchInput.keyword"  ng-click="back()">返回</button>
+                        <button class="btn btn-default" ng-if="!searchInput.keyword" ng-click="back()">返回</button>
+                        <button class="btn btn-default" ng-if="searchInput.keyword" ng-click="close()">关闭</button>
 					</li>
 					
 				</ul>
@@ -68,8 +69,7 @@
 							</tr>
 							<tr>
 								<td>索引文件名</td>
-								<td><a href="#{{currentLocation}}?id={{inspectionId}}"
-									ng-click="changeView(2)">{{digest.docFilename}}</a></td>
+								<td><a ng-href="#{{currentLocation}}?id={{inspectionId}}&f={{searchField}}&kw={{searchInput.keyword}}&c={{searchInput.contentKeyword}}&v=2">{{digest.docFilename}}</a></td>
 							</tr>
 							<tr>
 								<td>证书系统链接</td>

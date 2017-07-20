@@ -35,7 +35,7 @@
 							<tr ng-if="list.length == 0">
 								<td colspan="10" style="text-align: center;">没有查询到结果</td>
 							</tr>
-							<tr ng-repeat="item in list" >
+							<tr ng-repeat="item in viewList" >
 	                            <td>{{$index+1}}</td>
 	                            <td style="word-wrap: break-word; word-break:break-all;" ng-bind-html="item.docNo | highlight: keywordsList"></td>
 	                            <td style="word-wrap: break-word; word-break:break-all;" ng-bind-html="item.model | highlight: keywordsList"></td>
@@ -49,22 +49,20 @@
 	                            <td>{{item.organization}}</td>
 	                            <td ng-bind-html="item.remarks | highlight: keywordsList"></td>
 	                            <td>
-	                            	<div ng-if="authority=='ROLE_ADMIN'"><a ng-href="#/ccc/edit?id={{item.id}}" target="_blank">修改</a></div>
-	                            	<div><a ng-href="#/ccc/view?id={{item.id}}&f={{searchField}}&kw={{searchField}}" target="_blank">查看</a></div>
+	                            	<div ng-if="authority=='ROLE_ADMIN'"><a ng-href="#/ccc/edit?id={{item.id}}&target=1" target="_blank">修改</a></div>
+	                            	<div><a ng-href="#/ccc/view?id={{item.id}}&f={{searchField}}&kw={{searchInput.keyword}}" target="_blank">查看</a></div>
 	                            </td>
 	                        </tr>
 							</tbody>
 						</table>
 					</div>
-
-					<!-- <div class="box-footer clearfix">
+					<div class="box-footer clearfix">
 						<paging class="smallpagination pagination-sm no-margin pull-right"
 							page="pagination.page" page-size="pagination.size"
 							total="pagination.totalElements" adjacent="1" dots="..."
-							hide-if-empty="true" show-prev-next="true" show-first-last="true"
+							hide-if-empty="false" show-prev-next="true" show-first-last="true"
 							paging-action="onPageChange(page)"> </paging>
-					</div> -->
-
+					</div>
 				</div>
 			</div>
 		</div>

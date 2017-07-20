@@ -3,16 +3,16 @@
 angular.module('enterprise-quality').controller('CopyrightSearchCtrl', ['$scope','$rootScope','$location','$http','$q','toastr',
     function($scope, $rootScope, $location, $http, $q, Toastr){
 	$scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
-
     $scope.pagination = {
         page: 1,
         size: 20,
         totalElements: 0
     };
+    $scope.viewList = [];
 
     $scope.onPageChange = function(page){
         $scope.pagination.page = page;
-        getList($scope.pagination.page, $scope.pagination.size);
+        $scope.viewList = $scope.list?$scope.list.slice((page-1) * $scope.pagination.size, page * $scope.pagination.size):[];
     };
 
     $scope.searchInput = {
@@ -23,6 +23,7 @@ angular.module('enterprise-quality').controller('CopyrightSearchCtrl', ['$scope'
     $scope.keywordsList = $scope.searchInput.keyword?$scope.searchInput.keyword.split(/\s+/):[];
     
     switch ($scope.searchInput.field) {
+    	case '':  $scope.searchField = '全部'; break;
     	case '1':  $scope.searchField = '软件名称'; break;
     	case '2':  $scope.searchField = '简称'; break;
     	case '3':  $scope.searchField = '软件型号'; break;
@@ -32,6 +33,7 @@ angular.module('enterprise-quality').controller('CopyrightSearchCtrl', ['$scope'
     	case '7':  $scope.searchField = '类别界定报告号'; break;
     	default: $scope.searchField = '全部'; break;
     }
+    
     $scope.isLoading = true;
     $http.get('/copyright/search.do', {
         params: $scope.searchInput
@@ -46,6 +48,7 @@ angular.module('enterprise-quality').controller('CopyrightSearchCtrl', ['$scope'
         			$scope.list[i].hasRgURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].rgUrl)? true : false;
         			$scope.list[i].hasEpURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].epUrl)? true : false;
     			 }
+    			 $scope.viewList = $scope.list.slice(($scope.pagination.page-1)* $scope.pagination.size, ($scope.pagination.page)* $scope.pagination.size);
     		}
         } else {
         	if(res.msg){

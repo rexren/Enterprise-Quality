@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +43,7 @@ import com.hikvision.rensu.cert.support.AjaxResult;
 import com.hikvision.rensu.cert.support.BaseResult;
 import com.hikvision.rensu.cert.support.ListContent;
 import com.hikvision.rensu.cert.support.ListResult;
+import com.hikvision.rensu.cert.support.typeSearchResult;
 
 /**
  * Created by rensu on 17/4/27.
@@ -441,19 +443,13 @@ public class InspectionController {
 		String[] contentKeywordList = StringUtils.split(contentKeyword);
 
 		try {
-			List<?> p = typeInspectionService.searchTypeInspectionByPage(fieldName, keywordList,
-					contentKeywordList, pn, ps, sortBy, dir);
-			Pageable page = new PageRequest(pn, ps, new Sort(sortBy, "id"));
+			List<typeSearchResult> p = typeInspectionService.searchTypeInspectionByPage(fieldName, keywordList,contentKeywordList);
 			
-			@SuppressWarnings("unchecked")
-			PageImpl<?> resPage = new PageImpl(p, page, p.size()); 
+			Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
+			Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy, "id"));
 			
 			if (null != p) {
-				ListContent resListContent = new ListContent();
-				resListContent.setPageSize(0);
-				resListContent.setTotalElements(new Long(p.size()));
-				resListContent.setTotalPages(1);
-				resListContent.setList((List<?>) p);
+				PageImpl<typeSearchResult> resPage = new PageImpl<typeSearchResult>(p, page, p.size()); 
 				res.setListContent(new ListContent(resPage.getSize(), resPage.getTotalElements(), resPage.getTotalPages(), resPage.getContent()));
 			}
 			res.setCode(RetStatus.SUCCESS.getCode());

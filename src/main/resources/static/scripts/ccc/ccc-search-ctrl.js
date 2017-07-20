@@ -9,10 +9,10 @@ angular.module('enterprise-quality').controller('CccSearchCtrl', ['$scope','$roo
         size: 20,
         totalElements: 0
     };
-    
+    $scope.viewList = [];
     $scope.onPageChange = function(page){
         $scope.pagination.page = page;
-        getList($scope.pagination.page, $scope.pagination.size);
+        $scope.viewList = $scope.list?$scope.list.slice((page-1) * $scope.pagination.size, page * $scope.pagination.size):[];
     };
 
     $scope.searchInput = {
@@ -42,6 +42,7 @@ angular.module('enterprise-quality').controller('CccSearchCtrl', ['$scope','$roo
             		$scope.list[i].hasURL = /.*(http|https|cert.hikvision.com.cn).*/.test($scope.list[i].url)? true : false;
        			 
             	}
+            	$scope.viewList = $scope.list.slice(($scope.pagination.page-1)* $scope.pagination.size, ($scope.pagination.page)* $scope.pagination.size);
             }
         } else {
         	if(res.msg){

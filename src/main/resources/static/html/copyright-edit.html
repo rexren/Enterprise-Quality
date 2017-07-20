@@ -13,7 +13,8 @@
                     <h3 class="box-title">新建/编辑</h3>
                     <div class="btn-group pull-right">
                         <button type="submit" class="btn btn-info" ng-click="submit()">提交</button>
-                        <button class="btn btn-default" ng-click="back()">取消</button>
+                        <button class="btn btn-default" ng-if="target!=1" ng-click="back()">取消</button>
+                        <button class="btn btn-default" ng-if="target==1" ng-click="close()">关闭</button>
                     </div>
                 </div>
                 <!-- /.box-header -->

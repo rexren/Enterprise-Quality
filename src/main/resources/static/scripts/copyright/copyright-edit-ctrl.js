@@ -33,6 +33,8 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
         'charge': ''
     };
     var targetUrl = '/copyright/save.do';
+
+    $scope.target = $location.search().target;
     
     var urlId = $location.search().id;
     if(urlId){
@@ -132,4 +134,9 @@ angular.module('enterprise-quality').controller('CopyrightEditCtrl', ['$scope','
     	window.history.back();
     }
 
+    // close
+    $scope.close = function() {
+    	window.close();
+    }
+    
 }]);

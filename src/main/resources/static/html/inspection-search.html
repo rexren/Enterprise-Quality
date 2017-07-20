@@ -21,7 +21,7 @@
 				<div class="box-body">
 					<div class="box-body table-responsive no-padding">
 						<table class="table table-hover">
-							<tbody ng-repeat="item in list">
+							<tbody ng-repeat="item in viewList">
 								<tr>
 									<th>序号</th>
 									<th>产品型号</th>
@@ -58,7 +58,7 @@
 									<td ng-bind-html="item.typeInspection.remarks | highlight: tkeywordsList"></td>
 									<td>{{item.count}}</td>
 									<td>
-		                            	<a ng-href="#/inspections/edit?id={{item.typeInspection.id}}" target="_blank" ng-if="authority=='ROLE_ADMIN'">修改</a>
+		                            	<a ng-href="#/inspections/edit?id={{item.typeInspection.id}}&target=1" target="_blank" ng-if="authority=='ROLE_ADMIN'">修改</a>
 		                            	<a ng-href="#/inspections/view?id={{item.typeInspection.id}}&f={{searchField}}&kw={{searchInput.keyword}}&c={{searchInput.contentKeyword}}&v=1" target="_blank">查看</a>
 									</td>
 								</tr>

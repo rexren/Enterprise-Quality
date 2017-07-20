@@ -87,4 +87,9 @@ angular.module('enterprise-quality').controller('CopyrightViewCtrl', ['$scope', 
     $scope.back = function() {
         window.history.back();
     }
+    
+    //close
+    $scope.close = function(){
+    	window.close();
+    }
 }]);

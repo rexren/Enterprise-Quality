@@ -40,7 +40,7 @@
 								<td colspan="14" style="text-align: center;">没有查询到结果</td>
 							</tr>
 							
-							<tr ng-repeat="item in list">
+							<tr ng-repeat="item in viewList">
 								<td>{{$index+1}}</td>
                             	<td ng-bind-html="item.softwareName | highlight: keywordsList"></td>
                             	<td ng-bind-html="item.abbreviation | highlight: keywordsList"></td>
@@ -71,22 +71,20 @@
 	                            <td ng-bind-html="item.model | highlight: keywordsList"></td>
 	                            <td>{{item.charge}}</td>
 	                            <td>
-	                            	<a ng-href="#/copyright/edit?id={{item.id}}" target="_blank" ng-if="authority=='ROLE_ADMIN'">修改</a>
+	                            	<a ng-href="#/copyright/edit?id={{item.id}}&target=1" target="_blank" ng-if="authority=='ROLE_ADMIN'">修改</a>
 	                            	<a ng-href="#/copyright/view?id={{item.id}}&f={{searchField}}&kw={{searchInput.keyword}}" target="_blank">查看</a>
 								</td>
 							</tr>
 						</tbody>
 						</table>
-					</div>
-					<!-- 
+					</div> 
 					<div class="box-footer clearfix">
 						<paging class="smallpagination pagination-sm no-margin pull-right"
 							page="pagination.page" page-size="pagination.size"
 							total="pagination.totalElements" adjacent="1" dots="..."
-							hide-if-empty="true" show-prev-next="true" show-first-last="true"
+							hide-if-empty="false" show-prev-next="true" show-first-last="true"
 							paging-action="onPageChange(page)"> </paging>
 					</div>
- 					-->
 				</div>
 			</div>
 		</div>

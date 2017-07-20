@@ -25,6 +25,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
         $scope.fileName = '';
         var targetUrl = '/inspections/save.do';
 
+        $scope.target = $location.search().target;
         $scope.inspectionId = $location.search().id;
         if ($scope.inspectionId) {
             var param = {
@@ -151,6 +152,10 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
         // back
         $scope.back = function() {
         	window.history.back();
+        }
+        // close
+        $scope.close = function() {
+        	window.close();
         }
 
     }]);

@@ -21,7 +21,7 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl', ['$scope'
 	    };
 	    $scope.contentList = [];
 	    $scope.fileName = '';
-	    $scope.viewType = $location.search().v&&($location.search().v==1|$location.search().v==2)?
+	    $scope.viewType = $location.search().v && ($location.search().v==1|$location.search().v==2)?
 	    		$location.search().v:1;   //默认为摘要页
 	    
 	    $scope.searchInput = {
@@ -42,6 +42,7 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl', ['$scope'
 	    	case '7':  $scope.searchField = '备注'; break;
 	    	default: $scope.searchField = '全部'; break;
 	    }
+        
 	    $scope.changeView = function(viewNo){
 	    	$scope.viewType = viewNo;
 	    }
@@ -133,7 +134,12 @@ angular.module('enterprise-quality').controller('InspectionsViewCtrl', ['$scope'
         
         // back
         $scope.back = function() {
-        	window.history.back();
+        	$location.url('/inspections');
+        }
+        
+        //close
+        $scope.close = function(){
+        	window.close();
         }
 
     }]);

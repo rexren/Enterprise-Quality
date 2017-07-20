@@ -63,6 +63,11 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootS
     // back
     $scope.back = function(){
     	window.history.back();
+    } 
+    
+    //close
+    $scope.close = function(){
+    	window.close();
     }
 	    
 }]);

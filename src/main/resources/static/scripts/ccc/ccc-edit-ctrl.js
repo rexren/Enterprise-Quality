@@ -18,7 +18,7 @@ angular.module('enterprise-quality').controller('CccEditCtrl',['$scope','$rootSc
     	"remarks":""
     };
     var targetUrl = '/ccc/save.do';
-    
+    $scope.target = $location.search().target;
     var urlId = $location.search().id;
     if(urlId){
     	var param = {id: urlId}; 
@@ -100,6 +100,10 @@ angular.module('enterprise-quality').controller('CccEditCtrl',['$scope','$rootSc
     // back
     $scope.back = function(){
     	window.history.back();
+    }    
+    // close
+    $scope.close = function() {
+    	window.close();
     }
 
 }]);

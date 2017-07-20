@@ -233,7 +233,7 @@ public class TypeInspectionService {
 	 * @throws Exception 
 	 */
 	public List<typeSearchResult> searchTypeInspectionByPage(String fieldName, String[] keywordList,
-			String[] contentKeywordList, int pn, int ps, String sortBy, int dir) throws Exception {
+			String[] contentKeywordList) throws Exception {
 		List<typeSearchResult> res = typeInspectionRepository.joinSearchTypeInspection(fieldName, keywordList, contentKeywordList);
 		return res;
 	}

@@ -9,10 +9,11 @@ angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scop
             size: 20,
             totalElements: 0
         };
+    	$scope.viewList = [];
 
         $scope.onPageChange = function(page){
             $scope.pagination.page = page;
-            getList($scope.pagination.page, $scope.pagination.size);
+            $scope.viewList = $scope.list?$scope.list.slice((page-1) * $scope.pagination.size, page * $scope.pagination.size):[];
         };
 
         $scope.searchInput = {
@@ -40,7 +41,6 @@ angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scop
 	        if (res.code == 0) {
 	        	$scope.list = res.listContent? res.listContent.list:null;
 	            $scope.pagination.totalElements = res.listContent?res.listContent.totalElements:null;
-	            
 	            if($scope.list && $scope.list.length > 0){
 	            	for (var i = 0; i < $scope.list.length; i++) {
 	            		/*截取500个字符*/
@@ -51,6 +51,7 @@ angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scop
 	            		/* 链接判断 */
 	            		$scope.list[i].typeInspection.hasURL = /.*(http|https).*/.test($scope.list[i].typeInspection.certUrl)? true : false;  
 	            	}
+	            	$scope.viewList = $scope.list.slice(($scope.pagination.page-1)* $scope.pagination.size, ($scope.pagination.page)* $scope.pagination.size);
 	            }
 	        } else {
 	        	if(res.msg){
