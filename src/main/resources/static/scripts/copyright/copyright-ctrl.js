@@ -149,7 +149,9 @@ angular.module('enterprise-quality')
             $scope.fileName = '';
 		};
 
-		// 删除条目
+	    /** 
+	     * 删除条目
+	     */
 		$scope.delete = function(itemId) {
 			// 打开弹窗
 			var modalInstance = $modal.open({
@@ -172,7 +174,12 @@ angular.module('enterprise-quality')
 						Toastr.success('删除成功');
 						getList($scope.pagination.page, $scope.pagination.size);
 					}else{
-						Toastr.error('删除失败，'+res.msg);
+						if(res.msg){
+			        		Toastr.error(res.msg);
+			        	} else {
+			        		Toastr.error('登录过期，请刷新重新登录');
+			        		window.location.href='/login';
+			        	}
 					}
 				}).error(function(res, status, headers, config) {
 	            	Toastr.error("AjaxError: "+ status);

@@ -159,7 +159,6 @@ public class CccPageService {
 
 	public CccPage saveCccPage(CccPage c) {
 		return cccPageRepository.save(c);
-		
 	}
 
 	/**
@@ -178,6 +177,10 @@ public class CccPageService {
 			p = cccPageRepository.findAll(page);
 		}
 		return p;
+	}
+
+	public void deleteCccPageById(Long id) throws IllegalArgumentException {
+		cccPageRepository.delete(id);
 	}
 
 }

@@ -19,8 +19,10 @@
 				</div>
 
 				<div class="box-body">
+				
 					<div class="box-body table-responsive no-padding">
-						<table class="table table-hover">
+						<div ng-if="list.length == 0">没有查询到结果</div>
+						<table class="table table-hover" ng-if="list.length > 0">
 							<tbody ng-repeat="item in viewList">
 								<tr>
 									<th>序号</th>
@@ -37,9 +39,6 @@
 									<th style="min-width: 60px;">备注</th>
 									<th style="min-width: 60px;">关键字匹配数</th>
 									<th style="min-width: 50px;">操作</th>
-								</tr>
-								<tr ng-if="list.length == 0">
-									<td colspan="14" style="text-align: center;">没有查询到结果</td>
 								</tr>
 								<tr>
 									<td>{{$index+1}}</td>
@@ -60,6 +59,7 @@
 									<td>
 		                            	<a ng-href="#/inspections/edit?id={{item.typeInspection.id}}&target=1" target="_blank" ng-if="authority=='ROLE_ADMIN'">修改</a>
 		                            	<a ng-href="#/inspections/view?id={{item.typeInspection.id}}&f={{searchField}}&kw={{searchInput.keyword}}&c={{searchInput.contentKeyword}}&v=1" target="_blank">查看</a>
+										<a href="javascript:void(0)" class="btn-link-danger" ng-click="delete(item.typeInspection.id)" ng-if="authority=='ROLE_ADMIN'">删除</a>
 									</td>
 								</tr>
 								<tr ng-if="searchInput.contentKeyword">

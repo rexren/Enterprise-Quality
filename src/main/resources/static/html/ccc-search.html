@@ -49,8 +49,9 @@
 	                            <td>{{item.organization}}</td>
 	                            <td ng-bind-html="item.remarks | highlight: keywordsList"></td>
 	                            <td>
-	                            	<div ng-if="authority=='ROLE_ADMIN'"><a ng-href="#/ccc/edit?id={{item.id}}&target=1" target="_blank">修改</a></div>
-	                            	<div><a ng-href="#/ccc/view?id={{item.id}}&f={{searchField}}&kw={{searchInput.keyword}}" target="_blank">查看</a></div>
+	                            	<a ng-href="#/ccc/edit?id={{item.id}}&target=1" ng-if="authority=='ROLE_ADMIN'" target="_blank">修改</div>
+	                            	<a ng-href="#/ccc/view?id={{item.id}}&f={{searchField}}&kw={{searchInput.keyword}}" target="_blank">查看</div>
+	                            	<a href="javascript:void(0)" class="btn-link-danger" ng-click="delete(item.id)" ng-if="authority=='ROLE_ADMIN'">删除</a>
 	                            </td>
 	                        </tr>
 							</tbody>

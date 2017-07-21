@@ -80,6 +80,41 @@ public class CccPageController {
 	}
 
 	/**
+	 * 删除单条型检数据（不包括列表）
+	 * 
+	 * @param id
+	 *            型检id
+	 * @return 操作状态
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/delete.do", method = RequestMethod.GET)
+	@ResponseBody
+	public BaseResult deleteCopyrightById(Long id) {
+		BaseResult res = new BaseResult();
+
+		if (null == id) {
+			res.setCode(RetStatus.PARAM_ILLEGAL.getCode());
+			res.setMsg(RetStatus.PARAM_ILLEGAL.getInfo());
+			return res;
+		}
+		try {
+			cccPageService.deleteCccPageById(id);
+			res.setCode(RetStatus.SUCCESS.getCode());
+			res.setMsg(RetStatus.SUCCESS.getInfo());
+		} catch (IllegalArgumentException e) {
+			logger.error("", e);
+			res.setCode(RetStatus.USER_NOT_FOUND.getCode());
+			res.setMsg(RetStatus.USER_NOT_FOUND.getInfo());
+		} catch (Exception e) {
+			logger.error("", e);
+			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+			res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+		}
+
+		return res;
+	}
+	
+	/**
 	 * 获取CCC单条数据
 	 */
 	@RequestMapping(value = "/detail.do", method = RequestMethod.GET)
@@ -123,7 +158,11 @@ public class CccPageController {
 	public BaseResult saveCccPage(HttpServletRequest request) {
 		BaseResult res = new BaseResult();
 		/* 表单验证:关键信息docNo不为空 */
-		if (StringUtils.isBlank(request.getParameter("docNo"))) {
+		if (StringUtils.isBlank(request.getParameter("docNo")) 
+				|| StringUtils.isBlank(request.getParameter("model"))
+				||StringUtils.isBlank(request.getParameter("productName"))
+				||StringUtils.isBlank(request.getParameter("awardDate"))
+				||StringUtils.isBlank(request.getParameter("expiryDate"))) {
 			res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
 			res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
 			return res;

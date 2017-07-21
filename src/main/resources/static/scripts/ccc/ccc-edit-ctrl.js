@@ -22,6 +22,7 @@ angular.module('enterprise-quality').controller('CccEditCtrl',['$scope','$rootSc
     var urlId = $location.search().id;
     if(urlId){
     	var param = {id: urlId}; 
+    	
     	$scope.isLoading = true;
     	$http.get('/ccc/detail.do',{params:param}).success(function(res) {
     		if(res.code == 0){
@@ -51,18 +52,22 @@ angular.module('enterprise-quality').controller('CccEditCtrl',['$scope','$rootSc
 	        Toastr.error("Ajax error: "+status);
 	        $scope.isLoading = false;
 	    })
+	    
 	    targetUrl = '/ccc/update.do';
     }
 
     $scope.submit = function () {
     	if ($scope.formData.docNo == '') {
         	Toastr.error('请输入文件编号');
-    	}else if($scope.formData.model == '') {
+    	} else if ($scope.formData.model == '') {
     		Toastr.error('请输入产品型号');
-    	} else if ($scope.formData.productName == '') {
-    		Toastr.error('请输入产品名称');
-        }else {
-            
+        } else if ($scope.formData.productName == '') {
+        	Toastr.error('请输入产品名称');
+        }else if (!$scope.formData.awardDate || $scope.formData.awardDate == '') {
+        	Toastr.error('请填写正确的颁发日期');
+        }else if (!$scope.formData.expiryDate || $scope.formData.expiryDate == '') {
+        	Toastr.error('请填写正确的有效日期');
+        } else {
             var params = angular.extend({},$scope.formData);
     		params['awardDate'] = Date.parse($scope.formData.awardDate);
     		params['expiryDate'] = Date.parse($scope.formData.expiryDate);

@@ -144,6 +144,48 @@ angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScop
         $scope.file = {};
         $scope.fileName = '';
     };
+    
+    /** 
+     * 删除条目
+     */
+	$scope.delete = function(itemId) {
+		// 打开弹窗
+		var modalInstance = $modal.open({
+	        animation: true,
+	        templateUrl: '/html/modal-delete.html',
+	        controller: 'deleteModalCtrl',
+	        size: 'sm',
+	        resolve: {
+	            data: function () {
+	              return itemId;
+	            }
+	          }
+	    });
+		// 弹窗在关闭的时候执行的
+		modalInstance.result.then(function () {
+			// $modalInstance.close 
+			$scope.isLoading = false;
+			$http.get('/ccc/delete.do',{params:{id:itemId}}).success(function(res){
+				if(res.code == 0){
+					Toastr.success('删除成功');
+					getList($scope.pagination.page, $scope.pagination.size);
+				}else{
+					if(res.msg){
+		        		Toastr.error(res.msg);
+		        	} else {
+		        		Toastr.error('登录过期，请刷新重新登录');
+		        		window.location.href='/login';
+		        	}
+				}
+			}).error(function(res, status, headers, config) {
+            	Toastr.error("AjaxError: "+ status);
+            	$scope.isLoading = false;
+            });
+		}, function () {
+			// $modalInstance.dismiss 
+			$scope.isLoading = false;
+		});
+    };
 
     $scope.fields = [{
         name: '全部',

@@ -146,7 +146,9 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
             $scope.fileName = '';
 		};
 		
-		// 删除条目
+		/**
+		 * 删除条目
+		 */
 		$scope.delete = function(itemId) {
 			// 打开弹窗
 			var modalInstance = $modal.open({
@@ -169,7 +171,12 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
 						Toastr.success('删除成功');
 						getList($scope.pagination.page, $scope.pagination.size);
 					}else{
-						Toastr.error('删除失败，'+res.msg);
+						if(res.msg){
+			        		Toastr.error(res.msg);
+			        	} else {
+			        		Toastr.error('登录过期，请重新登录');
+			        	}
+						$scope.isLoading = false;
 					}
 				}).error(function(res, status, headers, config) {
 	            	Toastr.error("AjaxError: "+ status);

@@ -73,6 +73,7 @@
 	                            <td>
 	                            	<a ng-href="#/copyright/edit?id={{item.id}}&target=1" target="_blank" ng-if="authority=='ROLE_ADMIN'">修改</a>
 	                            	<a ng-href="#/copyright/view?id={{item.id}}&f={{searchField}}&kw={{searchInput.keyword}}" target="_blank">查看</a>
+									<a href="javascript:void(0)" class="btn-link-danger" ng-click="delete(item.id)" ng-if="authority=='ROLE_ADMIN'">删除</a>
 								</td>
 							</tr>
 						</tbody>
