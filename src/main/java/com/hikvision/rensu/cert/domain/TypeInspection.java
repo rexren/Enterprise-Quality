@@ -89,7 +89,7 @@ public class TypeInspection implements Serializable{
     /**
      * 认证机构
      */
-    @Column(nullable = false)
+    @Column
     private String organization;
 
 	/**
