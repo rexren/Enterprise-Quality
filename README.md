@@ -1,41 +1,11 @@
-# Enterprise-Quality
-资质检索
+# Hephaestus
 
-为了我们可爱的产品经理们做的
+为了我们可爱的产品经理们做的,包括产品组件管理，功能注册、端口管控、认证等功能。
 
 [API文档位置](http://api.hikvision.com.cn/dashboard/#!/project/v1ygHEESy)
 
 ## 调试准备
-### 运行搜索引擎
 
-调试需要先启动elasticsearch 2.4.5, 建议使用docker方式启动
-
-下载
-``` bash
-docker pull hub.c.163.com/library/elasticsearch:2.4.5
-```
-
-这个版本没有安装head插件，所以先安装
-```Dockerfile
-FROM hub.c.163.com/library/elasticsearch:2.4.5
-
-WORKDIR /usr/share/elasticsearch
-
-RUN ./bin/plugin install mobz/elasticsearch-head
-
-EXPOSE 9200 9300
-ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["elasticsearch"]
-```
-运行docker
-``` bash
-docker run -d --name elas -p 9300:9300 -p 9200:9200  es
-```
-
-访问以下链接查看是否启动成功
-http://127.0.0.1:9200/_plugin/head/
-
-### 启动web服务
 
 jvm启动后访问：[http://localhost:8080](http://localhost:8080)，自动跳转至http://localhost:8080/index.html
 
