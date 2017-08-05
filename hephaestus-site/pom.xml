@@ -155,7 +155,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.hikvision.rensu.EnterpriseQualityApplication</mainClass>
+                            <mainClass>com.hikvision.ga.hephaestus.site.HephaestusSite</mainClass>
                         </manifest>
                     </archive>
                     <descriptors>

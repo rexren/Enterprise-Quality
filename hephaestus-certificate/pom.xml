@@ -9,9 +9,9 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <artifactId>hephaestus-certificate</artifactId>
     <name>hephaestus certificate</name>
     <description>hephaestus cert project</description>
     <packaging>jar</packaging>
-
 
 </project>
