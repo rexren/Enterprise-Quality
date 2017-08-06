@@ -53,6 +53,7 @@ atlassian-ide-plugin.xml
 *.ipr
 *.iws
 out
+/target
 
 # Gradle
 .gradle
