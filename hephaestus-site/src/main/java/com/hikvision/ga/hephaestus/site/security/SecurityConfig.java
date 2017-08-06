@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.config;
+package com.hikvision.ga.hephaestus.site.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -41,21 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder;
     }
-
-	/* 临时方法 运行加密算法 */
-	public static void main(String[] args) {
-		PasswordEncoder encoder = new BCryptPasswordEncoder();
-		//System.out.println(encoder.encode("ga111111"));
-		//System.out.println(encoder.encode("123456"));
-		System.out.println(encoder.encode("zhouying123456"));
-	}
-
-	/*These codes could be put in either @Autowired whateverName or @Override configure*/
-	/*@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService);
-		auth.authenticationProvider(authenticationProvider());
-	}*/
 
 	/** 定义安全策略 */
 	@Override
