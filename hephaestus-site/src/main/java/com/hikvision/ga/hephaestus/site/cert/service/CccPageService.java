@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.hikvision.ga.hephaestus.site.cert.controller.InspectionController;
+import com.hikvision.ga.hephaestus.cert.CccPage;
+import com.hikvision.ga.hephaestus.site.controller.InspectionController;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -21,7 +22,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hikvision.ga.hephaestus.site.cert.domain.CccPage;
 import com.hikvision.ga.hephaestus.site.cert.repository.CccPageRepository;
 
 @Service

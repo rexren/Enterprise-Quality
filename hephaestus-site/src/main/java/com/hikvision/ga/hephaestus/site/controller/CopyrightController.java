@@ -1,12 +1,12 @@
-package com.hikvision.ga.hephaestus.site.cert.controller;
+package com.hikvision.ga.hephaestus.site.controller;
 
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.hikvision.ga.hephaestus.site.cert.constant.RetStatus;
-import com.hikvision.ga.hephaestus.site.cert.domain.CccPage;
-import com.hikvision.ga.hephaestus.site.cert.service.CccPageService;
+import com.hikvision.ga.hephaestus.site.cert.domain.Copyright;
+import com.hikvision.ga.hephaestus.site.cert.service.CopyrightService;
 import com.hikvision.ga.hephaestus.site.cert.support.AjaxResult;
 import com.hikvision.ga.hephaestus.site.cert.support.BaseResult;
 import com.hikvision.ga.hephaestus.site.cert.support.ListContent;
@@ -25,24 +25,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
 
-/**
- * Created by rensu on 17/5/1.
- */
 @Controller
-@RequestMapping("/ccc")
-public class CccPageController {
+@RequestMapping("/copyright")
+public class CopyrightController {
+
 	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 	
-	private final static String SORTBY_AWARDDATE = "awardDate";
-	
-	@Autowired
-	private CccPageService cccPageService;
+	private final static String SORTBY_CRDATE = "crDate";
 
 	@Autowired
-	private SystemUserService systemUserService;
+	private CopyrightService copyrightService;
 	
+	@Autowired
+	private SystemUserService systemUserService;
+
 	/**
-	 * CCC列表页
+	 * 获取双证列表页
 	 * 
 	 * @param pageNum
 	 *            页码 默认为第一页
@@ -52,21 +50,21 @@ public class CccPageController {
 	 *            需要倒序排序的字段，默认为更新时间UpdateAt字段
 	 * @param direction
 	 *            <=0表示降序，>0为升序，默认为降序
-	 * @return 包含型检数据对象的返回对象
+	 * @return 包含双证数据对象的返回对象
 	 */
 	@RequestMapping(value = "/list.do", method = RequestMethod.GET)
 	@ResponseBody
-	public ListResult getCCCListByPage(Integer pageNum, Integer pageSize, String sortBy, Integer direction) {
+	public ListResult getListByPage(Integer pageNum, Integer pageSize, String sortBy, Integer direction) {
 		int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期和id倒序
+			sortBy = SORTBY_CRDATE; // 默认按照软著签发日期和id倒序
 		}
 		ListResult res = new ListResult();
 		try {
-			Page<CccPage> p = cccPageService.getCCCListByPage(pn, ps, sortBy, dir);
-			if(null != p){
+			Page<Copyright> p = copyrightService.getCopyrightByPage(pn, ps, sortBy, dir);
+			if(null!=p){
 				res.setListContent(new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
 			}
 			res.setCode(RetStatus.SUCCESS.getCode());
@@ -78,7 +76,7 @@ public class CccPageController {
 		}
 		return res;
 	}
-
+	
 	/**
 	 * 删除单条型检数据（不包括列表）
 	 * 
@@ -98,7 +96,7 @@ public class CccPageController {
 			return res;
 		}
 		try {
-			cccPageService.deleteCccPageById(id);
+			copyrightService.deleteCopyrightById(id);
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());
 		} catch (IllegalArgumentException e) {
@@ -113,22 +111,26 @@ public class CccPageController {
 
 		return res;
 	}
-	
+
 	/**
-	 * 获取CCC单条数据
+	 * 获取双证单条数据
+	 * 
+	 * @param id
+	 *            双证id
+	 * @return 包含双证数据对象的返回对象
 	 */
 	@RequestMapping(value = "/detail.do", method = RequestMethod.GET)
 	@ResponseBody
-	public AjaxResult<CccPage> getCccPage(Long id) {
-		AjaxResult<CccPage> res = new AjaxResult<CccPage>();
+	public AjaxResult<Copyright> getCopyright(Long id) {
+		AjaxResult<Copyright> res = new AjaxResult<Copyright>();
 		if (null == id) {
 			res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
 			res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
 		} else {
 			try {
-				CccPage ccc = cccPageService.getCccPageById(id);
-				if (ccc != null) {
-					res.setData(ccc);
+				Copyright c = copyrightService.getCopyrightById(id);
+				if (c != null) {
+					res.setData(c);
 					res.setCode(RetStatus.SUCCESS.getCode());
 					res.setMsg(RetStatus.SUCCESS.getInfo());
 				} else {
@@ -148,37 +150,33 @@ public class CccPageController {
 	 * 新建保存单条数据
 	 * 
 	 * @param request
-	 *            3C编辑页表单内容
+	 *            双证编辑页表单内容
 	 * @return res 返回状态
 	 * @author langyicong
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/save.do", method = RequestMethod.POST)
 	@ResponseBody
-	public BaseResult saveCccPage(HttpServletRequest request) {
+	public BaseResult saveCopyright(HttpServletRequest request) {
 		BaseResult res = new BaseResult();
-		/* 表单验证:关键信息docNo不为空 */
-		if (StringUtils.isBlank(request.getParameter("docNo")) 
-				|| StringUtils.isBlank(request.getParameter("model"))
-				||StringUtils.isBlank(request.getParameter("productName"))
-				||StringUtils.isBlank(request.getParameter("awardDate"))
-				||StringUtils.isBlank(request.getParameter("expiryDate"))) {
+		/* 表单验证:关键信息softwareName不为空 */
+		if (StringUtils.isBlank(request.getParameter("softwareName"))) {
 			res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
 			res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
 			return res;
 		}
-		/* 表单验证:docNo不能重复 */
-		String docNoStripped = StringUtils.trim(request.getParameter("docNo"));
-		if (cccPageService.findByDocNo(docNoStripped).size() > 0) {
-			res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());
-			res.setMsg(RetStatus.DOCNO_DUPLICATED.getInfo());
+		/* 表单验证:softwareName不能重复 */
+		String nameStripped = StringUtils.trim(request.getParameter("softwareName"));
+		if (copyrightService.findBySoftwareName(nameStripped).size() > 0) {
+			res.setCode(RetStatus.NAME_DUPLICATED.getCode());
+			res.setMsg(RetStatus.NAME_DUPLICATED.getInfo());
 			return res;
 		}
-		CccPage c = new CccPage();
+		Copyright c = new Copyright();
 		try {
-			/* 页面参数组装成CccPage实体 */
-			c = setCccProperties(request, c);
-			cccPageService.saveCccPage(c);
+			/* 页面参数组装成Copyright实体 */
+			c = setCopyrightProperties(request, c);
+			copyrightService.saveCopyright(c);
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());
 		} catch (Exception e) {
@@ -195,14 +193,14 @@ public class CccPageController {
 	 * 更新单条数据
 	 * 
 	 * @param request
-	 *            CCC编辑页表单内容
+	 *            双证编辑页表单内容
 	 * @return res 返回状态
 	 * @author langyicong
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/update.do", method = RequestMethod.POST)
 	@ResponseBody
-	public BaseResult updateCccPage(HttpServletRequest request) {
+	public BaseResult updateCopyright(HttpServletRequest request) {
 		BaseResult res = new BaseResult();
 		/* if null id or null entity */
 		if (null == request || StringUtils.isBlank(request.getParameter("id"))) {
@@ -210,27 +208,27 @@ public class CccPageController {
 			res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
 			return res;
 		}
+
 		/* 查询对应的实体，并且将页面数据更新实体内容 */
 		Long requestId = NumberUtils.toLong(request.getParameter("id"));
-		CccPage c = null;
+		Copyright c = null;
 		try {
-			c = cccPageService.getCccPageById(requestId);
+			c = copyrightService.getCopyrightById(requestId);
 			if (null == c) {
 				res.setCode(RetStatus.ITEM_NOT_FOUND.getCode());
 				res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
 				return res;
 			}
-			// 编辑后docNo无重复
-			String docNoStripped = StringUtils.trim(request.getParameter("docNo"));
-			if (cccPageService.findByDocNo(docNoStripped).size() > 0
-					&& !StringUtils.equals(c.getDocNo(), docNoStripped)) {
-				res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());
-				res.setMsg(RetStatus.DOCNO_DUPLICATED.getInfo());
+			// 编辑后softwareName无重复
+			String nameStripped = StringUtils.trim(request.getParameter("softwareName"));
+			if (copyrightService.findBySoftwareName(nameStripped).size() > 0
+					&& !StringUtils.equals(c.getSoftwareName(), nameStripped)) {
+				res.setCode(RetStatus.NAME_DUPLICATED.getCode());
+				res.setMsg(RetStatus.NAME_DUPLICATED.getInfo());
 				return res;
 			}
-			;
-			c = setCccProperties(request, c);
-			cccPageService.saveCccPage(c);
+			c = setCopyrightProperties(request, c);
+			copyrightService.saveCopyright(c);
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());
 		} catch (Exception e) {
@@ -243,42 +241,60 @@ public class CccPageController {
 	}
 
 	/**
-	 * 将HttpServletRequest请求体（页面参数）组装成CccPage实体
+	 * 将HttpServletRequest请求体（页面参数）组装成Copyright实体
 	 * 
 	 * @param request
 	 *            页面表单数据
 	 * @param c
-	 *            初始的CccPage实体，可为空（新建）或者含id（更新）
-	 * @return c 转换后的CccPage实体，不包括创建时间
+	 *            初始的Copyright实体，可为空（新建）或者含id（更新）
+	 * @return c 转换后的Copyright实体，不包括创建时间
 	 * @throws Exception
 	 */
-	private CccPage setCccProperties(HttpServletRequest request, CccPage c) throws Exception {
+	private Copyright setCopyrightProperties(HttpServletRequest request, Copyright c) throws Exception {
 		if (null == c) {
-			c = new CccPage();
+			c = new Copyright();
 		}
 		/* 新建 */
 		if (null == c.getId() || c.getId() < 0) {
 			c.setCreateDate(new Date());
 		}
 		/* setXxxxDate */
-		c.setExpiryDate(NumberUtils.toLong(request.getParameter("expiryDate")) > 0
-				? new Date(NumberUtils.toLong(request.getParameter("expiryDate"))) : null);
-		c.setAwardDate(NumberUtils.toLong(request.getParameter("awardDate")) > 0
-				? new Date(NumberUtils.toLong(request.getParameter("awardDate"))) : null);
+		c.setCrDate(NumberUtils.toLong(request.getParameter("crDate")) > 0
+				? new Date(NumberUtils.toLong(request.getParameter("crDate"))) : null);
+		c.setRgDate(NumberUtils.toLong(request.getParameter("rgDate")) > 0
+				? new Date(NumberUtils.toLong(request.getParameter("rgDate"))) : null);
+		c.setRgExpiryDate(NumberUtils.toLong(request.getParameter("rgExpiryDate")) > 0
+				? new Date(NumberUtils.toLong(request.getParameter("rgExpiryDate"))) : null);
+		c.setEpDate(NumberUtils.toLong(request.getParameter("epDate")) > 0
+				? new Date(NumberUtils.toLong(request.getParameter("epDate"))) : null);
+		c.setCdDate(NumberUtils.toLong(request.getParameter("cdDate")) > 0
+				? new Date(NumberUtils.toLong(request.getParameter("cdDate"))) : null);
 		c.setUpdateDate(new Date());
 		/* set other properties */
-		c.setDocNo(StringUtils.trim(request.getParameter("docNo")));
-		c.setProductName(StringUtils.trim(request.getParameter("productName")));
+		c.setSoftwareName(StringUtils.trim(request.getParameter("softwareName")));
+		c.setAbbreviation(StringUtils.trim(request.getParameter("abbreviation")));
+		c.setCrNo(StringUtils.trim(request.getParameter("crNo")));
+		c.setCrUrl(StringUtils.trim(request.getParameter("crUrl")));
+		c.setCrOrganization(StringUtils.trim(request.getParameter("crOrganization")));
+		c.setCrSoftwareType(StringUtils.trim(request.getParameter("crSoftwareType")));
+		c.setRgNo(StringUtils.trim(request.getParameter("rgNo")));
+		c.setRgUrl(StringUtils.trim(request.getParameter("rgUrl")));
+		c.setRgOrganization(StringUtils.trim(request.getParameter("rgOrganization")));
+		c.setEpNo(StringUtils.trim(request.getParameter("epNo")));
+		c.setEpUrl(StringUtils.trim(request.getParameter("epUrl")));
+		c.setEpOrganization(StringUtils.trim(request.getParameter("epOrganization")));
+		c.setCdNo(StringUtils.trim(request.getParameter("cdNo")));
+		c.setCdUrl(StringUtils.trim(request.getParameter("cdUrl")));
+		c.setCdOrganization(StringUtils.trim(request.getParameter("cdOrganization")));
 		c.setModel(StringUtils.trim(request.getParameter("model")));
-		c.setOrganization(StringUtils.trim(request.getParameter("organization")));
-		c.setRemarks(StringUtils.trim(request.getParameter("remarks")));
-		c.setUrl(StringUtils.trim(request.getParameter("url")));
+		c.setCharge(StringUtils.trim(request.getParameter("charge")));
 		c.setOperator(systemUserService.getCurrentUsername());
+
 		return c;
 	}
 
 	/**
-	 * 关键词搜索CCC列表
+	 * 关键词搜索Copyright列表
 	 * 
 	 * @param pageNum
 	 *            页码 默认为第一页
@@ -288,17 +304,17 @@ public class CccPageController {
 	 *            需要倒序排序的字段，默认为更新时间UpdateAt字段
 	 * @param direction
 	 *            <=0表示降序，>0为升序，默认为降序
-	 * @return 包含搜索结果的返回对象
+	 * @return 包含搜索结果的的返回对象
 	 */
 	@RequestMapping(value = "/search.do", method = RequestMethod.GET)
 	@ResponseBody
-	public ListResult searchCCC(Integer field, String keyword, Integer pageNum, Integer pageSize, String sortBy,
+	public ListResult searchCopyright(Integer field, String keyword, Integer pageNum, Integer pageSize, String sortBy,
 			Integer direction) {
 		int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
 		int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
 		int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
 		if (StringUtils.isBlank(sortBy)) {
-			sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期倒序
+			sortBy = SORTBY_CRDATE; // 默认按照软著签发日期和id倒序
 		}
 		String fieldName;
 		if (field == null) {
@@ -306,16 +322,25 @@ public class CccPageController {
 		} else {
 			switch (field) {
 			case 1:
-				fieldName = "docNo";
+				fieldName = "softwareName";
 				break;
 			case 2:
-				fieldName = "model";
+				fieldName = "abbreviation";
 				break;
 			case 3:
-				fieldName = "productName";
+				fieldName = "model";
 				break;
 			case 4:
-				fieldName = "remarks";
+				fieldName = "crNo";
+				break;
+			case 5:
+				fieldName = "rgNo";
+				break;
+			case 6:
+				fieldName = "epNo";
+				break;
+			case 7:
+				fieldName = "cdNo";
 				break;
 			default:
 				fieldName = "";
@@ -330,9 +355,10 @@ public class CccPageController {
 		String[] keywordList = StringUtils.split(keyword);
 		ListResult res = new ListResult();
 		try {
-			Page<CccPage> p = cccPageService.searchCccByPage(fieldName, keywordList, pn, ps, sortBy, dir);
+			Page<Copyright> p = copyrightService.searchCopyrightByPage(fieldName, keywordList, pn, ps, sortBy, dir);
 			if(null != p){
-				res.setListContent(new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
+			res.setListContent(
+				new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
 			}
 			res.setCode(RetStatus.SUCCESS.getCode());
 			res.setMsg(RetStatus.SUCCESS.getInfo());

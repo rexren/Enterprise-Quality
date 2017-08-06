@@ -9,18 +9,14 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>hephaestus-certificate</artifactId>
-    <name>hephaestus certificate</name>
+    <artifactId>hephaestus-common</artifactId>
+    <name>hephaestus common lib module</name>
     <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 
-    <description>hephaestus cert project</description>
+    <description></description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
 
     </dependencies>
 

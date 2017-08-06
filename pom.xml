@@ -18,9 +18,10 @@
     </parent>
 
     <modules>
-        <module>hephaestus-site</module>
+        <module>hephaestus-common</module>
         <module>hephaestus-product</module>
         <module>hephaestus-certificate</module>
+        <module>hephaestus-site</module>
     </modules>
 
     <properties>

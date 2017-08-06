@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.domain;
+package com.hikvision.ga.hephaestus.cert;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -6,7 +6,8 @@ import java.util.Date;
 
 /**
  * CCC认证
- * Created by SherryLang on 25/5/25.
+ * Created by SherryLang
+ * on 25/5/25.
  */
 @Entity
 public class CccPage implements Serializable{
@@ -26,7 +27,7 @@ public class CccPage implements Serializable{
 	/**	
 	 * 文件编号  
 	 */
-	@Column (nullable = false)
+	@Column(nullable = false)
 	private String docNo;
 	
 	/**

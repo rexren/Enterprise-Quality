@@ -25,6 +25,5 @@ public class Component implements Serializable {
     private String abbreviaion;
     //版本
     private String version;
-    //包含的组件
-    private List<Component>  components;
+
 }

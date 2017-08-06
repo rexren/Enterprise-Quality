@@ -11,7 +11,7 @@
 
     <artifactId>hephaestus-product</artifactId>
     <packaging>jar</packaging>
-
+    <version>${project.parent.version}</version>
     <name>hephaestus product</name>
 
     <description>hephaestus product project</description>

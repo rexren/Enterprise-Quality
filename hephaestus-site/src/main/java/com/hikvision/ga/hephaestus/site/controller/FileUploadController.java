@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.controller;
+package com.hikvision.ga.hephaestus.site.controller;
 
 import java.io.IOException;
 import java.io.InputStream;

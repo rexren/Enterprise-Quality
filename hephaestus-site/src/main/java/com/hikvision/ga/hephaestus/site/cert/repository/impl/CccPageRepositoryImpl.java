@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import com.hikvision.ga.hephaestus.site.cert.domain.CccPage;
+import com.hikvision.ga.hephaestus.cert.CccPage;
 import com.hikvision.ga.hephaestus.site.cert.repository.CccPageRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;

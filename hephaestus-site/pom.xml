@@ -20,12 +20,12 @@
         <dependency>
             <groupId>com.hikvision.ga</groupId>
             <artifactId>hephaestus-product</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.hikvision.ga</groupId>
             <artifactId>hephaestus-certificate</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -165,7 +165,7 @@
                 <!--<configuration>-->
                     <!--<archive>-->
                         <!--<manifest>-->
-                            <!--<mainClass>com.hikvision.ga.hephaestus.site.HephaestusSite</mainClass>-->
+                            <!--<mainClass>com.hikvision.ga.hephaestus.HephaestusSite</mainClass>-->
                         <!--</manifest>-->
                     <!--</archive>-->
                     <!--<descriptors>-->
