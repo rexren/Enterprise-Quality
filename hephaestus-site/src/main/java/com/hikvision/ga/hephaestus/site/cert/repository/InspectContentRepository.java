@@ -2,7 +2,7 @@ package com.hikvision.ga.hephaestus.site.cert.repository;
 
 import java.util.List;
 
-import com.hikvision.ga.hephaestus.site.cert.domain.InspectContent;
+import com.hikvision.ga.hephaestus.cert.InspectContent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 

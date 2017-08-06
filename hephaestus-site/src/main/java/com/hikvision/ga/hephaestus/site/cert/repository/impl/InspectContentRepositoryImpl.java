@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import com.hikvision.ga.hephaestus.site.cert.domain.InspectContent;
+import com.hikvision.ga.hephaestus.cert.InspectContent;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -11,6 +11,7 @@ public interface BasicDAO {
 
 	/**
 	 * 通过SimpleJpaRepository的em属性，反射获取EntityManager的实例
+	 * TODO:这个有问题，不应该用这样的方式写代码
 	 * 
 	 * @return
 	 */

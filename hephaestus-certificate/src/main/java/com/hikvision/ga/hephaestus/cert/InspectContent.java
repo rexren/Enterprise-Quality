@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.domain;
+package com.hikvision.ga.hephaestus.cert;
 
 import java.io.Serializable;
 

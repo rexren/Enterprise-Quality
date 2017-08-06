@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.hikvision.ga.hephaestus.site.cert.domain.InspectContent;
-import com.hikvision.ga.hephaestus.site.cert.domain.TypeInspection;
+import com.hikvision.ga.hephaestus.cert.InspectContent;
+import com.hikvision.ga.hephaestus.cert.TypeInspection;
 import com.hikvision.ga.hephaestus.site.cert.repository.InspectContentRepository;
 import com.hikvision.ga.hephaestus.site.cert.support.typeSearchResult;
 import org.apache.commons.lang3.StringUtils;

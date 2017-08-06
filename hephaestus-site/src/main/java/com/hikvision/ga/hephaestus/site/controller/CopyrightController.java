@@ -5,7 +5,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import com.hikvision.ga.hephaestus.site.cert.constant.RetStatus;
-import com.hikvision.ga.hephaestus.site.cert.domain.Copyright;
+import com.hikvision.ga.hephaestus.cert.Copyright;
 import com.hikvision.ga.hephaestus.site.cert.service.CopyrightService;
 import com.hikvision.ga.hephaestus.site.cert.support.AjaxResult;
 import com.hikvision.ga.hephaestus.site.cert.support.BaseResult;

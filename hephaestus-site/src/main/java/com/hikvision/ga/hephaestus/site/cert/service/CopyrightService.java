@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.hikvision.ga.hephaestus.site.cert.domain.Copyright;
+import com.hikvision.ga.hephaestus.cert.Copyright;
 import com.hikvision.ga.hephaestus.site.cert.repository.CopyrightRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;

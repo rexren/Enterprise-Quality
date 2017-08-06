@@ -2,7 +2,7 @@ package com.hikvision.ga.hephaestus.site.cert.repository;
 
 import java.util.List;
 
-import com.hikvision.ga.hephaestus.site.cert.domain.TypeInspection;
+import com.hikvision.ga.hephaestus.cert.TypeInspection;
 import com.hikvision.ga.hephaestus.site.cert.repository.base.BasicDAO;
 import com.hikvision.ga.hephaestus.site.cert.support.typeSearchResult;
 import org.springframework.data.jpa.repository.JpaRepository;

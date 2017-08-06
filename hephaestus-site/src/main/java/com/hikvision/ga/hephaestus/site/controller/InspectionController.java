@@ -34,8 +34,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.hikvision.ga.hephaestus.site.cert.constant.RetStatus;
-import com.hikvision.ga.hephaestus.site.cert.domain.InspectContent;
-import com.hikvision.ga.hephaestus.site.cert.domain.TypeInspection;
+import com.hikvision.ga.hephaestus.cert.InspectContent;
+import com.hikvision.ga.hephaestus.cert.TypeInspection;
 import com.hikvision.ga.hephaestus.site.cert.service.InspectContentService;
 import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
 import com.hikvision.ga.hephaestus.site.cert.service.TypeInspectionService;
