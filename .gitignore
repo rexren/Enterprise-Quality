@@ -31,7 +31,6 @@ work/
 hs_err_pid*
 
 
-
 # Eclipse
 # > the following should be created by `./gradlew eclipse`
 .classpath
@@ -64,4 +63,5 @@ build
 # jspm
 jspm_packages/
 npm-debug.log
-/target/
+*/target/
+*/node_modules/
