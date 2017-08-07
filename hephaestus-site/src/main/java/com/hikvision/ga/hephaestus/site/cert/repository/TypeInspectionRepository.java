@@ -2,17 +2,17 @@ package com.hikvision.ga.hephaestus.site.cert.repository;
 
 import java.util.List;
 
-import com.hikvision.ga.hephaestus.cert.TypeInspection;
-import com.hikvision.ga.hephaestus.site.cert.repository.base.BasicDAO;
-import com.hikvision.ga.hephaestus.site.cert.support.typeSearchResult;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+
+import com.hikvision.ga.hephaestus.cert.TypeInspection;
+import com.hikvision.ga.hephaestus.site.cert.support.typeSearchResult;
 
 /**
  * Created by rensu on 2017/4/22.
  */
 @NoRepositoryBean
-public interface TypeInspectionRepository extends JpaRepository<TypeInspection, Long>, BasicDAO {
+public interface TypeInspectionRepository extends JpaRepository<TypeInspection, Long> {
 	
 	public List<TypeInspection> findByDocNo(String docNo);
 

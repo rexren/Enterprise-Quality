@@ -48,6 +48,7 @@ atlassian-ide-plugin.xml
 
 # IDEA
 .idea
+*/.idea
 *.iml
 *.ipr
 *.iws
@@ -64,4 +65,4 @@ build
 jspm_packages/
 npm-debug.log
 */target/
-*/node_modules/
+node_modules
