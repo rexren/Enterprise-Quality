@@ -20,7 +20,8 @@ import com.hikvision.ga.hephaestus.site.cert.domain.SystemUser;
 import com.hikvision.ga.hephaestus.site.cert.domain.UserRole;
 import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
 import com.hikvision.ga.hephaestus.site.cert.service.UserRoleService;
-import com.hikvision.ga.hephaestus.site.cert.support.UserResult;
+import com.hikvision.ga.hephaestus.site.controller.vo.UserResult;
+import com.hikvision.ga.hephaestus.site.logger.OperationLogIgnore;
 
 /**
  * Created by rensu on 17/4/1.
@@ -28,82 +29,87 @@ import com.hikvision.ga.hephaestus.site.cert.support.UserResult;
 @Controller
 public class HomeController {
 
-	private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
+  private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 
-	@Autowired
-	private SystemUserService systemUserService;
+  @Autowired
+  private SystemUserService systemUserService;
 
-	@Autowired
-	private UserRoleService userRoleService;
+  @Autowired
+  private UserRoleService userRoleService;
 
-	/**
-	 * 默认登陆页面
-	 * 
-	 * @param
-	 * @return 登录页
-	 */
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String login() {
-		return "login";
-	}
+  /**
+   * 默认登陆页面
+   * 
+   * @param
+   * @return 登录页
+   */
+  @OperationLogIgnore
+  @RequestMapping(value = "/login", method = RequestMethod.GET)
+  public String login() {
+    return "login";
+  }
 
-	/**
-	 * 默认登陆成功页面
-	 * 
-	 * @param
-	 * @return 登录页
-	 */
-	@RequestMapping("/login-success")
-	public String successLogin() {
-		return "redirect:/index.html";
-	}
+  /**
+   * 默认登陆成功页面
+   * 
+   * @param
+   * @return 登录页
+   */
+  @OperationLogIgnore
+  @RequestMapping("/login-success")
+  public String successLogin() {
+    // TODO 写日志
+    return "redirect:/index.html";
+  }
 
-	/**
-	 * 获取当前用户
-	 * 
-	 * @param request
-	 * @return user
-	 */
-	@ResponseBody
-	@RequestMapping("/user")
-	public UserResult user(Principal user) {
-		UserResult res = new UserResult();
-		res.setName(user.getName());
-		SystemUser sysUser;
-		try {
-			sysUser = systemUserService.findByName(user.getName()).get(0);
-			if (sysUser == null) {
-				res.setCode(RetStatus.USER_NOT_FOUND.getCode());
-				res.setMsg(RetStatus.USER_NOT_FOUND.getInfo());
-			} else {
-				List<UserRole> roleList = userRoleService.getRoleByUserId(sysUser.getId());
-				List<String> roles = new ArrayList<String>();
-				for (int i = 0; i < roleList.size(); i++) {
-					roles.add(roleList.get(i).getRole());
-				}
-				res.setRoles(roles);
-				res.setId(sysUser.getId());
-				res.setCode(RetStatus.SUCCESS.getCode());
-				res.setMsg(RetStatus.SUCCESS.getInfo());
-			}
-		} catch (Exception e) {
-			logger.error("",e);
-			res.setCode(RetStatus.SYSTEM_ERROR.getCode());
-			res.setMsg(e.getMessage());
-		}
-		return res;
-	}
+  /**
+   * 获取当前用户
+   * 
+   * @param request
+   * @return user
+   */
+  @OperationLogIgnore
+  @ResponseBody
+  @RequestMapping("/user")
+  public UserResult user(Principal user) {
+    UserResult res = new UserResult();
+    res.setName(user.getName());
+    SystemUser sysUser;
+    try {
+      sysUser = systemUserService.findByName(user.getName()).get(0);
+      if (sysUser == null) {
+        res.setCode(RetStatus.USER_NOT_FOUND.getCode());
+        res.setMsg(RetStatus.USER_NOT_FOUND.getInfo());
+      } else {
+        List<UserRole> roleList = userRoleService.getRoleByUserId(sysUser.getId());
+        List<String> roles = new ArrayList<String>();
+        for (int i = 0; i < roleList.size(); i++) {
+          roles.add(roleList.get(i).getRole());
+        }
+        res.setRoles(roles);
+        res.setId(sysUser.getId());
+        res.setCode(RetStatus.SUCCESS.getCode());
+        res.setMsg(RetStatus.SUCCESS.getInfo());
+      }
+    } catch (Exception e) {
+      logger.error("", e);
+      res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+      res.setMsg(e.getMessage());
+    }
+    return res;
+  }
 
-	/**
-	 * 默认登出页面
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping(value = "/logout")
-	public String doLogout(HttpServletRequest request, HttpServletResponse response) {
-		return "logout";
-	}
+  /**
+   * 默认登出页面
+   * 
+   * @param request
+   * @param response
+   * @return
+   */
+  @RequestMapping(value = "/logout")
+  public String doLogout(HttpServletRequest request, HttpServletResponse response) {
+    //TODO 写日志
+    return "logout";
+  }
 
 }

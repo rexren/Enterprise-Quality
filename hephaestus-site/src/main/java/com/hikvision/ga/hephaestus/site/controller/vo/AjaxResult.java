@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.support;
+package com.hikvision.ga.hephaestus.site.controller.vo;
 
 public class AjaxResult<T> extends BaseResult{
 	private T data;

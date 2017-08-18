@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.support;
+package com.hikvision.ga.hephaestus.site.controller.vo;
 
 import java.util.List;
 

@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hikvision.ga.hephaestus.site.cert.constant.RetStatus;
 import com.hikvision.ga.hephaestus.site.cert.service.CopyrightService;
 import com.hikvision.ga.hephaestus.site.cert.service.TypeInspectionService;
-import com.hikvision.ga.hephaestus.site.cert.support.ImportResult;
+import com.hikvision.ga.hephaestus.site.controller.vo.ImportResult;
 
 /**
  * 由于导入文件并没有区分类型，所以其实正确的做法应该在一个新的类中导入 Created by rensu on 2017/5/28.
@@ -34,63 +34,72 @@ import com.hikvision.ga.hephaestus.site.cert.support.ImportResult;
 @RequestMapping("/fileupload")
 public class FileUploadController {
 
-	static private final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
+  static private final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
-	@Autowired
-	private TypeInspectionService typeInspectionService;
-	
-	@Autowired
-	private CopyrightService copyrightService;
-	
-	@Autowired
-	private CccPageService cccPageService;
+  @Autowired
+  private TypeInspectionService typeInspectionService;
 
-	@RequestMapping(value = "/indexlist.do", method = RequestMethod.POST)
-	@ResponseBody
-	public ImportResult saveIndexList(@RequestBody MultipartFile file) {
+  @Autowired
+  private CopyrightService copyrightService;
 
-		if (null == file || file.isEmpty()) {
-			return new ImportResult(RetStatus.FILE_EMPTY.getCode(), RetStatus.FILE_EMPTY.getInfo(),0,0,0);
-		} else {
-			InputStream xlsxFile = null;
-			int numOfInpections = 0;
-			int numOfCopyRight = 0;
-			int numOf3C = 0;
-			/*
-			 * Test excel Encryption & handle exceptions
-			 */
-			try {
-				Workbook workbook = WorkbookFactory.create(file.getInputStream());
-				for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-					if (StringUtils.contains(workbook.getSheetName(i), "公检")) {
-						numOfInpections = typeInspectionService.importInspectionSheet(workbook.getSheetAt(i));
-					} else if (StringUtils.contains(workbook.getSheetName(i), "双证")) {
-						numOfCopyRight = copyrightService.importCopyRightSheet(workbook.getSheetAt(i));
-					} else if (StringUtils.contains(workbook.getSheetName(i), "3C")) {
-						numOf3C = cccPageService.importCCCSheet(workbook.getSheetAt(i));
-					}
-				}
-				return new ImportResult(RetStatus.SUCCESS.getCode(), RetStatus.SUCCESS.getInfo(), numOfInpections, numOfCopyRight, numOf3C);
-			} catch (IOException e) {
-				logger.error("", e);
-				return StringUtils.contains(e.getMessage(), "EncryptionInfo")
-						? new ImportResult(RetStatus.FILE_ENCYPTED.getCode(), RetStatus.FILE_ENCYPTED.getInfo())
-						: new ImportResult(RetStatus.FILE_PARSING_ERROR.getCode(), RetStatus.FILE_PARSING_ERROR.getInfo());
-			} catch (EncryptedDocumentException | InvalidFormatException e) {
-				logger.error("", e);
-				return new ImportResult(RetStatus.FILE_INVALID.getCode(), RetStatus.FILE_INVALID.getInfo());
-			} catch (Exception e) {
-				logger.error("", e);
-				if(StringUtils.contains(e.getCause().getCause().toString(), "duplicate")){
-					String cause = e.getCause().getCause().toString().toString();
-					return new ImportResult(RetStatus.DOCNO_DUPLICATED.getCode(),cause.substring(cause.indexOf("详细")+3));
-				}
-				return new ImportResult(RetStatus.FILE_PARSING_ERROR.getCode(), RetStatus.FILE_PARSING_ERROR.getInfo());
-			} finally {
-				IOUtils.closeQuietly(xlsxFile);
-			}
-		}
-	}
+  @Autowired
+  private CccPageService cccPageService;
+
+  /**
+   * 上传资质列表（公检、双证、3C等）
+   */
+  @RequestMapping(value = "/indexlist.do", method = RequestMethod.POST)
+  @ResponseBody
+  public ImportResult saveIndexList(@RequestBody MultipartFile file) {
+
+    // TODO 写日志
+    if (null == file || file.isEmpty()) {
+      return new ImportResult(RetStatus.FILE_EMPTY.getCode(), RetStatus.FILE_EMPTY.getInfo(), 0, 0,
+          0);
+    } else {
+      InputStream xlsxFile = null;
+      int numOfInpections = 0;
+      int numOfCopyRight = 0;
+      int numOf3C = 0;
+      /*
+       * Test excel Encryption & handle exceptions
+       */
+      try {
+        Workbook workbook = WorkbookFactory.create(file.getInputStream());
+        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+          if (StringUtils.contains(workbook.getSheetName(i), "公检")) {
+            numOfInpections = typeInspectionService.importInspectionSheet(workbook.getSheetAt(i));
+          } else if (StringUtils.contains(workbook.getSheetName(i), "双证")) {
+            numOfCopyRight = copyrightService.importCopyRightSheet(workbook.getSheetAt(i));
+          } else if (StringUtils.contains(workbook.getSheetName(i), "3C")) {
+            numOf3C = cccPageService.importCCCSheet(workbook.getSheetAt(i));
+          }
+        }
+        return new ImportResult(RetStatus.SUCCESS.getCode(), RetStatus.SUCCESS.getInfo(),
+            numOfInpections, numOfCopyRight, numOf3C);
+      } catch (IOException e) {
+        logger.error("", e);
+        return StringUtils.contains(e.getMessage(), "EncryptionInfo")
+            ? new ImportResult(RetStatus.FILE_ENCYPTED.getCode(), RetStatus.FILE_ENCYPTED.getInfo())
+            : new ImportResult(RetStatus.FILE_PARSING_ERROR.getCode(),
+                RetStatus.FILE_PARSING_ERROR.getInfo());
+      } catch (EncryptedDocumentException | InvalidFormatException e) {
+        logger.error("", e);
+        return new ImportResult(RetStatus.FILE_INVALID.getCode(), RetStatus.FILE_INVALID.getInfo());
+      } catch (Exception e) {
+        logger.error("", e);
+        if (StringUtils.contains(e.getCause().getCause().toString(), "duplicate")) {
+          String cause = e.getCause().getCause().toString().toString();
+          return new ImportResult(RetStatus.DOCNO_DUPLICATED.getCode(),
+              cause.substring(cause.indexOf("详细") + 3));
+        }
+        return new ImportResult(RetStatus.FILE_PARSING_ERROR.getCode(),
+            RetStatus.FILE_PARSING_ERROR.getInfo());
+      } finally {
+        IOUtils.closeQuietly(xlsxFile);
+      }
+    }
+  }
 
 
 }

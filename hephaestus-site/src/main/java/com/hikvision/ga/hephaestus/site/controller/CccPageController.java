@@ -7,10 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.hikvision.ga.hephaestus.cert.CccPage;
 import com.hikvision.ga.hephaestus.site.cert.constant.RetStatus;
 import com.hikvision.ga.hephaestus.site.cert.service.CccPageService;
-import com.hikvision.ga.hephaestus.site.cert.support.AjaxResult;
-import com.hikvision.ga.hephaestus.site.cert.support.BaseResult;
-import com.hikvision.ga.hephaestus.site.cert.support.ListContent;
-import com.hikvision.ga.hephaestus.site.cert.support.ListResult;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -24,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
+import com.hikvision.ga.hephaestus.site.controller.vo.AjaxResult;
+import com.hikvision.ga.hephaestus.site.controller.vo.BaseResult;
+import com.hikvision.ga.hephaestus.site.controller.vo.ListContent;
+import com.hikvision.ga.hephaestus.site.controller.vo.ListResult;
 
 /**
  * Created by rensu on 17/5/1.

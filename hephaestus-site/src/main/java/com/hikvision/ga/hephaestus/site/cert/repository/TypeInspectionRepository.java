@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import com.hikvision.ga.hephaestus.cert.TypeInspection;
-import com.hikvision.ga.hephaestus.site.cert.support.typeSearchResult;
+import com.hikvision.ga.hephaestus.site.controller.vo.typeSearchResult;
 
 /**
  * Created by rensu on 2017/4/22.

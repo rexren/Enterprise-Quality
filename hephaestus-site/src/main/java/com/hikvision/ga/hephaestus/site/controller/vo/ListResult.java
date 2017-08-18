@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.support;
+package com.hikvision.ga.hephaestus.site.controller.vo;
 
 public class ListResult extends BaseResult {
 	private ListContent list; //返回的数据内容

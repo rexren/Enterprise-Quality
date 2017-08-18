@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.support;
+package com.hikvision.ga.hephaestus.site.controller.vo;
 
 /**
  * Created by rensu on 2017/5/28.

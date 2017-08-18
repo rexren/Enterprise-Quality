@@ -11,13 +11,14 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import com.hikvision.ga.hephaestus.cert.TypeInspection;
-import com.hikvision.ga.hephaestus.site.cert.support.typeSearchResult;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.hikvision.ga.hephaestus.site.cert.repository.TypeInspectionRepository;
+import com.hikvision.ga.hephaestus.site.controller.vo.typeSearchResult;
 
 @Repository
 public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspection, Long>
