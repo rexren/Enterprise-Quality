@@ -130,7 +130,7 @@ public class InspectionController {
     try {
       TypeInspection t = typeInspectionService.getTypeInspectionById(id);
       OperationLogBuilder.build().operateObjectKeys("id,model,name")
-      .operateObjectValues(t.getId().toString() + "," + t.getModel().toString() + "," + t.getName().toString());
+        .operateObjectValues(t.getId().toString() + "," + t.getModel().toString() + "," + t.getName().toString());
       typeInspectionService.deleteTypeInspectionById(id);
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
@@ -139,12 +139,12 @@ public class InspectionController {
       logger.error("", e);
       res.setCode(RetStatus.USER_NOT_FOUND.getCode());
       res.setMsg(RetStatus.USER_NOT_FOUND.getInfo());
-      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.PARAM_ILLEGAL.getCode()).log();
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.USER_NOT_FOUND.getCode()).log();
     } catch (Exception e) {
       logger.error("", e);
       res.setCode(RetStatus.SYSTEM_ERROR.getCode());
       res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
-      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.PARAM_ILLEGAL.getCode()).log();
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.SYSTEM_ERROR.getCode()).log();
     }
 
     return res;
