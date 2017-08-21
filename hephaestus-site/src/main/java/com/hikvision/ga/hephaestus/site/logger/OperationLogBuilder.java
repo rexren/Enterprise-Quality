@@ -31,8 +31,8 @@ public class OperationLogBuilder {
       return this;
     }
 
-    public Builder operateObjectType(String operateObjectType) {
-      operationLog.setOperateObjectType(operateObjectType);
+    public Builder businessType(String businessType) {
+      operationLog.setBusinessType(businessType);
       return this;
     }
 

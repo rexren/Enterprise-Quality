@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hikvision.ga.hephaestus.site.cert.constant.RetStatus;
-import com.hikvision.ga.hephaestus.site.cert.domain.SystemUser;
-import com.hikvision.ga.hephaestus.site.cert.domain.UserRole;
-import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
-import com.hikvision.ga.hephaestus.site.cert.service.UserRoleService;
 import com.hikvision.ga.hephaestus.site.controller.vo.UserResult;
 import com.hikvision.ga.hephaestus.site.logger.OperationLogIgnore;
+import com.hikvision.ga.hephaestus.site.security.domain.SystemUser;
+import com.hikvision.ga.hephaestus.site.security.domain.UserRole;
+import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
+import com.hikvision.ga.hephaestus.site.security.service.UserRoleService;
 
 /**
  * Created by rensu on 17/4/1.
@@ -106,6 +106,7 @@ public class HomeController {
    * @param response
    * @return
    */
+  @OperationLogIgnore
   @RequestMapping(value = "/logout")
   public String doLogout(HttpServletRequest request, HttpServletResponse response) {
     //TODO 写日志

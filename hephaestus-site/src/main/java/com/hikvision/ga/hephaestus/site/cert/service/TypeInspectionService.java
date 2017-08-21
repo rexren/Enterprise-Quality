@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hikvision.ga.hephaestus.site.cert.repository.TypeInspectionRepository;
 import com.hikvision.ga.hephaestus.site.controller.vo.typeSearchResult;
+import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
 
 /**
  * Created by rensu on 17/4/21.
@@ -43,11 +44,6 @@ public class TypeInspectionService {
 	
 	@Autowired
 	private SystemUserService systemUserService;
-	
-	/*@Autowired
-	private UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
-		    .getAuthentication()
-		    .getPrincipal();*/
 	
 	@Autowired
 	private InspectContentService inspectContentService;

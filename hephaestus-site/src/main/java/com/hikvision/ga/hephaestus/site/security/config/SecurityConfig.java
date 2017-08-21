@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.security;
+package com.hikvision.ga.hephaestus.site.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

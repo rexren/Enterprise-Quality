@@ -20,11 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
 import com.hikvision.ga.hephaestus.site.controller.vo.AjaxResult;
 import com.hikvision.ga.hephaestus.site.controller.vo.BaseResult;
 import com.hikvision.ga.hephaestus.site.controller.vo.ListContent;
 import com.hikvision.ga.hephaestus.site.controller.vo.ListResult;
+import com.hikvision.ga.hephaestus.site.logger.OperationLogIgnore;
+import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
 
 @Controller
 @RequestMapping("/copyright")
@@ -53,6 +54,7 @@ public class CopyrightController {
 	 *            <=0表示降序，>0为升序，默认为降序
 	 * @return 包含双证数据对象的返回对象
 	 */
+	@OperationLogIgnore
 	@RequestMapping(value = "/list.do", method = RequestMethod.GET)
 	@ResponseBody
 	public ListResult getListByPage(Integer pageNum, Integer pageSize, String sortBy, Integer direction) {

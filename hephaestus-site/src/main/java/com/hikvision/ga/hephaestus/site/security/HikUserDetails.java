@@ -3,12 +3,12 @@ package com.hikvision.ga.hephaestus.site.security;
 import java.util.Collection;
 import java.util.List;
 
-import com.hikvision.ga.hephaestus.site.cert.domain.UserRole;
+import com.hikvision.ga.hephaestus.site.security.domain.SystemUser;
+import com.hikvision.ga.hephaestus.site.security.domain.UserRole;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.hikvision.ga.hephaestus.site.cert.domain.SystemUser;
 
 /**
  * 自己声明类实现UserDetails接口

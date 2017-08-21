@@ -35,9 +35,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.hikvision.ga.hephaestus.cert.InspectContent;
 import com.hikvision.ga.hephaestus.cert.TypeInspection;
+import com.hikvision.ga.hephaestus.site.cert.constant.BusinessType;
+import com.hikvision.ga.hephaestus.site.cert.constant.OperationAct;
 import com.hikvision.ga.hephaestus.site.cert.constant.RetStatus;
 import com.hikvision.ga.hephaestus.site.cert.service.InspectContentService;
-import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
 import com.hikvision.ga.hephaestus.site.cert.service.TypeInspectionService;
 import com.hikvision.ga.hephaestus.site.controller.vo.AjaxResult;
 import com.hikvision.ga.hephaestus.site.controller.vo.BaseResult;
@@ -46,6 +47,7 @@ import com.hikvision.ga.hephaestus.site.controller.vo.ListResult;
 import com.hikvision.ga.hephaestus.site.controller.vo.typeSearchResult;
 import com.hikvision.ga.hephaestus.site.logger.OperationLogBuilder;
 import com.hikvision.ga.hephaestus.site.logger.OperationLogIgnore;
+import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
 
 /**
  * Created by rensu on 17/4/27.
@@ -57,7 +59,6 @@ public class InspectionController {
   private static final Logger logger = LoggerFactory.getLogger(InspectionController.class);
 
   private final static String SORTBY_AWARDDATE = "awardDate";
-  private final static String OPERATION_OBJ_TYPE = "inspections";
 
   @Autowired
   private TypeInspectionService typeInspectionService;
@@ -115,27 +116,35 @@ public class InspectionController {
   @RequestMapping(value = "/delete.do", method = RequestMethod.GET)
   @ResponseBody
   public BaseResult deleteInspecionById(Long id) {
-    //TODO 写日志
+    // 写日志
+    OperationLogBuilder.build().act(OperationAct.DELETE).businessType(BusinessType.INSPECTIONS);
     
     BaseResult res = new BaseResult();
 
     if (null == id) {
       res.setCode(RetStatus.PARAM_ILLEGAL.getCode());
       res.setMsg(RetStatus.PARAM_ILLEGAL.getInfo());
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.PARAM_ILLEGAL.getCode()).log();
       return res;
     }
     try {
+      TypeInspection t = typeInspectionService.getTypeInspectionById(id);
+      OperationLogBuilder.build().operateObjectKeys("id,model,name")
+      .operateObjectValues(t.getId().toString() + "," + t.getModel().toString() + "," + t.getName().toString());
       typeInspectionService.deleteTypeInspectionById(id);
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
+      OperationLogBuilder.build().operateResult(1).log();
     } catch (IllegalArgumentException e) {
       logger.error("", e);
       res.setCode(RetStatus.USER_NOT_FOUND.getCode());
       res.setMsg(RetStatus.USER_NOT_FOUND.getInfo());
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.PARAM_ILLEGAL.getCode()).log();
     } catch (Exception e) {
       logger.error("", e);
       res.setCode(RetStatus.SYSTEM_ERROR.getCode());
       res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.PARAM_ILLEGAL.getCode()).log();
     }
 
     return res;
@@ -225,7 +234,8 @@ public class InspectionController {
   @ResponseBody
   public BaseResult saveInspectionForm(@RequestBody MultipartFile file,
       HttpServletRequest request) {
-    //TODO 写日志
+    // 写日志
+    OperationLogBuilder.build().act(OperationAct.ADD).businessType(BusinessType.INSPECTIONS);
     
     BaseResult res = new BaseResult();
     /* 表单验证:关键信息不为空 */
@@ -235,6 +245,7 @@ public class InspectionController {
         || StringUtils.isBlank(request.getParameter("docNo"))) {
       res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
       res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FORM_DATA_MISSING.getCode()).log();
       return res;
     }
     /* 表单验证:docNo不能重复 */
@@ -242,6 +253,7 @@ public class InspectionController {
     if (typeInspectionService.findByDocNo(docNoStripped).size() > 0) {
       res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());
       res.setMsg(RetStatus.DOCNO_DUPLICATED.getInfo());
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.DOCNO_DUPLICATED.getCode()).log();
       return res;
     }
 
@@ -259,32 +271,40 @@ public class InspectionController {
         Sheet contentSheet = workbook.getSheetAt(0);
         contentlist = inspectContentService.importContentSheet(contentSheet, t.getId());
       }
-      typeInspectionService.saveTypeInspection(t, contentlist);
+      t = typeInspectionService.saveTypeInspection(t, contentlist);
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
+      OperationLogBuilder.build().operateObjectKeys("id,model,name")
+      .operateObjectValues(t.getId().toString() + "," + t.getModel().toString() + "," + t.getName().toString())
+      .operateResult(1).log();
     } catch (IOException e) {
       logger.error("", e);
       if (StringUtils.contains(e.getMessage(), "EncryptionInfo")) {
         res.setCode(RetStatus.FILE_ENCYPTED.getCode());
         res.setMsg(RetStatus.FILE_ENCYPTED.getInfo());
+        OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_ENCYPTED.getCode()).log();
       } else {
         res.setCode(RetStatus.FILE_PARSING_ERROR.getCode());
         res.setMsg(RetStatus.FILE_PARSING_ERROR.getInfo());
+        OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_PARSING_ERROR.getCode()).log();
       }
       return res;
     } catch (EncryptedDocumentException | InvalidFormatException e) {
       logger.error("", e);
       res.setCode(RetStatus.FILE_INVALID.getCode());
       res.setMsg(RetStatus.FILE_INVALID.getInfo());
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_INVALID.getCode()).log();
       return res;
     } catch (IllegalArgumentException e) {
       res.setCode(RetStatus.FILE_SHEET_MISSING.getCode());
       res.setMsg(RetStatus.FILE_SHEET_MISSING.getInfo());
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_SHEET_MISSING.getCode()).log();
       return res;
     } catch (Exception e) {
       logger.error("", e);
       res.setCode(RetStatus.SYSTEM_ERROR.getCode());
       res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.SYSTEM_ERROR.getCode()).log();
       return res;
     } finally {
       IOUtils.closeQuietly(xlsxFile);
@@ -299,10 +319,8 @@ public class InspectionController {
   @RequestMapping(value = "/update.do", method = RequestMethod.POST)
   @ResponseBody
   public BaseResult updateInspection(@RequestBody MultipartFile file, HttpServletRequest request) {
-    //写日志
-    OperationLogBuilder.build().act("更新").operateObjectType(OPERATION_OBJ_TYPE).
-    operateObjectKeys(",2,").operateObjectValues(",test,")
-    .operateResult(1).log();
+    // 操作日志
+    OperationLogBuilder.build().act(OperationAct.UPDATE).businessType(BusinessType.INSPECTIONS);
 
     BaseResult res = new BaseResult();
     /* if null id or null entity */
@@ -314,6 +332,7 @@ public class InspectionController {
 
     /* 查询对应的实体，并且将页面数据更新实体内容 */
     Long inspectionId = NumberUtils.toLong(request.getParameter("id"));
+    OperationLogBuilder.build().operateObjectKeys("id").operateObjectValues(request.getParameter("id"));
     TypeInspection t = null;
     InputStream xlsxFile = null;
     try {
@@ -321,16 +340,20 @@ public class InspectionController {
       if (null == t) {
         res.setCode(RetStatus.ITEM_NOT_FOUND.getCode());
         res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
+        OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.ITEM_NOT_FOUND.getCode()).log();
         return res;
       }
       // docNo不能和除这条id对应的docNo之外的条目重复
       String docNoStripped = StringUtils.trim(request.getParameter("docNo"));
       if (typeInspectionService.findByDocNo(docNoStripped).size() > 0
           && !StringUtils.equals(t.getDocNo(), docNoStripped)) {
+
         res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());
         res.setMsg(RetStatus.DOCNO_DUPLICATED.getInfo());
+        // 操作结果写入日志
+        OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.DOCNO_DUPLICATED.getCode()).log();
         return res;
-      } ;
+      }
       t = setTypeInspectionProperties(request, t); // 更新实体，包括文件名docFileName
       List<InspectContent> contentlist = null;
       if (file != null && !file.isEmpty()) {
@@ -340,32 +363,42 @@ public class InspectionController {
         Sheet contentSheet = workbook.getSheetAt(0);
         contentlist = inspectContentService.importContentSheet(contentSheet, inspectionId);
       }
-      typeInspectionService.updateTypeInspection(t, contentlist);
+      t = typeInspectionService.updateTypeInspection(t, contentlist);
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
+      // 操作结果：成功
+      OperationLogBuilder.build().operateObjectKeys("id,model,name")
+          .operateObjectValues(t.getId().toString() + "," + t.getModel().toString() + "," + t.getName().toString())
+          .operateResult(1).log();
     } catch (IOException e) {
       logger.error("", e);
       if (StringUtils.contains(e.getMessage(), "EncryptionInfo")) {
         res.setCode(RetStatus.FILE_ENCYPTED.getCode());
         res.setMsg(RetStatus.FILE_ENCYPTED.getInfo());
+        OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_ENCYPTED.getCode());
       } else {
         res.setCode(RetStatus.FILE_PARSING_ERROR.getCode());
         res.setMsg(RetStatus.FILE_PARSING_ERROR.getInfo());
+        OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_PARSING_ERROR.getCode());
       }
+      OperationLogBuilder.build().log();
       return res;
     } catch (EncryptedDocumentException | InvalidFormatException e) {
       logger.error("", e);
       res.setCode(RetStatus.FILE_INVALID.getCode());
       res.setMsg(RetStatus.FILE_INVALID.getInfo());
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_INVALID.getCode()).log();
       return res;
     } catch (IllegalArgumentException e) {
       res.setCode(RetStatus.FILE_SHEET_MISSING.getCode());
       res.setMsg(RetStatus.FILE_SHEET_MISSING.getInfo());
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_SHEET_MISSING.getCode()).log();
       return res;
     } catch (Exception e) {
       logger.error("", e);
       res.setCode(RetStatus.SYSTEM_ERROR.getCode());
       res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.SYSTEM_ERROR.getCode()).log();
       return res;
     } finally {
       IOUtils.closeQuietly(xlsxFile);

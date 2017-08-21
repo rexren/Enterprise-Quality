@@ -20,5 +20,10 @@ public interface OperationLogService {
    * 批量保存日志
    */
   List<OperationLog> save(List<OperationLog> operationLogDOS);
+  
+  /**
+   * TODO 读取日志
+   */
+  
 
 }

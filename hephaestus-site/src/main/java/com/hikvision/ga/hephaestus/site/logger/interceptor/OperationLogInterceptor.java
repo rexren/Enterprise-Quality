@@ -9,16 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
 import com.hikvision.ga.hephaestus.site.logger.OperationLog;
 import com.hikvision.ga.hephaestus.site.logger.OperationLogHolder;
 import com.hikvision.ga.hephaestus.site.logger.OperationLogIgnore;
@@ -30,9 +26,6 @@ public class OperationLogInterceptor extends HandlerInterceptorAdapter {
   @Autowired
   private OperationLogService operationLogService;
   
-  @Autowired
-  private SystemUserService systemUserService;
-
   public OperationLogInterceptor() {
     
   }
@@ -41,12 +34,12 @@ public class OperationLogInterceptor extends HandlerInterceptorAdapter {
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
     OperationLog OperationLog = new OperationLog();
-    OperationLog.setUserId("1"); // TODO 获取当前用户id
+    OperationLog.setUserId("0"); // 获取当前用户id
     OperationLog.setUserName(getUserName(request)); // 获取当前用户名
-    OperationLog.setIp(getRemoteIpAddress(request));
-    OperationLog.setUserAgent(getUserAgent(request));
-    OperationLog.setCreateTime(new Date());
-    OperationLogHolder.setOperationLog(OperationLog);
+    OperationLog.setIp(getRemoteIpAddress(request)); //获取用户ip
+    OperationLog.setUserAgent(getUserAgent(request)); //记录当前用户的客户端类型
+    OperationLog.setCreateTime(new Date());  //记录时间
+    OperationLogHolder.setOperationLog(OperationLog); //存入ThreadLocal
     return super.preHandle(request, response, handler);
   }
 
@@ -56,7 +49,6 @@ public class OperationLogInterceptor extends HandlerInterceptorAdapter {
     if (!(handler instanceof HandlerMethod)) {
       return;
     }
-
     HandlerMethod method = (HandlerMethod) handler;
     // 获取类上的注解
     OperationLogIgnore classAnnotation =
@@ -86,21 +78,17 @@ public class OperationLogInterceptor extends HandlerInterceptorAdapter {
       }
 
     }
-
     super.afterCompletion(request, response, handler, ex);
   }
   
   private static String getUserName(HttpServletRequest request){
     System.out.println(request.getRequestURL());
-    //BUGFIX 需要判断securityContextImpl = null
     if(null == request.getSession().getAttribute("SPRING_SECURITY_CONTEXT")){
       return "";
     }
-    //Assertion assertion = (Assertion) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
-    //  AttributePrincipal principal = assertion.getPrincipal();
     SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession().getAttribute("SPRING_SECURITY_CONTEXT");
     String userName = securityContextImpl.getAuthentication().getName();
-    System.out.println("Username:" + userName);
+    System.out.println("Username: " + userName);
     return userName;
   }
 

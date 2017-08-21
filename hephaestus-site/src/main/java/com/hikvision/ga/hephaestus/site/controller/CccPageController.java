@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
 import com.hikvision.ga.hephaestus.site.controller.vo.AjaxResult;
 import com.hikvision.ga.hephaestus.site.controller.vo.BaseResult;
 import com.hikvision.ga.hephaestus.site.controller.vo.ListContent;
 import com.hikvision.ga.hephaestus.site.controller.vo.ListResult;
+import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
 
 /**
  * Created by rensu on 17/5/1.

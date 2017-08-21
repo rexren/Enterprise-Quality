@@ -46,9 +46,9 @@ public class OperationLog implements Serializable {
   private String userAgent;
 
   /**
-   * 操作对象类型，INSPECTION, CCC, COPYRIGHT等
+   * 操作业务模块，INSPECTION, CCC, COPYRIGHT等
    */
-  private String operateObjectType;
+  private String businessType;
 
   /**
    * 操作对象编号(多个用“,”隔开)
@@ -76,11 +76,9 @@ public class OperationLog implements Serializable {
   private String errorCode;
 
   /**
-   * 具体的操作日志内容
+   * 具体的操作日志内容(如果不填写则默认为拦截的URL)
    */
   private String content;
-
-
 
   public Long getId() {
     return id;
@@ -122,13 +120,12 @@ public class OperationLog implements Serializable {
     this.ip = ip;
   }
 
- 
-  public String getOperateObjectType() {
-    return operateObjectType;
+  public String getBusinessType() {
+    return businessType;
   }
 
-  public void setOperateObjectType(String operateObjectType) {
-    this.operateObjectType = operateObjectType;
+  public void setBusinessType(String businessType) {
+    this.businessType = businessType;
   }
 
   public String getOperateObjectKeys() {
@@ -146,7 +143,6 @@ public class OperationLog implements Serializable {
   public void setOperateObjectValues(String operateObjectValues) {
     this.operateObjectValues = operateObjectValues;
   }
-
 
   public String getAct() {
     return act;
@@ -192,7 +188,7 @@ public class OperationLog implements Serializable {
   public String toString() {
     return "OperationLog [id=" + id + ", createTime=" + createTime + ", userId=" + userId
         + ", userName=" + userName + ", ip=" + ip + ", userAgent=" + userAgent
-        + ", operateObjectType=" + operateObjectType + ", operateObjectKeys=" + operateObjectKeys
+        + ", businessType=" + businessType + ", operateObjectKeys=" + operateObjectKeys
         + ", operateObjectValues=" + operateObjectValues + ", act=" + act + ", operateResult="
         + operateResult + ", errorCode=" + errorCode + ", content=" + content + "]";
   }
