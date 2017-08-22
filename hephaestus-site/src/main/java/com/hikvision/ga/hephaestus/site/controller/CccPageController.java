@@ -1,12 +1,9 @@
 package com.hikvision.ga.hephaestus.site.controller;
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.hikvision.ga.hephaestus.cert.domain.CccPage;
-import com.hikvision.hepaestus.common.constant.RetStatus;
 import com.hikvision.ga.hephaestus.cert.service.CccPageService;
+import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
+import com.hikvision.hepaestus.common.constant.RetStatus;
 import com.hikvision.hepaestus.common.support.AjaxResult;
 import com.hikvision.hepaestus.common.support.BaseResult;
 import com.hikvision.hepaestus.common.support.ListContent;
@@ -23,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hikvision.ga.hephaestus.site.security.SystemUserService;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+
 
 /**
  * Created by rensu on 17/5/1.
@@ -161,7 +160,7 @@ public class CccPageController {
             res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
             return res;
         }
-		/* 表单验证:docNo不能重复 */
+        /* 表单验证:docNo不能重复 */
         String docNoStripped = StringUtils.trim(request.getParameter("docNo"));
         if (cccPageService.findByDocNo(docNoStripped).size() > 0) {
             res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());

@@ -6,10 +6,9 @@ import com.hikvision.ga.hephaestus.cert.domain.CccPage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import com.hikvision.ga.hephaestus.cert.repository.base.BasicDAO;
 
 @NoRepositoryBean
-public interface CccPageRepository extends JpaRepository<CccPage, Long>, BasicDAO {
+public interface CccPageRepository extends JpaRepository<CccPage, Long> {
 
 	List<CccPage> findByDocNo(String docNo);
 
