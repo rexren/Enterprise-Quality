@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hikvision.ga.hephaestus.site.cert.constant.RetStatus;
+import com.hikvision.hepaestus.common.constant.RetStatus;
 import com.hikvision.ga.hephaestus.site.cert.domain.SystemUser;
 import com.hikvision.ga.hephaestus.site.cert.domain.UserRole;
-import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
-import com.hikvision.ga.hephaestus.site.cert.service.UserRoleService;
-import com.hikvision.ga.hephaestus.site.cert.support.UserResult;
+import com.hikvision.ga.hephaestus.site.security.SystemUserService;
+import com.hikvision.ga.hephaestus.site.security.UserRoleService;
+import com.hikvision.hepaestus.common.support.UserResult;
 
 /**
  * Created by rensu on 17/4/1.

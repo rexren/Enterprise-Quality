@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hikvision.ga.hephaestus.site.cert.domain.SystemUser;
 import com.hikvision.ga.hephaestus.site.cert.domain.UserRole;
-import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
-import com.hikvision.ga.hephaestus.site.cert.service.UserRoleService;
 
 /**
  * 实现UserDetailsService接口
