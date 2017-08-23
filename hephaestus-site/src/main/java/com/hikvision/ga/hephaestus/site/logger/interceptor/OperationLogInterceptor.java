@@ -58,6 +58,7 @@ public class OperationLogInterceptor extends HandlerInterceptorAdapter {
 
     OperationLog OperationLog = OperationLogHolder.getOperationLog();
     // 类和方法上都没有配置ignore的注解，则记录日志；
+    //TODO 能够过滤/error等配置忽略url
     if (null == classAnnotation && null == methodAnnotation && null != OperationLog) {
       // 开始记录日志
       // 如果必填信息没有填写，则拦截的URL以便定位日志来源模块

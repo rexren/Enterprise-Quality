@@ -16,7 +16,12 @@
 					</div>
 				</div>
 				<div class="box-body">
-				建设中，敬请期待……
+					<ul>
+						<li ng-repeat="item in list">
+							用户{{item.userName}}在{{item.businessType}}中{{item.act}}了 
+							{{item.operateObjectKeys}}为{{item.operateObjectValues}}的条目
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>

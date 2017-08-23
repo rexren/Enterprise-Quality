@@ -27,9 +27,6 @@ public class CccPageService {
     @Autowired
     private CccPageRepository cccPageRepository;
 
-    //@Autowired
-    //private SystemUserService systemUserService;
-
     public Page<CccPage> getCCCListByPage(Integer pageNum, Integer pageSize, String sortBy, int dir) {
         Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
         Pageable page = new PageRequest(pageNum, pageSize, new Sort(d, sortBy, "id"));

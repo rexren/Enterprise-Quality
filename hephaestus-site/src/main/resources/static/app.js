@@ -14,7 +14,7 @@ angular.module('enterprise-quality',[
     	})
     	.when('/updatelogs',{
     		templateUrl:'html/update-logs.html',
-    		controller:'UpdateLogsCtrl'
+    		controller:'LogsCtrl'
     	})
     	.when('/inspections',{
     		templateUrl: 'html/inspections.html',
