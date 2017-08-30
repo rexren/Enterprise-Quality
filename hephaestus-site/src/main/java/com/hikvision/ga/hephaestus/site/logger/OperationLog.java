@@ -21,7 +21,7 @@ public class OperationLog implements Serializable {
   private Long id;
 
   /**
-   * 日志的创建时间，由日志提供方提供
+   * 日志的创建时间（维护时间）
    */
   private Date createTime;
 
@@ -31,7 +31,7 @@ public class OperationLog implements Serializable {
   private String userId;
 
   /**
-   * 用户名
+   * 用户名（维护人）
    */
   private String userName;
 
@@ -51,17 +51,22 @@ public class OperationLog implements Serializable {
   private String businessType;
 
   /**
-   * 操作对象编号(多个用“,”隔开)
+   * 操作对象编号Id
+   */
+  private String operateObjectId;
+
+  /**
+   * 操作对象编号(多个用 “,” 隔开)
    */
   private String operateObjectKeys;
 
   /**
-   * 操作对象名称(多个用“,”隔开)
+   * 操作对象名称(多个用 “,” 隔开)
    */
   private String operateObjectValues;
 
   /**
-   * 操作类型，登陆、查询、新增、修改、删除、预览等
+   * 操作类型，登陆、查询、新增、修改、删除等
    */
   private String act;
 
@@ -191,6 +196,14 @@ public class OperationLog implements Serializable {
         + ", businessType=" + businessType + ", operateObjectKeys=" + operateObjectKeys
         + ", operateObjectValues=" + operateObjectValues + ", act=" + act + ", operateResult="
         + operateResult + ", errorCode=" + errorCode + ", content=" + content + "]";
+  }
+
+  public String getOperateObjectId() {
+    return operateObjectId;
+  }
+
+  public void setOperateObjectId(String operateObjectId) {
+    this.operateObjectId = operateObjectId;
   }
 
 }

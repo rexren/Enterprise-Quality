@@ -16,12 +16,55 @@
 					</div>
 				</div>
 				<div class="box-body">
-					<ul>
+					<!-- <ul>
 						<li ng-repeat="item in list">
 							用户{{item.userName}}在{{item.businessType}}中{{item.act}}了 
 							{{item.operateObjectKeys}}为{{item.operateObjectValues}}的条目
 						</li>
-					</ul>
+					</ul> -->
+					
+					<table class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th style="min-width: 100px;">操作时间</th>
+                            <th style="min-width: 60px;">操作人</th>
+                            <th style="min-width: 100px;">用户ip</th>
+                            <th style="min-width: 60px;">模块</th>
+                            <th style="min-width: 60px;">内容</th>
+                            <th style="min-width: 60px;">文件</th>
+                            <th style="min-width: 60px;">操作结果</th>
+                            <th>查看</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-if="list.length == 0">
+							<td colspan="8" style="text-align: center;">没有查询到结果</td>
+						</tr>
+                        <tr ng-repeat="item in list" >
+                            <td>{{$index+1}}</td>
+                            <td>{{item.createTime | date:'yyyy-MM-dd'}}</td>
+                            <td>{{item.userName}}</td>
+                            <td>{{item.ip}}</td>
+                            <td>{{item.businessType}}</td>
+                            <td>{{item.operateObjectValues}}</td>
+                            <td>{{item.content}}</td>
+                            <td>{{item.operateResult==1?"成功":"失败"}}</td>
+                            <td>
+                            	<div class="btn-group-vertical btn-group">
+                            		<button class="btn btn-link" ng-click="view(item)">详情</button>
+								</div>
+							</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-footer clearfix">
+                    <paging class="smallpagination pagination-sm no-margin pull-right" page="pagination.page" page-size="pagination.size"
+                            total="pagination.totalElements" adjacent="1" dots="..." hide-if-empty="true"
+                            show-prev-next="true" show-first-last="true" paging-action="onPageChange(page)">
+                    </paging>
+                </div>
 				</div>
 			</div>
 		</div>

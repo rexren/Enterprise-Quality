@@ -21,11 +21,18 @@ import com.hikvision.ga.hephaestus.site.logger.OperationLogIgnore;
 import com.hikvision.ga.hephaestus.site.logger.service.OperationLogService;
 
 
+/**
+ * @author langyicong
+ *
+ */
 public class OperationLogInterceptor extends HandlerInterceptorAdapter {
 
   @Autowired
   private OperationLogService operationLogService;
   
+  /**
+   * 无参构造函数
+   */
   public OperationLogInterceptor() {
     
   }
@@ -34,7 +41,7 @@ public class OperationLogInterceptor extends HandlerInterceptorAdapter {
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
     OperationLog OperationLog = new OperationLog();
-    OperationLog.setUserId("0"); // 获取当前用户id
+    //OperationLog.setUserId("0"); // 获取当前用户id
     OperationLog.setUserName(getUserName(request)); // 获取当前用户名
     OperationLog.setIp(getRemoteIpAddress(request)); //获取用户ip
     OperationLog.setUserAgent(getUserAgent(request)); //记录当前用户的客户端类型
@@ -82,6 +89,11 @@ public class OperationLogInterceptor extends HandlerInterceptorAdapter {
     super.afterCompletion(request, response, handler, ex);
   }
   
+  /**
+   * 获取当前用户名
+   * @param request
+   * @return
+   */
   private static String getUserName(HttpServletRequest request){
     System.out.println(request.getRequestURL());
     if(null == request.getSession().getAttribute("SPRING_SECURITY_CONTEXT")){
@@ -93,6 +105,11 @@ public class OperationLogInterceptor extends HandlerInterceptorAdapter {
     return userName;
   }
 
+  /**
+   * 获取当前用户使用的客户端
+   * @param request
+   * @return
+   */
   private static String getUserAgent(HttpServletRequest request){
     String ua = request.getHeader("User-Agent");
     return ua;
@@ -100,7 +117,6 @@ public class OperationLogInterceptor extends HandlerInterceptorAdapter {
 
   /**
    * 获取远程的IP地址，需要找到代理的地址
-   * 
    * @param request
    * @return
    */

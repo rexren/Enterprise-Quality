@@ -202,6 +202,6 @@ angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScop
     }, {
         name: '备注',   //remarks
         value: '4'
-        }]
-    }
-]);
+        }
+    ]
+}]);

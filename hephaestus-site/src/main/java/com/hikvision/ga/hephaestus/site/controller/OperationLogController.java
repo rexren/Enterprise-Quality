@@ -38,14 +38,13 @@ public class OperationLogController {
    * @param pageSize 页大小 默认20条/页
    * @return 包含操作日志数据对象的返回对象
    */
-  @OperationLogIgnore
   @RequestMapping(value = "/list.do", method = RequestMethod.GET)
   @ResponseBody
   public ListResult getListByPage(Integer pageNum, Integer pageSize) {
     int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
     int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
     int dir = 0; // 默认为降序
-    String sortBy = "createTime"; // 默认按照软著签发日期和id倒序
+    String sortBy = "createTime"; // 默认按照软操作时间和id倒序
 
     ListResult res = new ListResult();
     try {
