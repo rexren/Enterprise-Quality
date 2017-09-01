@@ -29,86 +29,91 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 由于导入文件并没有区分类型，所以其实正确的做法应该在一个新的类中导入 Created by rensu on 2017/5/28.
+ * 文件上传
  */
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 @Controller
 @RequestMapping("/fileupload")
 public class FileUploadController {
 
-    static private final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
+  static private final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
-    @Autowired
-    private TypeInspectionService typeInspectionService;
+  @Autowired
+  private TypeInspectionService typeInspectionService;
 
-    @Autowired
-    private CopyrightService copyrightService;
+  @Autowired
+  private CopyrightService copyrightService;
 
-    @Autowired
-    private CccPageService cccPageService;
+  @Autowired
+  private CccPageService cccPageService;
 
-    /**
-     * 上传资质列表（公检、双证、3C等）
-     */
-    @RequestMapping(value = "/indexlist.do", method = RequestMethod.POST)
-    @ResponseBody
-    public ImportResult saveIndexList(@RequestBody MultipartFile file) {
-
-        OperationLogBuilder.build().act(OperationAct.UPLOAD).businessType(BusinessType.FILEUPLOAD);
-        if (null == file || file.isEmpty()) {
-            OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_EMPTY.getCode()).log();
-            return new ImportResult(RetStatus.FILE_EMPTY.getCode(), RetStatus.FILE_EMPTY.getInfo(), 0, 0, 0);
-        } else {
-            InputStream xlsxFile = null;
-            int numOfInpections = 0;
-            int numOfCopyRight = 0;
-            int numOf3C = 0;
+  /**
+   * 上传资质列表（公检、双证、3C等）
+   * @param file 上传的文件
+   * @return 上传结果
+   */
+  @RequestMapping(value = "/indexlist.do", method = RequestMethod.POST)
+  @ResponseBody
+  public ImportResult saveIndexList(@RequestBody MultipartFile file) {
+    // 操作日志：记录动作和模块
+    OperationLogBuilder.build().act(OperationAct.UPLOAD).businessType(BusinessType.FILEUPLOAD);
+    if (null == file || file.isEmpty()) {
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_EMPTY.getCode()).log();
+      return new ImportResult(RetStatus.FILE_EMPTY.getCode(), RetStatus.FILE_EMPTY.getInfo(), 0, 0, 0);
+    } else {
+      InputStream xlsxFile = null;
+      int numOfInpections = 0;
+      int numOfCopyRight = 0;
+      int numOf3C = 0;
       /*
        * Test excel Encryption & handle exceptions
        */
-            try {
-                Workbook workbook = WorkbookFactory.create(file.getInputStream());
-                for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-                    if (StringUtils.contains(workbook.getSheetName(i), "公检")) {
-                        numOfInpections = typeInspectionService.importInspectionSheet(workbook.getSheetAt(i));
-                    } else if (StringUtils.contains(workbook.getSheetName(i), "双证")) {
-                        numOfCopyRight = copyrightService.importCopyRightSheet(workbook.getSheetAt(i));
-                    } else if (StringUtils.contains(workbook.getSheetName(i), "3C")) {
-                        numOf3C = cccPageService.importCCCSheet(workbook.getSheetAt(i));
-                    }
-                }
-
-                OperationLogBuilder.build().operateResult(1).operateObjectKeys("filename")
-                        .operateObjectValues(file.getOriginalFilename()).log();
-                return new ImportResult(RetStatus.SUCCESS.getCode(), RetStatus.SUCCESS.getInfo(),
-                        numOfInpections, numOfCopyRight, numOf3C);
-            } catch (IOException e) {
-                logger.error("", e);
-                //TODO 改为if-else语句并且写日志
-                return StringUtils.contains(e.getMessage(), "EncryptionInfo")
-                        ? new ImportResult(RetStatus.FILE_ENCYPTED.getCode(), RetStatus.FILE_ENCYPTED.getInfo())
-                        : new ImportResult(RetStatus.FILE_PARSING_ERROR.getCode(),
-                        RetStatus.FILE_PARSING_ERROR.getInfo());
-            } catch (EncryptedDocumentException | InvalidFormatException e) {
-                logger.error("", e);
-                //TODO 写日志
-                return new ImportResult(RetStatus.FILE_INVALID.getCode(), RetStatus.FILE_INVALID.getInfo());
-            } catch (Exception e) {
-                logger.error("", e);
-                if (StringUtils.contains(e.getCause().getCause().toString(), "duplicate")) {
-                    String cause = e.getCause().getCause().toString().toString();
-                    //TODO 写日志
-                    return new ImportResult(RetStatus.DOCNO_DUPLICATED.getCode(),
-                            cause.substring(cause.indexOf("详细") + 3));
-                }
-                //TODO 写日志
-                return new ImportResult(RetStatus.FILE_PARSING_ERROR.getCode(),
-                        RetStatus.FILE_PARSING_ERROR.getInfo());
-            } finally {
-                IOUtils.closeQuietly(xlsxFile);
-            }
+      try {
+        Workbook workbook = WorkbookFactory.create(file.getInputStream());
+        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+          if (StringUtils.contains(workbook.getSheetName(i), "公检")) {
+            numOfInpections = typeInspectionService.importInspectionSheet(workbook.getSheetAt(i));
+          } else if (StringUtils.contains(workbook.getSheetName(i), "双证")) {
+            numOfCopyRight = copyrightService.importCopyRightSheet(workbook.getSheetAt(i));
+          } else if (StringUtils.contains(workbook.getSheetName(i), "3C")) {
+            numOf3C = cccPageService.importCCCSheet(workbook.getSheetAt(i));
+          }
         }
+        // 操作日志：操作对象和内容
+        OperationLogBuilder.build().operateResult(1).content(file.getOriginalFilename()).operateObjectKeys("型检,双证,3C")
+            .operateObjectValues(numOfInpections+","+numOfCopyRight+","+numOf3C).log();
+        return new ImportResult(RetStatus.SUCCESS.getCode(), RetStatus.SUCCESS.getInfo(),
+            numOfInpections, numOfCopyRight, numOf3C);
+      } catch (IOException e) {
+        logger.error("", e);
+        if(StringUtils.contains(e.getMessage(), "EncryptionInfo")){
+          //文件被加密
+          OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_ENCYPTED.getCode()).log();
+          return new ImportResult(RetStatus.FILE_ENCYPTED.getCode(), RetStatus.FILE_ENCYPTED.getInfo());
+        }else{
+          OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_PARSING_ERROR.getCode()).log();
+          return new ImportResult(RetStatus.FILE_PARSING_ERROR.getCode(), RetStatus.FILE_PARSING_ERROR.getInfo());
+        }
+      } catch (EncryptedDocumentException | InvalidFormatException e) {
+        logger.error("", e);
+        OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_INVALID.getCode()).log();
+        return new ImportResult(RetStatus.FILE_INVALID.getCode(), RetStatus.FILE_INVALID.getInfo());
+      } catch (Exception e) {
+        logger.error("", e);
+        if (StringUtils.contains(e.getCause().getCause().toString(), "duplicate")) {
+          String cause = e.getCause().getCause().toString().toString();
+          OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.DOCNO_DUPLICATED.getCode()).log();
+          return new ImportResult(RetStatus.DOCNO_DUPLICATED.getCode(),
+              cause.substring(cause.indexOf("详细") + 3));
+        }
+        OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FILE_PARSING_ERROR.getCode()).log();
+        return new ImportResult(RetStatus.FILE_PARSING_ERROR.getCode(),
+            RetStatus.FILE_PARSING_ERROR.getInfo());
+      } finally {
+        IOUtils.closeQuietly(xlsxFile);
+      }
     }
+  }
 
 
 }

@@ -18,6 +18,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * CopyrightService
+ * @author langyicong
+ *
+ */
 @Service
 @Transactional
 public class CopyrightService {
@@ -27,16 +32,25 @@ public class CopyrightService {
     @Autowired
     private CopyrightRepository copyrightRepository;
 
-    //// TODO: 2017/8/22 Error use of userservice
-    //@Autowired
-    //private SystemUserService systemUserService;
-
+    /**
+     * 通过页码找到一页copyright
+     * @param pageNum 页码
+     * @param pageSize 页大小
+     * @param sortBy 排序关键字段
+     * @param dir 排序方向
+     * @return copyright页结果
+     */
     public Page<Copyright> getCopyrightByPage(int pageNum, int pageSize, String sortBy, int dir) {
         Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
         Pageable page = new PageRequest(pageNum, pageSize, new Sort(d, sortBy, "id"));
         return copyrightRepository.findAll(page);
     }
 
+    /**
+     * 通过id找到一条copyright
+     * @param id
+     * @return 一条copyright数据
+     */
     public Copyright getCopyrightById(Long id) {
         return copyrightRepository.findOne(id);
     }
@@ -50,8 +64,8 @@ public class CopyrightService {
      * 类别界定报告|鉴定/界定日期|类别界定报告链接|类别界定报告认证/测试机构|软件型号|
      * 负责人
      *
-     * @param sheet: 【双证】工作薄
-     * @return res: 更新/导入的条目数量
+     * @param sheet 【双证】工作薄
+     * @return res 更新/导入的条目数量
      * @throws Exception
      * @author langyicong
      */
@@ -169,6 +183,11 @@ public class CopyrightService {
         return res;
     }
 
+    /**
+     * 根据softwareName查找Copyright（用于查重）
+     * @param softwareName 软件名称
+     * @return Copyright list
+     */
     public List<Copyright> findBySoftwareName(String softwareName) {
         return copyrightRepository.findBySoftwareName(softwareName);
     }
@@ -185,9 +204,16 @@ public class CopyrightService {
 
     /**
      * 模糊搜索关键字
+     * @param fieldName 搜索字段名称
+     * @param keywordList 搜索字段关键字
+     * @param pn 页码
+     * @param ps 页大小
+     * @param sortBy 排序关键字
+     * @param dir 排序方向
+     * @return copyright搜素结果页
      */
-    public Page<Copyright> searchCopyrightByPage(String fieldName, String[] keywordList, int pn, int ps, String sortBy,
-                                                 int dir) {
+    public Page<Copyright> searchCopyrightByPage(String fieldName, String[] keywordList, int pn, int ps, 
+        String sortBy, int dir) {
         Page<Copyright> p = null;
         Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
         Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy, "id"));
@@ -201,6 +227,11 @@ public class CopyrightService {
         return p;
     }
 
+    /**
+     * 删除一条双证数据
+     * @param id 待删除的条目id
+     * @throws IllegalArgumentException
+     */
     public void deleteCopyrightById(Long id) throws IllegalArgumentException {
         copyrightRepository.delete(id);
 

@@ -22,6 +22,7 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
     private String[] tFieldsAll = {"id", "version", "certUrl", "company", "awardDate", "model", "name", "testType", "basis", "docNo", "organization", "remarks"};
 
     private String[] cFields = {"caseDescription", "caseName", "remarks"};
+    
     @Autowired
     @PersistenceContext
     private EntityManager entityManager;

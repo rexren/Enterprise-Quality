@@ -109,11 +109,9 @@ public class InspectionController {
   @RequestMapping(value = "/delete.do", method = RequestMethod.GET)
   @ResponseBody
   public BaseResult deleteInspecionById(Long id) {
-    // 写日志
+    // 写日志:动作和模块
     OperationLogBuilder.build().act(OperationAct.DELETE).businessType(BusinessType.INSPECTIONS);
-
     BaseResult res = new BaseResult();
-
     if (null == id) {
       res.setCode(RetStatus.PARAM_ILLEGAL.getCode());
       res.setMsg(RetStatus.PARAM_ILLEGAL.getInfo());
@@ -125,14 +123,15 @@ public class InspectionController {
       // 操作日志：写id
       OperationLogBuilder.build().operateObjectId(Long.toString(id));
       TypeInspection t = typeInspectionService.getTypeInspectionById(id);
+      // 操作日志：记录信息
+      OperationLogBuilder.build().operateObjectId(t.getId().toString())
+      .operateObjectKeys("model,name,docNo").operateObjectValues(t.getModel().toString() + ","
+          + t.getName().toString() + "," + t.getDocNo().toString());
       typeInspectionService.deleteTypeInspectionById(id);
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
-      // 操作成功的日志
-      OperationLogBuilder.build().operateObjectId(t.getId().toString())
-          .operateObjectKeys("model,name,docNo").operateObjectValues(t.getModel().toString() + ","
-              + t.getName().toString() + "," + t.getDocNo().toString())
-          .operateResult(1);
+      // 操作结果：成功
+      OperationLogBuilder.build().operateResult(1);
     } catch (IllegalArgumentException e) {
       logger.error("", e);
       res.setCode(RetStatus.USER_NOT_FOUND.getCode());
@@ -144,8 +143,8 @@ public class InspectionController {
       res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
       OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.SYSTEM_ERROR.getCode());
     }
+    // 操作日志：保存记录
     OperationLogBuilder.build().log();
-
     return res;
   }
 
@@ -336,7 +335,7 @@ public class InspectionController {
   @RequestMapping(value = "/update.do", method = RequestMethod.POST)
   @ResponseBody
   public BaseResult updateInspection(@RequestBody MultipartFile file, HttpServletRequest request) {
-    // 操作日志：获取操作模块和动作
+    // 操作日志：记录操作模块和动作
     OperationLogBuilder.build().act(OperationAct.UPDATE).businessType(BusinessType.INSPECTIONS);
 
     BaseResult res = new BaseResult();

@@ -32,7 +32,7 @@ import com.hikvision.hepaestus.common.support.ListResult;
 
 /**
  * CCC controller
- * TODO 完善日志操作
+ * 
  * @author langyicong
  *
  */
@@ -95,35 +95,42 @@ public class CccPageController {
   @RequestMapping(value = "/delete.do", method = RequestMethod.GET)
   @ResponseBody
   public BaseResult deleteCopyrightById(Long id) {
-    // 写日志
+    // 操作日志：记录动作和模块
     OperationLogBuilder.build().act(OperationAct.DELETE).businessType(BusinessType.CCC);
     BaseResult res = new BaseResult();
     if (null == id) {
       res.setCode(RetStatus.PARAM_ILLEGAL.getCode());
       res.setMsg(RetStatus.PARAM_ILLEGAL.getInfo());
+      // 操作失败
       OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.PARAM_ILLEGAL.getCode())
           .log();
       return res;
     }
     try {
+      // 操作日志：写id
+      OperationLogBuilder.build().operateObjectId(Long.toString(id));
+      CccPage c = cccPageService.getCccPageById(id);
+      // 操作日志：记录信息
+      OperationLogBuilder.build().operateObjectKeys("model,productName,docNo")
+          .operateObjectValues(c.getModel().toString() + "," + c.getProductName().toString() + ","
+              + c.getDocNo().toString());
       cccPageService.deleteCccPageById(id);
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
-      OperationLogBuilder.build().operateResult(1).log();
+      // 操作结果：成功
+      OperationLogBuilder.build().operateResult(1);
     } catch (IllegalArgumentException e) {
       logger.error("", e);
       res.setCode(RetStatus.PARAM_ILLEGAL.getCode());
       res.setMsg(RetStatus.PARAM_ILLEGAL.getInfo());
-      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.PARAM_ILLEGAL.getCode())
-          .log();
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.PARAM_ILLEGAL.getCode());
     } catch (Exception e) {
       logger.error("", e);
       res.setCode(RetStatus.SYSTEM_ERROR.getCode());
       res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
-      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.SYSTEM_ERROR.getCode())
-          .log();
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.SYSTEM_ERROR.getCode());
     }
-
+    OperationLogBuilder.build().log();
     return res;
   }
 
@@ -171,6 +178,7 @@ public class CccPageController {
   @RequestMapping(value = "/save.do", method = RequestMethod.POST)
   @ResponseBody
   public BaseResult saveCccPage(HttpServletRequest request) {
+    // 操作日志：记录操作模块和动作
     OperationLogBuilder.build().act(OperationAct.ADD).businessType(BusinessType.CCC);
     BaseResult res = new BaseResult();
     /* 表单验证:关键信息docNo不为空 */
@@ -181,6 +189,7 @@ public class CccPageController {
         || StringUtils.isBlank(request.getParameter("expiryDate"))) {
       res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
       res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
+      // 操作日志：记录错误信息
       OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FORM_DATA_MISSING.getCode())
           .log();
       return res;
@@ -190,7 +199,7 @@ public class CccPageController {
     if (cccPageService.findByDocNo(docNoStripped).size() > 0) {
       res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());
       res.setMsg(RetStatus.DOCNO_DUPLICATED.getInfo());
-      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.NAME_DUPLICATED.getCode())
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.DOCNO_DUPLICATED.getCode())
           .log();
       return res;
     }
@@ -201,15 +210,18 @@ public class CccPageController {
       cccPageService.saveCccPage(c);
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
-      OperationLogBuilder.build().operateResult(1).operateObjectKeys("id,model,productName")
-          .operateObjectValues(c.getId() + "," + c.getModel()+"," + c.getProductName()).log();
+      // 操作成功记录日志
+      OperationLogBuilder.build()
+          .operateObjectKeys("model,productName,docNo").operateObjectValues(c.getModel().toString()
+              + "," + c.getProductName().toString() + "," + c.getDocNo().toString())
+          .operateResult(1);
     } catch (Exception e) {
       logger.error("", e);
       res.setCode(RetStatus.SYSTEM_ERROR.getCode());
       res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
-      return res;
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.SYSTEM_ERROR.getCode());
     }
-
+    OperationLogBuilder.build().log();
     return res;
   }
 
@@ -224,13 +236,21 @@ public class CccPageController {
   @RequestMapping(value = "/update.do", method = RequestMethod.POST)
   @ResponseBody
   public BaseResult updateCccPage(HttpServletRequest request) {
+    // 操作日志：记录操作模块和动作
+    OperationLogBuilder.build().act(OperationAct.UPDATE).businessType(BusinessType.CCC);
+
     BaseResult res = new BaseResult();
     /* if null id or null entity */
     if (null == request || StringUtils.isBlank(request.getParameter("id"))) {
       res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
       res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
+      // 操作日志：记录失败动作
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FORM_DATA_MISSING.getCode())
+          .log();
       return res;
     }
+    // 操作日志：记录id
+    OperationLogBuilder.build().operateObjectId(request.getParameter("id"));
     /* 查询对应的实体，并且将页面数据更新实体内容 */
     Long requestId = NumberUtils.toLong(request.getParameter("id"));
     CccPage c = null;
@@ -239,26 +259,45 @@ public class CccPageController {
       if (null == c) {
         res.setCode(RetStatus.ITEM_NOT_FOUND.getCode());
         res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
+        // 操作日志：记录失败动作
+        OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.ITEM_NOT_FOUND.getCode())
+            .log();
         return res;
       }
+      // 操作日志：记录条目信息
+      OperationLogBuilder.build().operateObjectKeys("model,productName,docNo")
+          .operateObjectValues(c.getModel().toString() + "," + c.getProductName().toString() + ","
+              + c.getDocNo().toString());
       // 编辑后docNo无重复
       String docNoStripped = StringUtils.trim(request.getParameter("docNo"));
       if (cccPageService.findByDocNo(docNoStripped).size() > 0
           && !StringUtils.equals(c.getDocNo(), docNoStripped)) {
         res.setCode(RetStatus.DOCNO_DUPLICATED.getCode());
         res.setMsg(RetStatus.DOCNO_DUPLICATED.getInfo());
+        // 操作日志：记录失败动作
+        OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.DOCNO_DUPLICATED.getCode())
+            .log();
         return res;
       } ;
       c = setCccProperties(request, c);
       cccPageService.saveCccPage(c);
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
+      // 操作结果：成功
+      OperationLogBuilder.build()
+          .operateObjectKeys("model,productName,docNo").operateObjectValues(c.getModel().toString()
+              + "," + c.getProductName().toString() + "," + c.getDocNo().toString())
+          .operateResult(1);
     } catch (Exception e) {
       logger.error("", e);
       res.setCode(RetStatus.SYSTEM_ERROR.getCode());
       res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+      // 操作日志：记录失败动作
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.SYSTEM_ERROR.getCode())
+          .log();
       return res;
     }
+    OperationLogBuilder.build().log();
     return res;
   }
 
@@ -297,6 +336,7 @@ public class CccPageController {
 
   /**
    * 关键词搜索CCC列表
+   * 
    * @param field 搜索域
    * @param keyword 相应关键字
    * @param pageNum 页码 默认为第一页

@@ -1,0 +1,60 @@
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true" ng-click="closeModal();">×</span>
+		</button>
+		<h4 class="modal-title">查看详情</h4>
+	</div>
+	<div class="modal-body">
+	<table class="table table-striped">
+		<tr>
+			<td style="min-width: 100px;">操作时间</td>
+			<td>{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+		</tr>
+		<tr>
+			<td>操作人</td>
+			<td>{{item.userName}}</td>
+		</tr>
+		<tr>
+			<td>操作</td>
+			<td>{{item.act}}</td>
+		</tr>
+		<tr>
+			<td>操作模块</td>
+			<td>{{item.businessType}}</td>
+		</tr>
+		<tr>
+			<td>对象id</td>
+			<td>{{item.operateObjectId}}</td>
+		</tr>
+		<tr>
+			<td>修改字段</td>
+			<td>{{item.operateObjectKeys}}</td>
+		</tr>
+		<tr>
+			<td>内容</td>
+			<td ng-if="item.href"><a ng-href="#{{item.href}}">{{item.operateObjectValues}}</a></td>
+            <td ng-if="!item.href">{{item.operateObjectValues}}</td>
+		</tr>
+		<tr>
+			<td>文件</td>
+			<td>{{item.content}}</td>
+		</tr>
+		<tr>
+			<td>操作结果</td>
+			<td>{{item.operateResult==1?"成功":"失败"}}</td>
+		</tr>
+		<tr>
+			<td>用户ip</td>
+			<td>{{item.ip}}</td>
+		</tr>
+		<tr>
+			<td>客户端类型</td>
+			<td>{{item.userAgent}}</td>
+		</tr>
+	</table>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default pull-left" ng-click="closeModal();">关闭</button>
+	</div>
+</div>

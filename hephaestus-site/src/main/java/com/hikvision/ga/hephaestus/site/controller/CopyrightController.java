@@ -29,8 +29,8 @@ import com.hikvision.hepaestus.common.support.ListContent;
 import com.hikvision.hepaestus.common.support.ListResult;
 
 /**
- * 双证controller
- * TODO 完善日志操作
+ * 双证controller TODO 完善日志操作
+ * 
  * @author langyicong
  *
  */
@@ -94,7 +94,7 @@ public class CopyrightController {
   @RequestMapping(value = "/delete.do", method = RequestMethod.GET)
   @ResponseBody
   public BaseResult deleteCopyrightById(Long id) {
-    //写日志
+    // 写日志:动作和模块
     OperationLogBuilder.build().act(OperationAct.DELETE).businessType(BusinessType.COPYRIGHT);
     BaseResult res = new BaseResult();
     if (null == id) {
@@ -105,27 +105,30 @@ public class CopyrightController {
       return res;
     }
     try {
+      // 操作日志：写id
+      OperationLogBuilder.build().operateObjectId(Long.toString(id));
       Copyright c = copyrightService.getCopyrightById(id);
-      OperationLogBuilder.build().operateObjectKeys("id,softwareName")
-          .operateObjectValues(c.getId().toString() + "," + c.getSoftwareName().toString());
+      //操作日志：记录信息
+      OperationLogBuilder.build().operateObjectKeys("softwareName,abbreviation")
+      .operateObjectValues(c.getSoftwareName().toString()+','+c.getAbbreviation().toString());
       copyrightService.deleteCopyrightById(id);
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
-      OperationLogBuilder.build().operateResult(1).log();
+      // 操作结果：成功
+      OperationLogBuilder.build().operateResult(1);
     } catch (IllegalArgumentException e) {
       logger.error("", e);
       res.setCode(RetStatus.PARAM_ILLEGAL.getCode());
       res.setMsg(RetStatus.PARAM_ILLEGAL.getInfo());
-      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.PARAM_ILLEGAL.getCode())
-          .log();
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.PARAM_ILLEGAL.getCode());
     } catch (Exception e) {
       logger.error("", e);
       res.setCode(RetStatus.SYSTEM_ERROR.getCode());
       res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
-      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.SYSTEM_ERROR.getCode())
-          .log();
+      OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.SYSTEM_ERROR.getCode());
     }
-
+    //操作日志：记录
+    OperationLogBuilder.build().log();
     return res;
   }
 
@@ -173,12 +176,14 @@ public class CopyrightController {
   @RequestMapping(value = "/save.do", method = RequestMethod.POST)
   @ResponseBody
   public BaseResult saveCopyright(HttpServletRequest request) {
+    // 写日志:动作和模块
     OperationLogBuilder.build().act(OperationAct.ADD).businessType(BusinessType.COPYRIGHT);
     BaseResult res = new BaseResult();
     /* 表单验证:关键信息softwareName不为空 */
     if (StringUtils.isBlank(request.getParameter("softwareName"))) {
       res.setCode(RetStatus.FORM_DATA_MISSING.getCode());
       res.setMsg(RetStatus.FORM_DATA_MISSING.getInfo());
+      // 操作日志：记录错误信息
       OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.FORM_DATA_MISSING.getCode())
           .log();
       return res;
@@ -199,8 +204,8 @@ public class CopyrightController {
       c = copyrightService.saveCopyright(c);
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
-      OperationLogBuilder.build().operateResult(1).operateObjectKeys("id,softwareName")
-          .operateObjectValues(c.getId() + "," + c.getSoftwareName()).log();
+      OperationLogBuilder.build().operateResult(1).operateObjectKeys("softwareName,abbreviation")
+      .operateObjectValues(c.getSoftwareName().toString()+','+c.getAbbreviation().toString());
     } catch (Exception e) {
       logger.error("", e);
       res.setCode(RetStatus.SYSTEM_ERROR.getCode());
@@ -209,7 +214,7 @@ public class CopyrightController {
           .log();
       return res;
     }
-
+    OperationLogBuilder.build().log();
     return res;
   }
 
@@ -224,6 +229,7 @@ public class CopyrightController {
   @RequestMapping(value = "/update.do", method = RequestMethod.POST)
   @ResponseBody
   public BaseResult updateCopyright(HttpServletRequest request) {
+    // 操作日志：获取操作模块和动作
     OperationLogBuilder.build().act(OperationAct.UPDATE).businessType(BusinessType.COPYRIGHT);
     BaseResult res = new BaseResult();
     /* if null id or null entity */
@@ -234,7 +240,8 @@ public class CopyrightController {
           .log();
       return res;
     }
-
+    // 操作日志：记录id
+    OperationLogBuilder.build().operateObjectId(request.getParameter("id"));
     /* 查询对应的实体，并且将页面数据更新实体内容 */
     Long requestId = NumberUtils.toLong(request.getParameter("id"));
     Copyright c = null;
@@ -243,6 +250,7 @@ public class CopyrightController {
       if (null == c) {
         res.setCode(RetStatus.ITEM_NOT_FOUND.getCode());
         res.setMsg(RetStatus.ITEM_NOT_FOUND.getInfo());
+        // 操作日志：记录失败动作
         OperationLogBuilder.build().operateResult(0).errorCode(RetStatus.ITEM_NOT_FOUND.getCode())
             .log();
         return res;
@@ -261,8 +269,9 @@ public class CopyrightController {
       c = copyrightService.saveCopyright(c);
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
-      OperationLogBuilder.build().operateResult(1).operateObjectKeys("id,softwareName")
-          .operateObjectValues(c.getId() + "," + c.getSoftwareName()).log();
+      //操作日志：成功
+      OperationLogBuilder.build().operateResult(1).operateObjectKeys("softwareName,abbreviation")
+      .operateObjectValues(c.getSoftwareName().toString()+','+c.getAbbreviation().toString());
     } catch (Exception e) {
       logger.error("", e);
       res.setCode(RetStatus.SYSTEM_ERROR.getCode());
@@ -271,6 +280,7 @@ public class CopyrightController {
           .log();
       return res;
     }
+    OperationLogBuilder.build().log();
     return res;
   }
 
@@ -328,7 +338,9 @@ public class CopyrightController {
 
   /**
    * 关键词搜索Copyright列表
-   *
+   * 
+   * @param field 搜索字段名
+   * @param keyword 搜索关键字
    * @param pageNum 页码 默认为第一页
    * @param pageSize 页大小 默认20条/页
    * @param sortBy 需要倒序排序的字段，默认为更新时间UpdateAt字段
