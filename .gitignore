@@ -43,8 +43,10 @@ hs_err_pid*
 !.settings/org.eclipse.wst.html.core.prefs
 # > other misc eclipse artifacts
 .springBeans
-bin
-atlassian-ide-plugin.xml
+/hephaestus-site/src/bin
+# > except the following jvm settings
+!bin/
+
 
 # IDEA
 .idea

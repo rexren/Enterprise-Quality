@@ -1,0 +1,1 @@
+service-mgr.bat console
