@@ -25,13 +25,7 @@ public interface OperationLogService {
    * @return 保持成功的日志对象列表
    */
   List<OperationLog> save(List<OperationLog> operationLogs);
-  
-  /**
-   * 获取日志列表
-   * @return 所有的日志对象列表
-   */
-  List<OperationLog> findListAll();
-  
+
   /**
    * 获取日志列表页
    * @param pn 页码

@@ -57,10 +57,9 @@ public class HomeController {
    * @param
    * @return 登录页
    */
+  @OperationLogIgnore
   @RequestMapping("/login-success")
   public String successLogin() {
-    OperationLogBuilder.build().act(OperationAct.LOGIN).businessType(BusinessType.AUTH)
-    .operateObjectValues("系统").operateResult(1).log();
     return "redirect:/index.html";
   }
 

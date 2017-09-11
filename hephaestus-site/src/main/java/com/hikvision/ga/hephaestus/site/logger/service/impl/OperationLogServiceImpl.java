@@ -45,11 +45,6 @@ public class OperationLogServiceImpl implements OperationLogService {
   }
 
   @Override
-  public List<OperationLog> findListAll() {
-    return operationLogRepository.findAll();
-  }
-
-  @Override
   public Page<OperationLog> findLogByPage(int pn, int ps, String sortBy, int dir) {
     Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
     Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy, "id")); 
