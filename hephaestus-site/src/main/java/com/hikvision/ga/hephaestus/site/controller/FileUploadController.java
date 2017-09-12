@@ -3,7 +3,8 @@ package com.hikvision.ga.hephaestus.site.controller;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.hikvision.ga.hephaestus.site.cert.service.CccPageService;
+import com.hikvision.ga.hephaestus.common.RetStatus;
+import com.hikvision.ga.hephaestus.cert.service.CccPageService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.EncryptedDocumentException;
@@ -21,9 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.hikvision.ga.hephaestus.site.cert.constant.RetStatus;
-import com.hikvision.ga.hephaestus.site.cert.service.CopyrightService;
-import com.hikvision.ga.hephaestus.site.cert.service.TypeInspectionService;
+import com.hikvision.ga.hephaestus.cert.service.CopyrightService;
+import com.hikvision.ga.hephaestus.cert.service.TypeInspectionService;
 import com.hikvision.ga.hephaestus.site.cert.support.ImportResult;
 
 /**

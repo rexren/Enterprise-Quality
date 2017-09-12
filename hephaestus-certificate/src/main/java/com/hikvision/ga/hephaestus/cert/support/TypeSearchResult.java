@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.support;
+package com.hikvision.ga.hephaestus.cert.support;
 
 import com.hikvision.ga.hephaestus.cert.TypeInspection;
 
@@ -7,7 +7,7 @@ import com.hikvision.ga.hephaestus.cert.TypeInspection;
  * 内容搜索的返回值
  *
  */
-public class typeSearchResult {
+public class TypeSearchResult {
 	
 	TypeInspection typeInspection;
 	
@@ -39,11 +39,11 @@ public class typeSearchResult {
 	}
 	
 	
-	public typeSearchResult() {
+	public TypeSearchResult() {
 		super();
 	}
 
-	public typeSearchResult(TypeInspection typeInspection, int count, String cases) {
+	public TypeSearchResult(TypeInspection typeInspection, int count, String cases) {
 		super();
 		this.typeInspection = typeInspection;
 		this.count = count;

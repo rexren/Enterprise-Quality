@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.cert.support.repository.impl;
+package com.hikvision.ga.hephaestus.cert.repository.impl;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.hikvision.ga.hephaestus.cert.support.repository.CopyrightRepository;
+import com.hikvision.ga.hephaestus.cert.repository.CopyrightRepository;
 
 @Repository
 public class CopyrightRepositoryImpl extends SimpleJpaRepository<Copyright, Long>

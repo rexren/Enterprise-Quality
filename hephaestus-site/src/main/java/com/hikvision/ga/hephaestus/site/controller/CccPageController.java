@@ -1,12 +1,9 @@
 package com.hikvision.ga.hephaestus.site.controller;
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.hikvision.ga.hephaestus.cert.CccPage;
-import com.hikvision.ga.hephaestus.site.cert.constant.RetStatus;
-import com.hikvision.ga.hephaestus.site.cert.service.CccPageService;
+import com.hikvision.ga.hephaestus.common.RetStatus;
+import com.hikvision.ga.hephaestus.cert.service.CccPageService;
+import com.hikvision.ga.hephaestus.site.user.SystemUserService;
 import com.hikvision.ga.hephaestus.site.cert.support.AjaxResult;
 import com.hikvision.ga.hephaestus.site.cert.support.BaseResult;
 import com.hikvision.ga.hephaestus.site.cert.support.ListContent;
@@ -23,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * Created by rensu on 17/5/1.

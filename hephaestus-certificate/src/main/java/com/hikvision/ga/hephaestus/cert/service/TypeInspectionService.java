@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.cert.support.service;
+package com.hikvision.ga.hephaestus.cert.service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.hikvision.ga.hephaestus.cert.InspectContent;
 import com.hikvision.ga.hephaestus.cert.TypeInspection;
-import com.hikvision.ga.hephaestus.cert.support.repository.InspectContentRepository;
-import com.hikvision.ga.hephaestus.site.cert.support.typeSearchResult;
+import com.hikvision.ga.hephaestus.cert.repository.InspectContentRepository;
+import com.hikvision.ga.hephaestus.cert.support.TypeSearchResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -23,7 +23,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hikvision.ga.hephaestus.cert.support.repository.TypeInspectionRepository;
+import com.hikvision.ga.hephaestus.cert.repository.TypeInspectionRepository;
 
 /**
  * Created by rensu on 17/4/21.
@@ -40,8 +40,8 @@ public class TypeInspectionService {
 	@Autowired
 	private InspectContentRepository inspectContentRepository;
 	
-	@Autowired
-	private SystemUserService systemUserService;
+	//@Autowired
+	//private SystemUserService systemUserService;
 	
 	/*@Autowired
 	private UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
@@ -172,7 +172,7 @@ public class TypeInspectionService {
 				t.setOrganization(r.getCell(9).getStringCellValue());
 				t.setRemarks(r.getCell(10).getStringCellValue());
 				t.setUpdateAt(new Date());
-				t.setOperator(systemUserService.getCurrentUsername());
+				//t.setOperator(systemUserService.getCurrentUsername());
 				inspections.add(t);
 			}
 		}
@@ -189,7 +189,8 @@ public class TypeInspectionService {
 	/**
 	 * 新建存儲主表条目
 	 * 
-	 * @param 主表条目id
+	 * @param t
+	 *
 	 * @param contentList
 	 *            待插入数据库的检测报告内容表（子表）
 	 * @return TypeInspection实体
@@ -204,7 +205,7 @@ public class TypeInspectionService {
 	/**
 	 * 更新主表 &（如果文件名为空）删子表 &（如果有文件）存储子表
 	 * 
-	 * @param 主表条目id
+	 * @param t
 	 * @param contentList
 	 *            待插入数据库的检测报告内容表（子表）
 	 * @return TypeInspection实体
@@ -230,7 +231,7 @@ public class TypeInspectionService {
 	 * 模糊搜索关键字
 	 * @throws Exception 
 	 */
-	public List<typeSearchResult> searchTypeInspectionByPage(String fieldName, String[] keywordList,
+	public List<TypeSearchResult> searchTypeInspectionByPage(String fieldName, String[] keywordList,
 															 String[] contentKeywordList) throws Exception {
 		return typeInspectionRepository.joinSearchTypeInspection(fieldName, keywordList, contentKeywordList);
 	}

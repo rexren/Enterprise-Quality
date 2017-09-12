@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.cert.support.repository.impl;
+package com.hikvision.ga.hephaestus.cert.repository.impl;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import com.hikvision.ga.hephaestus.cert.CccPage;
-import com.hikvision.ga.hephaestus.cert.support.repository.CccPageRepository;
+import com.hikvision.ga.hephaestus.cert.repository.CccPageRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;

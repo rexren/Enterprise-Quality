@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.cert.support.service;
+package com.hikvision.ga.hephaestus.cert.service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +21,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hikvision.ga.hephaestus.cert.support.repository.CccPageRepository;
+import com.hikvision.ga.hephaestus.cert.repository.CccPageRepository;
 
 @Service
 @Transactional
@@ -32,8 +32,8 @@ public class CccPageService {
     @Autowired
     private CccPageRepository cccPageRepository;
 
-    @Autowired
-    private SystemUserService systemUserService;
+    //@Autowired
+    //private SystemUserService systemUserService;
 
     public Page<CccPage> getCCCListByPage(Integer pageNum, Integer pageSize, String sortBy, int dir) {
         Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
@@ -131,7 +131,7 @@ public class CccPageService {
                 c.setOrganization(StringUtils.trim(r.getCell(6).getStringCellValue()));
                 c.setRemarks(StringUtils.trim(r.getCell(7).getStringCellValue()));
                 //TODO:这里写的有问题，不应该使用一个service来获取用户，而是在参数中传入进来，减少依赖关系
-                c.setOperator(systemUserService.getCurrentUsername());
+                //c.setOperator(systemUserService.getCurrentUsername());
 
                 cccList.add(c);
             }

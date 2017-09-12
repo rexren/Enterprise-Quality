@@ -4,9 +4,9 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.hikvision.ga.hephaestus.site.cert.constant.RetStatus;
 import com.hikvision.ga.hephaestus.cert.Copyright;
-import com.hikvision.ga.hephaestus.site.cert.service.CopyrightService;
+import com.hikvision.ga.hephaestus.common.RetStatus;
+import com.hikvision.ga.hephaestus.cert.service.CopyrightService;
 import com.hikvision.ga.hephaestus.site.cert.support.AjaxResult;
 import com.hikvision.ga.hephaestus.site.cert.support.BaseResult;
 import com.hikvision.ga.hephaestus.site.cert.support.ListContent;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
+import com.hikvision.ga.hephaestus.site.user.SystemUserService;
 
 @Controller
 @RequestMapping("/copyright")

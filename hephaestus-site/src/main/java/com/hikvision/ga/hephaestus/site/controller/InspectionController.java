@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.hikvision.ga.hephaestus.common.RetStatus;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -33,17 +34,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.hikvision.ga.hephaestus.site.cert.constant.RetStatus;
 import com.hikvision.ga.hephaestus.cert.InspectContent;
 import com.hikvision.ga.hephaestus.cert.TypeInspection;
-import com.hikvision.ga.hephaestus.site.cert.service.InspectContentService;
-import com.hikvision.ga.hephaestus.site.cert.service.SystemUserService;
-import com.hikvision.ga.hephaestus.site.cert.service.TypeInspectionService;
+import com.hikvision.ga.hephaestus.cert.service.InspectContentService;
+import com.hikvision.ga.hephaestus.site.user.SystemUserService;
+import com.hikvision.ga.hephaestus.cert.service.TypeInspectionService;
 import com.hikvision.ga.hephaestus.site.cert.support.AjaxResult;
 import com.hikvision.ga.hephaestus.site.cert.support.BaseResult;
 import com.hikvision.ga.hephaestus.site.cert.support.ListContent;
 import com.hikvision.ga.hephaestus.site.cert.support.ListResult;
-import com.hikvision.ga.hephaestus.site.cert.support.typeSearchResult;
+import com.hikvision.ga.hephaestus.cert.support.TypeSearchResult;
 
 /**
  * Created by rensu on 17/4/27.
@@ -481,14 +481,14 @@ public class InspectionController {
 		String[] contentKeywordList = StringUtils.split(contentKeyword);
 
 		try {
-			List<typeSearchResult> p = typeInspectionService.searchTypeInspectionByPage(fieldName, keywordList,
+			List<TypeSearchResult> p = typeInspectionService.searchTypeInspectionByPage(fieldName, keywordList,
 					contentKeywordList);
 
 			Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
 			Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy, "id"));
 
 			if (null != p) {
-				PageImpl<typeSearchResult> resPage = new PageImpl<typeSearchResult>(p, page, p.size());
+				PageImpl<TypeSearchResult> resPage = new PageImpl<TypeSearchResult>(p, page, p.size());
 				res.setListContent(new ListContent(resPage.getSize(), resPage.getTotalElements(),
 						resPage.getTotalPages(), resPage.getContent()));
 			}

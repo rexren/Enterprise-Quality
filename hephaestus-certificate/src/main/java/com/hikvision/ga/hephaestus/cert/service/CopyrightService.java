@@ -1,11 +1,11 @@
-package com.hikvision.ga.hephaestus.cert.support.service;
+package com.hikvision.ga.hephaestus.cert.service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.hikvision.ga.hephaestus.cert.Copyright;
-import com.hikvision.ga.hephaestus.cert.support.repository.CopyrightRepository;
+import com.hikvision.ga.hephaestus.cert.repository.CopyrightRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -31,8 +31,8 @@ public class CopyrightService {
 	@Autowired
 	private CopyrightRepository copyrightRepository;
 
-	@Autowired
-	private SystemUserService systemUserService;
+	//@Autowired
+	//private SystemUserService systemUserService;
 	
 	public Page<Copyright> getCopyrightByPage(int pageNum, int pageSize, String sortBy, int dir){
 		Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
@@ -159,7 +159,7 @@ public class CopyrightService {
 				c.setCdOrganization(r.getCell(19).getStringCellValue());
 				c.setModel(r.getCell(20).getStringCellValue());
 				c.setCharge(r.getCell(21).getStringCellValue());
-				c.setOperator(systemUserService.getCurrentUsername());
+				//c.setOperator(systemUserService.getCurrentUsername());
 				copyrights.add(c);
 			}
 		}

@@ -7,12 +7,7 @@ public class BaseResult {
     private String code;
     private String msg;
     
-    public BaseResult() {
-    }
-
-    public BaseResult(String code) {
-        this.code = code;
-    }
+    public BaseResult() {}
 
     public BaseResult(String code, String msg) {
         this.code = code;
