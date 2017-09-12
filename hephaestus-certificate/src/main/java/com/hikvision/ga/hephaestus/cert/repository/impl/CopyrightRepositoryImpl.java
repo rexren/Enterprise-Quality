@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import com.hikvision.ga.hephaestus.cert.Copyright;
+import com.hikvision.ga.hephaestus.cert.domain.Copyright;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
@@ -14,6 +14,11 @@ import org.springframework.stereotype.Repository;
 
 import com.hikvision.ga.hephaestus.cert.repository.CopyrightRepository;
 
+/**
+ * 双证Repository实现类
+ * @author langyicong
+ *
+ */
 @Repository
 public class CopyrightRepositoryImpl extends SimpleJpaRepository<Copyright, Long>
     implements CopyrightRepository {
@@ -25,6 +30,10 @@ public class CopyrightRepositoryImpl extends SimpleJpaRepository<Copyright, Long
   private String[] fields =
       {"softwareName", "abbreviation", "model", "crNo", "rgNo", "epNo", "cdNo"};
 
+  /**
+   * 构造函数
+   * @param em EntityManager
+   */
   public CopyrightRepositoryImpl(EntityManager em) {
     super(Copyright.class, em);
   }

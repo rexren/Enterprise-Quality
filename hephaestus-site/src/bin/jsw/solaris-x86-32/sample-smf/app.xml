@@ -1,0 +1,65 @@
+<?xml version='1.0' ?>
+
+<!DOCTYPE service_bundle SYSTEM '/usr/share/lib/xml/dtd/service_bundle.dtd.1'>
+<!--
+	Service Manifest for Spore
+-->
+
+<service_bundle type='manifest' name='SUNWapchr:spore' >
+	<service name='network/http' type='service' version='1'>
+		<instance name='spore' enabled='false'>
+
+			<dependency name='loopback'  grouping='require_all'
+			restart_on='error' type='service'>
+				<service_fmri value='svc:/network/loopback:default' />
+			</dependency>
+			<dependency name='physical'  grouping='optional_all'
+			restart_on='error' type='service'>
+				<service_fmri value='svc:/network/physical:default' />
+			</dependency>
+
+			<dependency name='localfs'  grouping='require_all'
+			restart_on='error' type='service'>
+				<service_fmri value='svc:/system/filesystem/local:default' />
+			</dependency>
+
+		<!--
+			These privileges allow the service to run as user spore/group
+			spore from the beginning.  The net_privaddr privilege allows
+			the start method to run with the ability bind to privileged
+			ports (in this case, we only care about 80 and 443).  However,
+			if one is logged in as 'www', one does not have this privilege.
+		-->
+			<exec_method name='start' type='method'
+			exec='/export/home/spore/spore-professional/current/bin/jsw/solaris-x86-32/spore start'
+			timeout_seconds='60'>
+				<method_context>
+					<method_credential user='spore' group='spore'
+					privileges='basic,!proc_session,!proc_info,!file_link_any,net_privaddr' />
+				</method_context>
+			</exec_method>
+
+			<exec_method name='stop' type='method'
+			exec='/export/home/spore/spore-professional/current/bin/jsw/solaris-x86-32/spore stop'
+			timeout_seconds='60'>
+				<method_context />
+			</exec_method>
+
+			<exec_method name='refresh' type='method'
+			exec='/export/home/spore/spore-professional/current/bin/jsw/solaris-x86-32/spore restart'
+			timeout_seconds='60'>
+				<method_context />
+			</exec_method>
+
+     </instance>       
+<stability value='Evolving' />
+<template>
+	<common_name>
+		<loctext xml:lang='C'>Spore OSS </loctext>
+	</common_name>
+	<documentation>
+		<doc_link name='hikvision.com' uri='http://spore.hikvision.com' />
+	</documentation>
+</template>
+</service>
+</service_bundle>

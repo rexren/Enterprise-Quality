@@ -14,7 +14,7 @@ angular.module('enterprise-quality',[
     	})
     	.when('/updatelogs',{
     		templateUrl:'html/update-logs.html',
-    		controller:'UpdateLogsCtrl'
+    		controller:'LogsCtrl'
     	})
     	.when('/inspections',{
     		templateUrl: 'html/inspections.html',
@@ -82,8 +82,8 @@ angular.module('enterprise-quality',[
 	$rootScope.$on('$routeChangeStart', function(event, toState, toParams, fromState, fromParams){
 		//TODO 取得用户当前登录状态
 		if(!$rootScope.user){
-			event.preventDefault();// 取消默认跳转行为
-			$location.path("/login"); //跳转到登录界面
+			event.preventDefault();		// 取消默认跳转行为
+			$location.path("/login"); 	// 跳转到登录界面
 		}
 	});
 }]);

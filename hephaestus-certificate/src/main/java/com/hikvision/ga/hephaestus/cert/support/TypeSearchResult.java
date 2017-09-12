@@ -1,6 +1,7 @@
 package com.hikvision.ga.hephaestus.cert.support;
 
-import com.hikvision.ga.hephaestus.cert.TypeInspection;
+
+import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
 
 /**
  * @author langyicong

@@ -2,10 +2,10 @@ package com.hikvision.ga.hephaestus.cert.repository;
 
 import java.util.List;
 
+import com.hikvision.ga.hephaestus.cert.domain.CccPage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import com.hikvision.ga.hephaestus.cert.CccPage;
 
 @NoRepositoryBean
 public interface CccPageRepository extends JpaRepository<CccPage, Long> {

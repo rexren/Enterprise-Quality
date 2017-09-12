@@ -1,0 +1,67 @@
+<base_info>
+	<!--软件标识-->	
+	<id>hephaestus</id>
+	<!--软件名称,支持多语言,默认匹配第一个-->
+	<names>
+		<name language="zh-CN">资质管理平台</name>
+		<name language="en-US">hephaestus</name>
+	</names>
+	<!--软件版本，打完包之后注意修改此版本号-->
+	<version>0.0.1-SNAPSHOT</version>
+	<!--代码版本号-->
+	<codeVersion>git:1.0.0</codeVersion >
+	<runtime>
+		<tomcat>
+			<port>
+				<connector>8080</connector>
+			</port>
+			<memory>		
+			</memory>
+		</tomcat>
+	</runtime>
+	<!-- 支持的数据库类型 -->
+	<db_support>
+		<support dbid="postgresql"/>	
+	</db_support>	
+	<!-- 本地依赖关系 -->
+	<local_dependencies>
+	<!-- componentid:本地依赖ID -->		
+		<dependency componentid="jdk"/>
+	</local_dependencies>
+	<!-- 网络依赖关系 -->
+	<!-- <remote_dependencies>
+		<dependency componentid="redis"/>
+	</remote_dependencies>-->
+	<!--代码地址-->
+	<versionUrl>https://github.com/rexren/Enterprise-Quality/tree/master/hephaestus-site</versionUrl >
+	<!-- 占用端口;包括tcp和udp端口列表,以及端口使用的协议 -->
+	<resource>
+		<ports>
+			<tcp>
+				<port protocol="http">8080</port> 
+			</tcp>
+			<udp>
+				<port protocol=""></port>
+			</udp>
+		</ports>
+	</resource>
+	<!-- 可选,国际化支持-->
+	<!-- <languages>
+		多语言字典列表。如zh-CN表示简体中文(中国)，en-US表示英语(美国)
+		<language>zh-CN</language>
+		<language>en-US</language>
+    </languages> -->
+	<!--可选,兼容关系(如果遵守版本规范，只需要填写主版本号；否则填写完整版本号) -->	
+	<!-- <compatibilities>
+		<compatibility>4.0</compatibility>
+	</compatibilities> -->
+	<!-- 功能简介 -->
+	<func_description>
+	Hephaestus 是一个为我们产品经理设计的小平台，也是一个基于spring-boot的开源练手项目。名字来源于希腊古神 赫菲斯托斯，希腊神话中的火神、砌石之神、雕刻艺术之神与手艺异常高超的铁匠之神，奥林匹斯十二主神之一。能建筑神殿，制作各种武器和金属用品，技艺高超，被认为工匠的始祖。在手工业中心，他被奉为锻造的庇护神。 之所以取这个名字是希望这个小平台像这位古神一样孕育出事业部那些产品，并且每个产品背后都包含着大家的工匠精神。
+	</func_description>
+	<health_check>
+	</health_check>
+</base_info>
+
+    
+
