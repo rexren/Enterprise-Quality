@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.repository.impl;
+package com.hikvision.ga.hephaestus.cert.support.repository.impl;
 
 import java.util.List;
 
@@ -6,37 +6,39 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import com.hikvision.ga.hephaestus.cert.CccPage;
-import com.hikvision.ga.hephaestus.site.cert.repository.CccPageRepository;
+import com.hikvision.ga.hephaestus.cert.Copyright;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.hikvision.ga.hephaestus.cert.support.repository.CopyrightRepository;
+
 @Repository
-public class CccPageRepositoryImpl extends SimpleJpaRepository<CccPage, Long>
-    implements CccPageRepository {
+public class CopyrightRepositoryImpl extends SimpleJpaRepository<Copyright, Long>
+    implements CopyrightRepository {
 
   @Autowired
   @PersistenceContext
   private EntityManager em;
 
-  public CccPageRepositoryImpl(EntityManager em) {
-    super(CccPage.class, em);
+  private String[] fields =
+      {"softwareName", "abbreviation", "model", "crNo", "rgNo", "epNo", "cdNo"};
+
+  public CopyrightRepositoryImpl(EntityManager em) {
+    super(Copyright.class, em);
   }
 
-  private String[] fields = {"model", "productName", "docNo", "remarks"};
-
   @SuppressWarnings("unchecked")
-  public List<CccPage> findByDocNo(String docNo) {
-    Query query = em.createQuery("from CccPage where docNo=:docNo");
-    query.setParameter("docNo", docNo);
+  public List<Copyright> findBySoftwareName(String softwareName) {
+    Query query = em.createQuery("from Copyright where softwareName=:softwareName");
+    query.setParameter("softwareName", softwareName);
     return query.getResultList();
   }
 
   @SuppressWarnings("unchecked")
-  public List<CccPage> searchCccByKeyword(String fieldName, String[] keywords) {
-    StringBuilder sqlString = new StringBuilder("FROM CccPage where ");
+  public List<Copyright> searchCopyrightByKeyword(String fieldName, String[] keywords) {
+    StringBuilder sqlString = new StringBuilder("FROM Copyright where ");
     if (StringUtils.isBlank(fieldName)) {
       // 循环查询全部关键字段
       for (int i = 0; i < fields.length; i++) {
@@ -58,8 +60,7 @@ public class CccPageRepositoryImpl extends SimpleJpaRepository<CccPage, Long>
     System.out.println(sqlString.toString());
 
     Query query = em.createQuery(sqlString.toString());
-    List<CccPage> res = query.getResultList();
+    List<Copyright> res = query.getResultList();
     return res;
   }
-
 }

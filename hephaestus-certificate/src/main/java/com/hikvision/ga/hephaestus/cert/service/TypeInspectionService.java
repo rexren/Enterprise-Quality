@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.service;
+package com.hikvision.ga.hephaestus.cert.support.service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.hikvision.ga.hephaestus.cert.InspectContent;
 import com.hikvision.ga.hephaestus.cert.TypeInspection;
-import com.hikvision.ga.hephaestus.site.cert.repository.InspectContentRepository;
+import com.hikvision.ga.hephaestus.cert.support.repository.InspectContentRepository;
 import com.hikvision.ga.hephaestus.site.cert.support.typeSearchResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;
@@ -23,7 +23,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hikvision.ga.hephaestus.site.cert.repository.TypeInspectionRepository;
+import com.hikvision.ga.hephaestus.cert.support.repository.TypeInspectionRepository;
 
 /**
  * Created by rensu on 17/4/21.

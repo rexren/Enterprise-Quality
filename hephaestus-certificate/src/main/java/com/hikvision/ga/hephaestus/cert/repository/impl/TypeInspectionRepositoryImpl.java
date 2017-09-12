@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.repository.impl;
+package com.hikvision.ga.hephaestus.cert.support.repository.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.hikvision.ga.hephaestus.site.cert.repository.TypeInspectionRepository;
+import com.hikvision.ga.hephaestus.cert.support.repository.TypeInspectionRepository;
 
 @Repository
 public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspection, Long>

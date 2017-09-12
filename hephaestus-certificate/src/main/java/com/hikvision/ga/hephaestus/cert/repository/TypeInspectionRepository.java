@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.repository;
+package com.hikvision.ga.hephaestus.cert.support.repository;
 
 import java.util.List;
 

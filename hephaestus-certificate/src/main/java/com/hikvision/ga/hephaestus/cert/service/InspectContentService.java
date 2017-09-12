@@ -1,7 +1,7 @@
-package com.hikvision.ga.hephaestus.site.cert.service;
+package com.hikvision.ga.hephaestus.cert.support.service;
 
 import com.hikvision.ga.hephaestus.cert.InspectContent;
-import com.hikvision.ga.hephaestus.site.cert.repository.InspectContentRepository;
+import com.hikvision.ga.hephaestus.cert.support.repository.InspectContentRepository;
 
 import java.util.ArrayList;
 import java.util.List;

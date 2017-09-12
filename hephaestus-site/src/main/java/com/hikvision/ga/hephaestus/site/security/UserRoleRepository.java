@@ -1,4 +1,4 @@
-package com.hikvision.ga.hephaestus.site.cert.repository;
+package com.hikvision.ga.hephaestus.cert.support.repository;
 
 import java.util.List;
 
@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRoleRepository extends JpaRepository<UserRole, Long> {
 
-	List<UserRole> getRoleByUserId(Long userId);
+    List<UserRole> getRoleByUserId(Long userId);
 
 }
