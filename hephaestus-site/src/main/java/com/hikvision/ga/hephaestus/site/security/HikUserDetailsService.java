@@ -2,6 +2,9 @@ package com.hikvision.ga.hephaestus.site.security;
 
 import java.util.List;
 
+import com.hikvision.ga.hephaestus.site.security.domain.HikUserDetails;
+import com.hikvision.ga.hephaestus.site.security.domain.SystemUser;
+import com.hikvision.ga.hephaestus.site.security.domain.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,8 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hikvision.ga.hephaestus.site.cert.domain.SystemUser;
-import com.hikvision.ga.hephaestus.site.cert.domain.UserRole;
 import com.hikvision.ga.hephaestus.site.user.SystemUserService;
 import com.hikvision.ga.hephaestus.site.user.UserRoleService;
 
