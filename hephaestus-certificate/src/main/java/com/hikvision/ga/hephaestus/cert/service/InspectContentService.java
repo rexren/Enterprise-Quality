@@ -1,10 +1,8 @@
 package com.hikvision.ga.hephaestus.cert.service;
 
-import com.hikvision.ga.hephaestus.cert.domain.InspectContent;
-import com.hikvision.ga.hephaestus.cert.repository.InspectContentRepository;
-
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,9 +10,11 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.hikvision.ga.hephaestus.cert.domain.InspectContent;
+import com.hikvision.ga.hephaestus.cert.repository.InspectContentJpaRepository;
 
 
 
@@ -26,12 +26,12 @@ import org.springframework.stereotype.Service;
 public class InspectContentService {
 
     @Autowired
-    private InspectContentRepository inspectContentRepository;
+    private InspectContentJpaRepository inspectContentJpaRepository;
 
 
     public InspectContent getInspectContent(Long id) {
 
-        return inspectContentRepository.findOne(id);
+        return inspectContentJpaRepository.findOne(id);
     }
 
     /**
@@ -41,7 +41,8 @@ public class InspectContentService {
      * @return List<InspectContent> 查到的内容条目列表
      */
     public List<InspectContent> getContentsByInspectionId(Long inspectionId) {
-        return inspectContentRepository.findByInspectionIdOrderById(inspectionId);
+        List<InspectContent> res = inspectContentJpaRepository.findByInspectionIdOrderById(inspectionId);
+        return res;
     }
 
     /**
@@ -52,7 +53,7 @@ public class InspectContentService {
      */
     public void deleteByFK(Long inspectionId) {
         List<InspectContent> list = getContentsByInspectionId(inspectionId);
-        inspectContentRepository.deleteInBatch(list);
+        inspectContentJpaRepository.deleteInBatch(list);
     }
 
     /**
@@ -69,11 +70,11 @@ public class InspectContentService {
         if (getContentsByInspectionId(inspectionId) != null) {
             deleteByFK(inspectionId);
         }
-        inspectContentRepository.save(contentList);
+        inspectContentJpaRepository.save(contentList);
     }
 
 	public void save(List<InspectContent> contentList) {
-		inspectContentRepository.save(contentList);
+	  inspectContentJpaRepository.save(contentList);
 	}
 	
 	/**

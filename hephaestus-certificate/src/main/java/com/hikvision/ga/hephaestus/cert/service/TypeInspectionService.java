@@ -1,10 +1,9 @@
 package com.hikvision.ga.hephaestus.cert.service;
 
-import com.hikvision.ga.hephaestus.cert.domain.InspectContent;
-import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
-import com.hikvision.ga.hephaestus.cert.domain.typeSearchResult;
-import com.hikvision.ga.hephaestus.cert.repository.InspectContentRepository;
-import com.hikvision.ga.hephaestus.cert.repository.TypeInspectionRepository;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -20,9 +19,12 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.hikvision.ga.hephaestus.cert.domain.InspectContent;
+import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
+import com.hikvision.ga.hephaestus.cert.domain.typeSearchResult;
+import com.hikvision.ga.hephaestus.cert.repository.InspectContentJpaRepository;
+import com.hikvision.ga.hephaestus.cert.repository.TypeInspectionJpaRepository;
+import com.hikvision.ga.hephaestus.cert.repository.TypeInspectionRepository;
 
 
 /**
@@ -36,20 +38,48 @@ public class TypeInspectionService {
 
   @Autowired
   private TypeInspectionRepository typeInspectionRepository;
+  
+  @Autowired
+  private TypeInspectionJpaRepository typeInspectionJpaRepository;
 
   @Autowired
-  private InspectContentRepository inspectContentRepository;
+  private InspectContentJpaRepository inspectContentJpaRepository;
 
   @Autowired
   private InspectContentService inspectContentService;
 
   /**
-   * 获取型检TypeInspection页
+   * 获取型检TypeInspection页，包括按照颁发日期筛选
    * @param pageNum 页码
    * @param pageSize 页容量
    * @param sortBy 排序字段
    * @param dir 排序方向
+   * @param start 颁发日期的起始时间
+   * @param end 颁发日期的结束时间
    * @return TypeInspection页
+   */
+  public Page<TypeInspection> getInspectionByPage(int pageNum, int pageSize, String sortBy,
+      int dir, Date start, Date end) {
+    Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
+    Pageable page = new PageRequest(pageNum, pageSize, new Sort(d, sortBy, "id"));
+    try {
+      // 默认计算结束时间的晚上最后一秒
+      Date endOfTheDay = new Date(end.getTime() + 1000 * 60 * 60 * 24 - 1);
+      Page<TypeInspection> p = typeInspectionJpaRepository.findTypeInspectionByTimeRange(start, endOfTheDay, page);
+      return p;
+    } catch (Exception e) {
+      logger.error("", e);
+      throw e;
+    }
+  }
+  
+  /**
+   * 返回所有日期的结果
+   * @param pageNum
+   * @param pageSize
+   * @param sortBy
+   * @param dir
+   * @return TypeInspection页结果
    */
   public Page<TypeInspection> getInspectionByPage(int pageNum, int pageSize, String sortBy,
       int dir) {
@@ -58,6 +88,11 @@ public class TypeInspectionService {
     return typeInspectionRepository.findAll(page);
   }
 
+  /**
+   * 存储
+   * @param typeInspection
+   * @return
+   */
   public TypeInspection save(TypeInspection typeInspection) {
     return typeInspectionRepository.save(typeInspection);
   }
@@ -67,7 +102,7 @@ public class TypeInspectionService {
   }
 
   public List<TypeInspection> findByDocNo(String docNo) {
-    return typeInspectionRepository.findByDocNo(docNo);
+    return typeInspectionJpaRepository.findByDocNo(docNo);
   }
 
   public void deleteTypeInspection(TypeInspection t) {
@@ -137,7 +172,7 @@ public class TypeInspectionService {
               throw e;
             }
           }
-          List<TypeInspection> thisDocNoList = typeInspectionRepository
+          List<TypeInspection> thisDocNoList = typeInspectionJpaRepository
               .findByDocNo(StringUtils.trim(r.getCell(docNoCol).getStringCellValue()));
           if (thisDocNoList.size() > 0) {
             /* if this docNo exists in db, find it and update other properties */
@@ -195,7 +230,7 @@ public class TypeInspectionService {
    */
   public TypeInspection saveTypeInspection(TypeInspection t, List<InspectContent> contentList) {
     if (contentList != null && contentList.size() > 0) {
-      inspectContentRepository.save(contentList);
+      inspectContentJpaRepository.save(contentList);
     }
     return typeInspectionRepository.save(t);
   }
@@ -217,9 +252,9 @@ public class TypeInspectionService {
     else if (contentList != null && contentList.size() > 0) {
       List<InspectContent> listInDB = inspectContentService.getContentsByInspectionId(inspectionId);
       if (listInDB.size() > 0) {
-        inspectContentRepository.deleteInBatch(listInDB);
+        inspectContentJpaRepository.deleteInBatch(listInDB);
       }
-      inspectContentRepository.save(contentList);
+      inspectContentJpaRepository.save(contentList);
     }
     return typeInspectionRepository.save(t);
   }
@@ -228,19 +263,23 @@ public class TypeInspectionService {
    * 模糊搜索关键字
    * @param fieldName 需要搜索的字段范围
    * @param keywordList 搜索字段相应关键词列表
+   * @param searchRelation 关键词检索和内容检索之间的关系，“或”或者“与”，默认为“与”
    * @param contentKeywordList 内容搜索关键词列表
+   * @param contentKeywordRelation 搜索内容关键字的关系，“或”或者“与”，默认为“与”
    * @return 搜索结果list
    *
    * @throws Exception
    */
   public List<typeSearchResult> searchTypeInspectionByPage(String fieldName, String[] keywordList,
-      String[] contentKeywordList) throws Exception {
-    return typeInspectionRepository.joinSearchTypeInspection(fieldName, keywordList,
-        contentKeywordList);
+      String searchRelation, String[] contentKeywordList, String contentKeywordRelation) throws Exception {
+    return typeInspectionRepository.joinSearchTypeInspection(fieldName, keywordList, searchRelation,
+        contentKeywordList, contentKeywordRelation);
   }
 
   /**
    * 删除单条记录
+   * @param id 
+   * @throws IllegalArgumentException 
    *
    * @throws Exception
    */

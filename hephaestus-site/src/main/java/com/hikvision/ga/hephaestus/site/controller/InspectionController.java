@@ -70,12 +70,14 @@ public class InspectionController {
    * @param pageSize 页大小 默认20条/页
    * @param sortBy 需要倒序排序的字段，默认为更新时间UpdateAt字段
    * @param direction <=0表示降序，>0为升序，默认为降序
+   * @param startTime 颁发日期的起始时间，选填
+   * @param endTime 颁发日期的结束时间
    * @return 包含型检数据对象的返回对象
    */
   @RequestMapping(value = "/list.do", method = RequestMethod.GET)
   @ResponseBody
   public ListResult getInspecionListByPage(Integer pageNum, Integer pageSize, String sortBy,
-      Integer direction) {
+      Integer direction, Long startTime, Long endTime) {
     int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
     int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
     int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
@@ -83,20 +85,43 @@ public class InspectionController {
       sortBy = SORTBY_AWARDDATE; // 默认按照颁发日期和ID排序倒序
     }
     ListResult res = new ListResult();
-    try {
-      Page<TypeInspection> p = typeInspectionService.getInspectionByPage(pn, ps, sortBy, dir);
-      if (null != p) {
-        res.setListContent(
-            new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
+    /* 如果选择了起止时间，则进行时间判断和转换 */
+    if (startTime != null && endTime != null) {
+      try {
+        Date start = new Date(startTime);
+        Date end = new Date(endTime);
+        if (start.after(end)) {
+          throw new Exception("时间先后有误");
+        }
+        Page<TypeInspection> p =
+            typeInspectionService.getInspectionByPage(pn, ps, sortBy, dir, start, end);
+        if (null != p) {
+          res.setListContent(new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(),
+              p.getContent()));
+        }
+        res.setCode(RetStatus.SUCCESS.getCode());
+        res.setMsg(RetStatus.SUCCESS.getInfo());
+      } catch (Exception e) {
+        logger.error("", e);
+        res.setCode(RetStatus.PARAM_ILLEGAL.getCode());
+        res.setMsg(RetStatus.PARAM_ILLEGAL.getInfo());
       }
-      res.setCode(RetStatus.SUCCESS.getCode());
-      res.setMsg(RetStatus.SUCCESS.getInfo());
-    } catch (Exception e) {
-      logger.error("", e);
-      res.setCode(RetStatus.SYSTEM_ERROR.getCode());
-      res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+      return res;
     }
-    return res;
+    // 如果起始和结束时间不符合要求
+    try {
+       Page<TypeInspection> p = typeInspectionService.getInspectionByPage(pn, ps, sortBy, dir);
+       if (null != p) {
+         res.setListContent(new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
+       }
+       res.setCode(RetStatus.SUCCESS.getCode());
+       res.setMsg(RetStatus.SUCCESS.getInfo());
+     } catch (Exception e) {
+        logger.error("", e);
+        res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+        res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+     }
+     return res;
   }
 
   /**
@@ -125,8 +150,8 @@ public class InspectionController {
       TypeInspection t = typeInspectionService.getTypeInspectionById(id);
       // 操作日志：记录信息
       OperationLogBuilder.build().operateObjectId(t.getId().toString())
-      .operateObjectKeys("model,name,docNo").operateObjectValues(t.getModel().toString() + ","
-          + t.getName().toString() + "," + t.getDocNo().toString());
+          .operateObjectKeys("model,name,docNo").operateObjectValues(t.getModel().toString() + ","
+              + t.getName().toString() + "," + t.getDocNo().toString());
       typeInspectionService.deleteTypeInspectionById(id);
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
@@ -350,7 +375,7 @@ public class InspectionController {
     }
     // 操作日志：记录id
     OperationLogBuilder.build().operateObjectId(request.getParameter("id"));
-    
+
     /* 查询对应的实体，并且将页面数据更新实体内容 */
     Long inspectionId = NumberUtils.toLong(request.getParameter("id"));
     TypeInspection t = null;
@@ -377,8 +402,8 @@ public class InspectionController {
         return res;
       }
       // 操作日志：记录条目信息
-      OperationLogBuilder.build().operateObjectKeys("model,name,docNo")
-          .operateObjectValues(t.getModel().toString() + "," + t.getName().toString() + "," + t.getDocNo().toString());
+      OperationLogBuilder.build().operateObjectKeys("model,name,docNo").operateObjectValues(
+          t.getModel().toString() + "," + t.getName().toString() + "," + t.getDocNo().toString());
       t = setTypeInspectionProperties(request, t); // 更新实体，包括文件名docFileName
       List<InspectContent> contentlist = null;
       if (file != null && !file.isEmpty()) {
@@ -394,9 +419,8 @@ public class InspectionController {
       res.setCode(RetStatus.SUCCESS.getCode());
       res.setMsg(RetStatus.SUCCESS.getInfo());
       // 操作结果：成功
-      OperationLogBuilder.build().operateObjectKeys("model,name,docNo")
-          .operateObjectValues(t.getModel().toString() + ","
-              + t.getName().toString() + "," + t.getDocNo().toString())
+      OperationLogBuilder.build().operateObjectKeys("model,name,docNo").operateObjectValues(
+          t.getModel().toString() + "," + t.getName().toString() + "," + t.getDocNo().toString())
           .operateResult(1);
     } catch (IOException e) {
       logger.error("", e);
@@ -495,7 +519,9 @@ public class InspectionController {
    * 
    * @param field 需要搜索的字段编码
    * @param keyword 关键词
+   * @param searchRelation 关键词检索和内容检索之间的关系，“或”或者“与”，默认为“与”
    * @param contentKeyword 内容搜索关键词
+   * @param contentKeywordRelation 搜索内容关键字的关系，“或”或者“与”，默认为“与”
    * @param pageNum 页码 默认为第一页
    * @param pageSize 页大小 默认20条/页
    * @param sortBy 需要倒序排序的字段，默认为更新时间UpdateAt字段
@@ -504,7 +530,7 @@ public class InspectionController {
    */
   @RequestMapping(value = "/search.do", method = RequestMethod.GET)
   @ResponseBody
-  public ListResult searchTypeInspection(Integer field, String keyword, String contentKeyword,
+  public ListResult searchTypeInspection(Integer field, String keyword, String searchRelation, String contentKeyword, String contentKeywordRelation,
       Integer pageNum, Integer pageSize, String sortBy, Integer direction) {
     int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
     int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
@@ -544,13 +570,23 @@ public class InspectionController {
           fieldName = "";
           break;
       }
-
     }
+    
     if (StringUtils.isBlank(keyword)) {
       keyword = "";
     }
     if (StringUtils.isBlank(contentKeyword)) {
       contentKeyword = "";
+    }
+    if (StringUtils.equalsIgnoreCase(searchRelation, "OR")) {
+      searchRelation = "OR";
+    } else{
+      searchRelation = "AND";
+    }
+    if (StringUtils.equalsIgnoreCase(contentKeywordRelation, "OR")) {
+      contentKeywordRelation = "OR";
+    } else{
+      contentKeywordRelation = "AND";
     }
 
     String[] keywordList = StringUtils.split(keyword);
@@ -559,7 +595,7 @@ public class InspectionController {
 
     try {
       List<typeSearchResult> p = typeInspectionService.searchTypeInspectionByPage(fieldName,
-          keywordList, contentKeywordList);
+          keywordList, searchRelation, contentKeywordList, contentKeywordRelation);
 
       Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
       Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy, "id"));

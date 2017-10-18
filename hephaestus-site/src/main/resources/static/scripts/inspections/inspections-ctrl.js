@@ -9,15 +9,30 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
             size: 10,
             totalElements: 0
         };
+
+        $scope.searchInput = {
+        	"field":"",
+        	"keyword":"",
+        	"searchRelation":"AND",
+        	"contentKeyword":"",
+        	"contentKeywordRelation":"AND"  //默认是与关系
+        };
+        
         getList($scope.pagination.page, $scope.pagination.size);
 
         $scope.onPageChange = function(page){
             $scope.pagination.page = page;
-            getList($scope.pagination.page, $scope.pagination.size);
+            getList($scope.pagination.page, $scope.pagination.size, $scope.timeRange.start, $scope.timeRange.end);
         };
  
-        function getList(page, size) {
-            var param = {pageNum:page,pageSize:size};
+        function getList(page, size, start, end) {
+            var param = {
+            	pageNum:page,
+            	pageSize:size,
+                startTime: start? Date.parse(start) : null,
+                endTime: end? Date.parse(end) : null
+            };
+            
             $scope.isLoading = true;
             $http.get('/inspections/list.do',{params:param}).success(function(res){
             	if(res.code==0){
@@ -43,9 +58,13 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
             })
         };
         
-        /** 
-         * 编辑单条数据
-         */
+        $scope.timeSearch = function(){
+        	getList($scope.pagination.page, $scope.pagination.size, $scope.timeRange.start, $scope.timeRange.end);
+        }
+        
+        /**
+		 * 编辑单条数据
+		 */
         $scope.edit = function(item){
             if(item){
                 $location.url('/inspections/edit?id='+item.id);
@@ -55,27 +74,21 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
             }
         };
         
-        /** 
-         * 查看详情
-         */
+        /**
+		 * 查看详情
+		 */
         $scope.view = function(item){
         	$location.url('/inspections/view?id='+item.id);
         }
-
-        $scope.searchInput = {
-        	"field":"",
-        	"keyword":"",
-        	"contentKeyword":""
-        };
         
-        /**  
-	     *   搜索
-	     */
+        /**
+		 * 搜索
+		 */
         $scope.search = function (input) {
         	if($scope.searchInput.keyword==''&&$scope.searchInput.contentKeyword=='')
         		Toastr.error('请输入至少一个关键字');
         	else
-        		$location.url('/inspections/search?f='+input.field+'&kw='+input.keyword+'&c='+input.contentKeyword);
+        		$location.url('/inspections/search?f='+input.field+'&kw='+input.keyword+'&sr='+input.searchRelation+'&c='+input.contentKeyword+'&cr='+input.contentKeywordRelation);
         };
         
         $scope.enterEvent = function(e) {
@@ -86,9 +99,9 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
             }
         }
         
-        /**  
-	     *   导入excel文件列表
-	     */
+        /**
+		 * 导入excel文件列表
+		 */
         $scope.importList = function () {
             var defer = $.Deferred();
 	         defer.progress(function(file){
@@ -97,14 +110,14 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
 	            $scope.$apply();
 	         });
 	        defer.params={
-	            accept:null //接收所有文件类型
+	            accept:null // 接收所有文件类型
 	        };
 	        FileUploadService.open('file',defer);
         };
         
-        /**  
-	     *  file upload
-	     */
+        /**
+		 * file upload
+		 */
         $scope.submit = function () {
         	$scope.isLoading = true;
             var defer = $q.defer();
@@ -164,7 +177,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
 		    });
 			// 弹窗在关闭的时候执行的
 			modalInstance.result.then(function () {
-				// $modalInstance.close 
+				// $modalInstance.close
 				$scope.isLoading = false;
 				$http.get('/inspections/delete.do',{params:{id:itemId}}).success(function(res){
 					if(res.code == 0){
@@ -183,7 +196,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
 	            	$scope.isLoading = false;
 	            });
 			}, function () {
-				// $modalInstance.dismiss 
+				// $modalInstance.dismiss
 				$scope.isLoading = false;
 			});
 	    };
@@ -192,25 +205,25 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
         	name: '全部',
         	value: ''
         }, {
-        	name:'产品型号', //model
+        	name:'产品型号', // model
         	value: '1'
         }, {
-        	name:'软件名称', //name
+        	name:'软件名称', // name
         	value: '2'
         }, {
-        	name:'测试类别', //testType
+        	name:'测试类别', // testType
         	value: '3'
         }, {
-        	name:'测试依据', //basis
+        	name:'测试依据', // basis
         	value: '4'
         }, {
-        	name:'文件编号', //docNo
+        	name:'文件编号', // docNo
         	value: '5'
         }, {
-        	name:'认证机构', //organization
+        	name:'认证机构', // organization
         	value: '6'
         }, {
-        	name:'备注', //remarks
+        	name:'备注', // remarks
         	value: '7'
-        }]
+        }];
     }]);

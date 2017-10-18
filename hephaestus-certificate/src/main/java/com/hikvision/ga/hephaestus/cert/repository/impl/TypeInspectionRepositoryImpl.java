@@ -1,18 +1,28 @@
 package com.hikvision.ga.hephaestus.cert.repository.impl;
 
-import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
-import com.hikvision.ga.hephaestus.cert.domain.typeSearchResult;
-import com.hikvision.ga.hephaestus.cert.repository.TypeInspectionRepository;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.*;
+import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
+import com.hikvision.ga.hephaestus.cert.domain.typeSearchResult;
+import com.hikvision.ga.hephaestus.cert.repository.TypeInspectionRepository;
 
+/**
+ * @author langyicong
+ *
+ */
 @Repository
 public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspection, Long>
     implements TypeInspectionRepository {
@@ -31,20 +41,16 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
   @PersistenceContext
   private EntityManager entityManager;
 
+  /**
+   * @param em EntityManager
+   */
   public TypeInspectionRepositoryImpl(EntityManager em) {
     super(TypeInspection.class, em);
   }
 
-  @SuppressWarnings("unchecked")
-  public List<TypeInspection> findByDocNo(String docNo) {
-    Query query = entityManager.createQuery("from TypeInspection where docNo=:docNo");
-    query.setParameter("docNo", docNo);
-    return query.getResultList();
-  }
-
   @SuppressWarnings({"unchecked"})
-  public List<typeSearchResult> joinSearchTypeInspection(String fieldName, String[] keywords,
-      String[] contentKeywords) {
+  public List<typeSearchResult> joinSearchTypeInspection(String fieldName, String[] keywords, String searchRelation,
+      String[] contentKeywords, String contentKeywordsRelation) {
     StringBuilder sqlString = new StringBuilder("SELECT ");
     for (int i = 0; i < tFieldsAll.length; i++) {
       if (i > 0)
@@ -61,33 +67,37 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
       }
     }
     sqlString.append(
-        " FROM type_inspection as T LEFT JOIN inspect_content as C ON T.id = C.inspection_id WHERE ");
+        " FROM type_inspection as T LEFT JOIN inspect_content as C ON T.id = C.inspection_id WHERE (");
 
     if (null != contentKeywords && contentKeywords.length > 0) {
       sqlString.append("(");
       /* 循环查询inspectContent全部三个关键字段 */
       for (int i = 0; i < cFields.length; i++) {
-        for (int j = 0; j < contentKeywords.length; j++) {
-          if (i > 0 || j > 0)
-            sqlString.append(" OR ");
+       if (i > 0)
+         sqlString.append(") OR ("); //所有字段查询，字段间固定OR关系
+       for (int j = 0; j < contentKeywords.length; j++) {
+          if (j > 0)
+            sqlString.append(" ").append(contentKeywordsRelation).append(" ");  //关键字之间关系由contentKeywordsRelation决定
           sqlString.append("lower(C.").append(toUnderline(cFields[i])).append(")");
           sqlString.append(" LIKE ").append("lower('%").append(contentKeywords[j]).append("%')");
         }
+        //sqlString.append(")");
       }
       sqlString.append(")");
     }
 
+    //如果关键字和内容关键字都不为空，用searchRelation逻辑链接查询语句
     if (null != keywords && keywords.length > 0) {
-      if (null != contentKeywords && contentKeywords.length > 0) {
-        sqlString.append(" AND ");
-      }
+      if (null != contentKeywords && contentKeywords.length > 0) 
+        sqlString.append(") ").append(searchRelation).append(" ");
+        //sqlString.append(" AND ");
       sqlString.append("(");
       if (StringUtils.isBlank(fieldName)) {
         /* 循环查询typeInspection全部关键字段 */
         for (int i = 0; i < tFields.length; i++) {
           for (int j = 0; j < keywords.length; j++) {
             if (i > 0 || j > 0)
-              sqlString.append(" OR ");
+              sqlString.append(" OR "); //查询typeInspection, OR关系
             sqlString.append("lower(T.").append(toUnderline(tFields[i])).append(")");
             sqlString.append(" LIKE ").append("lower('%").append(keywords[j]).append("%')");
           }
@@ -102,19 +112,22 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
         }
       }
       sqlString.append(")");
+    }else{
+      sqlString.append(") ");
     }
 
     System.out.println(sqlString);
     Query query = entityManager.createNativeQuery(sqlString.toString());
     List<Object[]> resObj = query.getResultList();
     List<typeSearchResult> searchResults = new ArrayList<typeSearchResult>();
+    //TODO 文字流形式改为表格形式
     if (resObj.size() > 0) {
       typeSearchResult s = new typeSearchResult();
       Long tId = -1L; // 存放上轮id
       int count = 0; // 存放搜索命中计数
       StringBuilder thisCase = new StringBuilder();
       for (Object[] objects : resObj) {
-        int i = 0;
+         /*int i = 0;
         System.out.println(objects[i++].toString()); // 0:id
         System.out.println(objects[i++].toString()); // 1:version
         System.out.println(objects[i++].toString()); // 2:certUrl
@@ -131,7 +144,7 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
         System.out.println(objects[i++].toString()); // 13:caseDescription
         System.out.println(objects[i++].toString()); // 14:caseName
         System.out.println(objects[i++].toString()); // 15:caseId
-
+*/
         /* 如果搜索结果中的tId与上轮不同 */
         if (tId != Long.parseLong(objects[0].toString())) {
           if (tId > 0L) { // 排除第一个
@@ -208,4 +221,15 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
 
     return sb.toString();
   }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<TypeInspection> findTypeInspectionByTimeRange(Date start, Date end) {
+    Query query = entityManager.createQuery(
+        "from TypeInspection where awardDate>=:start AND awardDate<=:end ORDER BY awardDate DESC");
+    query.setParameter("start", start);
+    query.setParameter("end", end);
+    return query.getResultList();
+  }
+
 }

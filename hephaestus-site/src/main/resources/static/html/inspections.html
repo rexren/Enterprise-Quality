@@ -14,43 +14,69 @@
 	            </div>
             
 				<div class="box-header">
-					<h3 class="box-title"></h3>
-					<div class="box-tools" style="left: 10px;">
-						<form class="form-inline">
-							<div class="btn-group" ng-if="authority=='ROLE_ADMIN'">
-								<button class="btn btn-default" ng-click="edit()">新增</button>
-								<button class="btn btn-primary" ng-click="importList()">{{fileName?'重新选择':'导入列表'}}</button>
-							</div>
-							
-							<div class="btn-group pull-right">
-								<button class="btn btn-default" ng-click="search(searchInput)">
-									<i class="glyphicon glyphicon-search"></i>
-								</button>
-							</div>
-							
-							<div class="form-group pull-right">
-								<label class="control-label">&emsp;</label>
-								<input type="text" class="form-control" placeholder="内容检索，空格分隔" ng-model="searchInput.contentKeyword" ng-keydown="enterEvent($event)">
-							</div>
-							
-							<div class="form-group pull-right">
-								<label class="control-label"> </label>
-								<input type="text" class="form-control" placeholder="输入关键字" ng-model="searchInput.keyword" ng-keydown="enterEvent($event)">
-							</div>
-							<div class="form-group pull-right">
-								<label class="control-label"></label>
-								<select class="form-control" style="width: 110px" ng-model="searchInput.field" ng-options="f.value as f.name for f in fields"></select>
-							</div>
-						</form>
-					</div>
+					<form class="form-inline">
+						<div class="btn-group" ng-if="authority=='ROLE_ADMIN'">
+							<button class="btn btn-default" ng-click="edit()">新增</button>
+							<button class="btn btn-primary" ng-click="importList()">{{fileName?'重新选择':'导入列表'}}</button>
+						</div>
+					</form>
 				</div>
-
 				<div class="box-header" ng-if="fileName" ng-if="authority=='ROLE_ADMIN'">
 					<span>{{fileName}}</span>
 					<button class="btn btn-default" ng-click="submit()">上传</button>
 					<button class="btn btn-danger" ng-click="removeFile()">删除</button>
 				</div>
-
+				
+				<div class ="box-header pull-right">
+					<form class="form-inline">
+						<div class="form-group">
+							<label class="control-label"></label>
+							<select class="form-control" style="width: 110px" ng-model="searchInput.field" ng-options="f.value as f.name for f in fields"></select>
+						</div>
+						<div class="form-group">
+							<label class="control-label"> </label>
+							<input type="text" class="form-control" placeholder="输入关键字" ng-model="searchInput.keyword" ng-keydown="enterEvent($event)">
+						</div>
+						<div class="form-group">
+							<select  class="form-control" ng-model="searchInput.searchRelation">
+								<option value="AND">与</option>
+								<option value="OR">或</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="内容检索 空格分隔" ng-model="searchInput.contentKeyword" ng-keydown="enterEvent($event)">
+						</div>
+						<div class="form-group">
+							<label class="control-label">关键字关系</label>
+							<select  class="form-control" ng-model="searchInput.contentKeywordRelation">
+								<option value="AND">与</option>
+								<option value="OR">或</option>
+							</select>
+						</div>
+						<div class="btn-group">
+							<button class="btn btn-default" ng-click="search(searchInput)">
+								<i class="glyphicon glyphicon-search"></i>
+							</button>
+						</div>
+					</form>
+				</div>
+				
+				<div class ="box-header pull-right">
+					<form class="form-inline">
+						<div class="form-group">
+							<label class="control-label">起始颁发日期</label>
+							<input type="date" name="endTime" class="form-control" ng-model="timeRange.start" ng-keydown="enterEvent($event)">
+						</div><div class="form-group">
+							<label class="control-label">&emsp;结束</label>
+							<input type="date" name="startTime" class="form-control" ng-model="timeRange.end" ng-keydown="enterEvent($event)">
+						</div>
+						<div class="btn-group">
+							<button class="btn btn-default" ng-click="timeSearch()">
+								<i class="glyphicon glyphicon-search"></i>
+							</button>
+						</div>
+					</form>
+				</div>
 				<div class="box-body">
 					<table class="table table-bordered table-hover">
 						<thead>

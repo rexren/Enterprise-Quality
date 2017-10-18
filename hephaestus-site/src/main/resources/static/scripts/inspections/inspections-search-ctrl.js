@@ -18,7 +18,9 @@ angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scop
         $scope.searchInput = {
         	'field': $location.search().f,
         	'keyword':$location.search().kw,
-        	'contentKeyword':$location.search().c
+        	'searchRelation':$location.search().sr,
+        	'contentKeyword':$location.search().c,
+        	'contentKeywordRelation':$location.search().cr
         };
         $scope.tkeywordsList=$scope.searchInput.keyword?$scope.searchInput.keyword.split(/\s+/):[];
         $scope.ckeywordsList=$scope.searchInput.contentKeyword?$scope.searchInput.contentKeyword.split(/\s+/):[];

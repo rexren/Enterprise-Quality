@@ -57,6 +57,9 @@ public class OperationLogController {
       try {
         Date start = new Date(startTime);
         Date end = new Date(endTime);
+        if(start.after(end)){
+          throw new Exception("时间先后有误");
+        }
         Page<OperationLog> p = operationLogService.findLogByTimeRange(pn, ps, sortBy, dir, start, end);
         if (null != p) {
           res.setListContent(
