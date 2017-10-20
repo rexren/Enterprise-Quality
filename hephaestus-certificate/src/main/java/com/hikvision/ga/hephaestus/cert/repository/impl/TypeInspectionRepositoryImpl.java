@@ -15,9 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.hikvision.ga.hephaestus.cert.domain.InspectContent;
 import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
-import com.hikvision.ga.hephaestus.cert.domain.typeSearchResult;
 import com.hikvision.ga.hephaestus.cert.repository.TypeInspectionRepository;
+import com.hikvision.ga.hephaestus.cert.support.TypeSearchResult;
 
 /**
  * @author langyicong
@@ -49,7 +50,7 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
   }
 
   @SuppressWarnings({"unchecked"})
-  public List<typeSearchResult> joinSearchTypeInspection(String fieldName, String[] keywords, String searchRelation,
+  public List<TypeSearchResult> joinSearchTypeInspection(String fieldName, String[] keywords, String searchRelation,
       String[] contentKeywords, String contentKeywordsRelation) {
     StringBuilder sqlString = new StringBuilder("SELECT ");
     for (int i = 0; i < tFieldsAll.length; i++) {
@@ -67,10 +68,10 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
       }
     }
     sqlString.append(
-        " FROM type_inspection as T LEFT JOIN inspect_content as C ON T.id = C.inspection_id WHERE (");
+        " FROM type_inspection as T LEFT JOIN inspect_content as C ON T.id = C.inspection_id WHERE ");
 
     if (null != contentKeywords && contentKeywords.length > 0) {
-      sqlString.append("(");
+      sqlString.append("((");
       /* 循环查询inspectContent全部三个关键字段 */
       for (int i = 0; i < cFields.length; i++) {
        if (i > 0)
@@ -119,15 +120,17 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
     System.out.println(sqlString);
     Query query = entityManager.createNativeQuery(sqlString.toString());
     List<Object[]> resObj = query.getResultList();
-    List<typeSearchResult> searchResults = new ArrayList<typeSearchResult>();
+    List<TypeSearchResult> searchResults = new ArrayList<TypeSearchResult>();
     //TODO 文字流形式改为表格形式
     if (resObj.size() > 0) {
-      typeSearchResult s = new typeSearchResult();
+      TypeSearchResult s = new TypeSearchResult();
       Long tId = -1L; // 存放上轮id
       int count = 0; // 存放搜索命中计数
       StringBuilder thisCase = new StringBuilder();
+      InspectContent c = new InspectContent();
       for (Object[] objects : resObj) {
-         /*int i = 0;
+        //对于每条检索结果
+/*        int i = 0;
         System.out.println(objects[i++].toString()); // 0:id
         System.out.println(objects[i++].toString()); // 1:version
         System.out.println(objects[i++].toString()); // 2:certUrl
@@ -139,11 +142,12 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
         System.out.println(objects[i++].toString()); // 8:basis
         System.out.println(objects[i++].toString()); // 9:docNo
         System.out.println(objects[i++].toString()); // 10:organization
-        System.out.println(objects[i++].toString()); // 11:remarks
-        System.out.println(objects[i++].toString()); // 12:contentId
+        System.out.println(objects[i++].toString()); // 11:remarks 空
+        System.out.println(objects[i++].toString()); // 12:content Id 
         System.out.println(objects[i++].toString()); // 13:caseDescription
         System.out.println(objects[i++].toString()); // 14:caseName
         System.out.println(objects[i++].toString()); // 15:caseId
+        System.out.println(objects[i++]); // 15:caseId
 */
         /* 如果搜索结果中的tId与上轮不同 */
         if (tId != Long.parseLong(objects[0].toString())) {
@@ -152,7 +156,7 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
             s.setCount(count); // 上一轮count
             searchResults.add(s); // 上个typeSearchResult对象存入列表
             /* another typeSearchResult */
-            s = new typeSearchResult();
+            s = new TypeSearchResult();
             thisCase.setLength(0); // 清空thisCase
             count = 0;
           }
@@ -172,9 +176,18 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
           t.setRemarks(objects[11].toString());
           s.setTypeInspection(t);
         }
-        if (null != objects[13]) {
-          thisCase.append(StringUtils.replaceAll(objects[14].toString(), "\n", " ") + " "
-              + objects[13].toString() + " || ");
+        // 检测项内容如果存在
+        if (null != objects[12]) {
+          /*表格风格*/
+          c.setCaseId(objects[12].toString());
+          c.setCaseDescription(objects[13].toString());
+          c.setCaseName(objects[14].toString());
+          c.setCaseId(objects[15].toString());
+          c.setRemarks(objects[16]==null? "":objects[16].toString());
+          s.addContent(c);
+          /*文本流风格*/
+          thisCase.append(c.getCaseId() + " " + StringUtils.replaceAll(c.getCaseName(), "\n", " ") + " "
+              + objects[13].toString() + " \n ");
         }
         count++;
       }
@@ -182,8 +195,8 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
       s.setCount(count); // 最后一轮count
       searchResults.add(s); // 最后一个typeSearchResult对象存入列表
     }
-    Collections.sort(searchResults, new Comparator<typeSearchResult>() {
-      public int compare(typeSearchResult t1, typeSearchResult t2) {
+    Collections.sort(searchResults, new Comparator<TypeSearchResult>() {
+      public int compare(TypeSearchResult t1, TypeSearchResult t2) {
         return t1.getCount() > t2.getCount() ? -1 : t1.getCount() < t2.getCount() ? 1 : 0;
       }
     });

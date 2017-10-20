@@ -1,20 +1,12 @@
 package com.hikvision.ga.hephaestus.site.controller;
 
-import com.hikvision.ga.hephaestus.cert.domain.InspectContent;
-import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
-import com.hikvision.ga.hephaestus.cert.domain.typeSearchResult;
-import com.hikvision.ga.hephaestus.cert.service.InspectContentService;
-import com.hikvision.ga.hephaestus.cert.service.TypeInspectionService;
-import com.hikvision.ga.hephaestus.site.cert.constant.BusinessType;
-import com.hikvision.ga.hephaestus.site.cert.constant.OperationAct;
-import com.hikvision.ga.hephaestus.site.logger.OperationLogBuilder;
-import com.hikvision.ga.hephaestus.site.logger.OperationLogIgnore;
-import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
-import com.hikvision.hepaestus.common.constant.RetStatus;
-import com.hikvision.hepaestus.common.support.AjaxResult;
-import com.hikvision.hepaestus.common.support.BaseResult;
-import com.hikvision.hepaestus.common.support.ListContent;
-import com.hikvision.hepaestus.common.support.ListResult;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -26,7 +18,11 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -37,11 +33,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
+import com.hikvision.ga.hephaestus.cert.domain.InspectContent;
+import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
+import com.hikvision.ga.hephaestus.cert.service.InspectContentService;
+import com.hikvision.ga.hephaestus.cert.service.TypeInspectionService;
+import com.hikvision.ga.hephaestus.cert.support.TypeSearchResult;
+import com.hikvision.ga.hephaestus.site.cert.constant.BusinessType;
+import com.hikvision.ga.hephaestus.site.cert.constant.OperationAct;
+import com.hikvision.ga.hephaestus.site.logger.OperationLogBuilder;
+import com.hikvision.ga.hephaestus.site.logger.OperationLogIgnore;
+import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
+import com.hikvision.hepaestus.common.constant.RetStatus;
+import com.hikvision.hepaestus.common.support.AjaxResult;
+import com.hikvision.hepaestus.common.support.BaseResult;
+import com.hikvision.hepaestus.common.support.ListContent;
+import com.hikvision.hepaestus.common.support.ListResult;
 
 /**
  * Created by rensu on 17/4/27.
@@ -594,14 +600,14 @@ public class InspectionController {
     String[] contentKeywordList = StringUtils.split(contentKeyword);
 
     try {
-      List<typeSearchResult> p = typeInspectionService.searchTypeInspectionByPage(fieldName,
+      List<TypeSearchResult> p = typeInspectionService.searchTypeInspectionByPage(fieldName,
           keywordList, searchRelation, contentKeywordList, contentKeywordRelation);
 
       Direction d = dir > 0 ? Direction.ASC : Direction.DESC;
       Pageable page = new PageRequest(pn, ps, new Sort(d, sortBy, "id"));
 
       if (null != p) {
-        PageImpl<typeSearchResult> resPage = new PageImpl<typeSearchResult>(p, page, p.size());
+        PageImpl<TypeSearchResult> resPage = new PageImpl<TypeSearchResult>(p, page, p.size());
         res.setListContent(new ListContent(resPage.getSize(), resPage.getTotalElements(),
             resPage.getTotalPages(), resPage.getContent()));
       }

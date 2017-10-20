@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
-import com.hikvision.ga.hephaestus.cert.domain.typeSearchResult;
+import com.hikvision.ga.hephaestus.cert.support.TypeSearchResult;
 
 /**
  * Created by rensu on 2017/4/22.
@@ -26,7 +26,7 @@ public interface TypeInspectionRepository extends JpaRepository<TypeInspection, 
    * @param contentKeywordRelation 搜索内容关键字的关系，“或”或者“与”，默认为“与”
    * @return 搜索结果列表
    */
-  public List<typeSearchResult> joinSearchTypeInspection(String fieldName, String[] keywordList,String searchRelation,
+  public List<TypeSearchResult> joinSearchTypeInspection(String fieldName, String[] keywordList,String searchRelation,
       String[] contentKeywordList, String contentKeywordRelation);
 
   /**

@@ -21,10 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hikvision.ga.hephaestus.cert.domain.InspectContent;
 import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
-import com.hikvision.ga.hephaestus.cert.domain.typeSearchResult;
 import com.hikvision.ga.hephaestus.cert.repository.InspectContentJpaRepository;
 import com.hikvision.ga.hephaestus.cert.repository.TypeInspectionJpaRepository;
 import com.hikvision.ga.hephaestus.cert.repository.TypeInspectionRepository;
+import com.hikvision.ga.hephaestus.cert.support.TypeSearchResult;
 
 
 /**
@@ -270,7 +270,7 @@ public class TypeInspectionService {
    *
    * @throws Exception
    */
-  public List<typeSearchResult> searchTypeInspectionByPage(String fieldName, String[] keywordList,
+  public List<TypeSearchResult> searchTypeInspectionByPage(String fieldName, String[] keywordList,
       String searchRelation, String[] contentKeywordList, String contentKeywordRelation) throws Exception {
     return typeInspectionRepository.joinSearchTypeInspection(fieldName, keywordList, searchRelation,
         contentKeywordList, contentKeywordRelation);

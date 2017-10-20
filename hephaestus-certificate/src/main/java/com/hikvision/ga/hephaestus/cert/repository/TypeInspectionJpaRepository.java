@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
-import com.hikvision.ga.hephaestus.cert.domain.typeSearchResult;
 
 /**
  * Created by rensu on 2017/4/22.

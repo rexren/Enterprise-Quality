@@ -18,6 +18,11 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
         	"contentKeywordRelation":"AND"  //默认是与关系
         };
         
+        $scope.timeRange = {
+        	"start":"",
+        	"end":""
+        };
+        
         getList($scope.pagination.page, $scope.pagination.size);
 
         $scope.onPageChange = function(page){
@@ -59,6 +64,12 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
         };
         
         $scope.timeSearch = function(){
+        	// 重置页码
+        	$scope.pagination = {
+                page: 1,
+                size: 10,
+                totalElements: 0
+            };
         	getList($scope.pagination.page, $scope.pagination.size, $scope.timeRange.start, $scope.timeRange.end);
         }
         
