@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hikvision.ga.hephaestus.cert.domain.InspectContent;
-import com.hikvision.ga.hephaestus.cert.repository.InspectContentJpaRepository;
-
-
+import com.hikvision.ga.hephaestus.cert.repository.InspectContentRepository;
 
 /**
  * Created by rensu on 17/4/28.
@@ -26,12 +24,12 @@ import com.hikvision.ga.hephaestus.cert.repository.InspectContentJpaRepository;
 public class InspectContentService {
 
     @Autowired
-    private InspectContentJpaRepository inspectContentJpaRepository;
+    private InspectContentRepository inspectContentRepository;
 
 
     public InspectContent getInspectContent(Long id) {
 
-        return inspectContentJpaRepository.findOne(id);
+        return inspectContentRepository.findOne(id);
     }
 
     /**
@@ -41,7 +39,7 @@ public class InspectContentService {
      * @return List<InspectContent> 查到的内容条目列表
      */
     public List<InspectContent> getContentsByInspectionId(Long inspectionId) {
-        List<InspectContent> res = inspectContentJpaRepository.findByInspectionIdOrderById(inspectionId);
+        List<InspectContent> res = inspectContentRepository.findByInspectionIdOrderById(inspectionId);
         return res;
     }
 
@@ -53,7 +51,7 @@ public class InspectContentService {
      */
     public void deleteByFK(Long inspectionId) {
         List<InspectContent> list = getContentsByInspectionId(inspectionId);
-        inspectContentJpaRepository.deleteInBatch(list);
+        inspectContentRepository.deleteInBatch(list);
     }
 
     /**
@@ -70,22 +68,20 @@ public class InspectContentService {
         if (getContentsByInspectionId(inspectionId) != null) {
             deleteByFK(inspectionId);
         }
-        inspectContentJpaRepository.save(contentList);
+        inspectContentRepository.save(contentList);
     }
 
 	public void save(List<InspectContent> contentList) {
-	  inspectContentJpaRepository.save(contentList);
+	  inspectContentRepository.save(contentList);
 	}
 	
 	/**
 	 * 导入检测报告工作表到list中
 	 * 
-	 * @param contentSheet:
-	 *            <检测项索引表>工作表
-	 * @param inspectionId:
-	 *            对应的型检id
+	 * @param contentSheet <检测项索引表>工作表
+	 * @param inspectionId 对应的型检id
 	 * @return list 检测项列表
-	 * @author langyicong
+	 * @throws InvalidFormatException 
 	 * @throws Exception
 	 */
 	public  List<InspectContent> importContentSheet(Sheet contentSheet, Long inspectionId) throws InvalidFormatException {

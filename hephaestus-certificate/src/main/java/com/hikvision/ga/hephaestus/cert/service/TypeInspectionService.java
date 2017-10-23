@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hikvision.ga.hephaestus.cert.domain.InspectContent;
 import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
-import com.hikvision.ga.hephaestus.cert.repository.InspectContentJpaRepository;
+import com.hikvision.ga.hephaestus.cert.repository.InspectContentRepository;
 import com.hikvision.ga.hephaestus.cert.repository.TypeInspectionJpaRepository;
 import com.hikvision.ga.hephaestus.cert.repository.TypeInspectionRepository;
 import com.hikvision.ga.hephaestus.cert.support.TypeSearchResult;
@@ -43,7 +43,7 @@ public class TypeInspectionService {
   private TypeInspectionJpaRepository typeInspectionJpaRepository;
 
   @Autowired
-  private InspectContentJpaRepository inspectContentJpaRepository;
+  private InspectContentRepository inspectContentRepository;
 
   @Autowired
   private InspectContentService inspectContentService;
@@ -230,7 +230,7 @@ public class TypeInspectionService {
    */
   public TypeInspection saveTypeInspection(TypeInspection t, List<InspectContent> contentList) {
     if (contentList != null && contentList.size() > 0) {
-      inspectContentJpaRepository.save(contentList);
+      inspectContentRepository.save(contentList);
     }
     return typeInspectionRepository.save(t);
   }
@@ -252,9 +252,9 @@ public class TypeInspectionService {
     else if (contentList != null && contentList.size() > 0) {
       List<InspectContent> listInDB = inspectContentService.getContentsByInspectionId(inspectionId);
       if (listInDB.size() > 0) {
-        inspectContentJpaRepository.deleteInBatch(listInDB);
+        inspectContentRepository.deleteInBatch(listInDB);
       }
-      inspectContentJpaRepository.save(contentList);
+      inspectContentRepository.save(contentList);
     }
     return typeInspectionRepository.save(t);
   }

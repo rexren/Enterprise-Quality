@@ -12,6 +12,8 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -48,7 +50,7 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
   public TypeInspectionRepositoryImpl(EntityManager em) {
     super(TypeInspection.class, em);
   }
-
+  
   @SuppressWarnings({"unchecked"})
   public List<TypeSearchResult> joinSearchTypeInspection(String fieldName, String[] keywords, String searchRelation,
       String[] contentKeywords, String contentKeywordsRelation) {
@@ -87,18 +89,19 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
       sqlString.append(")");
     }
 
-    //如果关键字和内容关键字都不为空，用searchRelation逻辑链接查询语句
+    //如果关键字和内容关键字都不为空，用searchRelation逻辑连接查询语句
     if (null != keywords && keywords.length > 0) {
       if (null != contentKeywords && contentKeywords.length > 0) 
         sqlString.append(") ").append(searchRelation).append(" ");
-        //sqlString.append(" AND ");
       sqlString.append("(");
       if (StringUtils.isBlank(fieldName)) {
         /* 循环查询typeInspection全部关键字段 */
         for (int i = 0; i < tFields.length; i++) {
+          if (i > 0)
+            sqlString.append(") OR ("); //TODO 这里固定或关系不合理，可能要改为INTERSECT或者UNION语句 -lyc
           for (int j = 0; j < keywords.length; j++) {
-            if (i > 0 || j > 0)
-              sqlString.append(" OR "); //查询typeInspection, OR关系
+            if (j > 0)
+              sqlString.append(" OR ");  
             sqlString.append("lower(T.").append(toUnderline(tFields[i])).append(")");
             sqlString.append(" LIKE ").append("lower('%").append(keywords[j]).append("%')");
           }
@@ -235,7 +238,7 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
     return sb.toString();
   }
 
-  @SuppressWarnings("unchecked")
+/*  @SuppressWarnings("unchecked")
   @Override
   public List<TypeInspection> findTypeInspectionByTimeRange(Date start, Date end) {
     Query query = entityManager.createQuery(
@@ -245,4 +248,5 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
     return query.getResultList();
   }
 
+*/
 }

@@ -3,8 +3,8 @@
 angular.module('enterprise-quality').controller('sideBarCtrl',
     function($scope, $rootScope, $http, $location){
 		$scope.userName = $rootScope.user.name;
-    	$scope.headerText = '检索分类';
-    	$scope.menu = [
+
+    	$rootScope.menu = [
     		{
     			title: '更新记录',
     			href: '/updatelogs',
@@ -28,17 +28,27 @@ angular.module('enterprise-quality').controller('sideBarCtrl',
     		}
     	];
     	
-    	for(var i=0;i<$scope.menu.length;i++){
-    		var pattern = RegExp("\\"+$scope.menu[i].href);
-    		if(pattern.test($location.url())){
-    			$scope.menu[i].active = true;
+    	
+    	$rootScope.$on('$routeChangeStart', function(event, toState, toParams, fromState, fromParams){
+    		for(var i=0;i<$rootScope.menu.length;i++){
+    			var pattern = RegExp("\\"+$rootScope.menu[i].href);
+    			if(pattern.test($location.url())){
+    				$rootScope.menu[i].active = true;
+    			}else{
+    				$rootScope.menu[i].active = false;
+    			}
+    		}
+    	})
+    	
+    	$scope.change = function(index){
+    		//如果目标=当前位置，则刷新
+    		for(var i=0;i<$rootScope.menu.length;i++){
+    			var pattern = RegExp("\\"+$rootScope.menu[i].href);
+    			if(pattern.test($location.url())& i==index){
+    				location.reload();
+    			}
     		}
     	}
     	
-    	$scope.change = function(index){
-    		for(var i=0;i<$scope.menu.length;i++){
-    			$scope.menu[i].active = (i==index)? true: false;
-        	}
-    	}
     
     });

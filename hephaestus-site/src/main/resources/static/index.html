@@ -53,7 +53,7 @@
 			</nav>
 	    </header>
 
-		<aside class="main-sidebar"  ng-controller="sideBarCtrl">
+		<aside class="main-sidebar" ng-controller="sideBarCtrl">
 			<section class="sidebar">
 				<!-- Sidebar user panel -->
 				<div class="user-panel">
@@ -67,7 +67,7 @@
 				</div>
 
 				<ul class="sidebar-menu">
-					<li class="header" ng-bind="headerText"></li>
+					<!-- <li class="header" ng-bind="headerText"></li> -->
 					<li ng-repeat="m in menu track by $index" ng-click="change($index)" 
 						class="{{m.active?'active':''}}">
 						<a ng-href="#{{m.href}}"> 

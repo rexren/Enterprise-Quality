@@ -13,7 +13,10 @@ import org.springframework.stereotype.Repository;
 import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
 
 /**
- * Created by rensu on 2017/4/22.
+ * @Description: 型检数据JPA
+ * @author langyicong
+ * @date 2017年10月23日
+ * @modify {原因} by langyicong 2017年10月23日
  */
 @Repository
 public interface TypeInspectionJpaRepository extends JpaRepository<TypeInspection, Long> {

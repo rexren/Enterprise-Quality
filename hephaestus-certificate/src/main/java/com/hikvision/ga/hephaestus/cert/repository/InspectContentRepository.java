@@ -7,24 +7,19 @@ import org.springframework.stereotype.Repository;
 
 import com.hikvision.ga.hephaestus.cert.domain.InspectContent;
 
-
 /**
- * Created by rensu on 17/4/28.
+ * @Description: 检测报告内容
+ * @author langyicong
+ * @date 2017年10月23日 
+ * @modify {原因} by langyicong 2017年10月23日
  */
 @Repository
-public interface InspectContentJpaRepository extends JpaRepository<InspectContent, Long> {
+public interface InspectContentRepository extends JpaRepository<InspectContent, Long> {
 
 	/**
 	 * @param inspectionId
 	 * @return InspectContent列表
 	 */
 	public List<InspectContent> findByInspectionIdOrderById(Long inspectionId);
-
-	/**
-	 * @param id
-	 * @return
-	 * @throws Exception
-	 */
-	//public InspectContent findOneByInspectionId(Long id) throws Exception;
 
 }
