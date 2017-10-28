@@ -13,18 +13,20 @@
 			<outputDirectory>/config</outputDirectory>
 			<includes>
 				<include>application.properties</include>
-				<include>application-dev.properties</include>
-				<include>application-product.properties</include>
 				<include>logback.xml</include>
 			</includes>
+			<directoryMode>0755</directoryMode>
+			<fileMode>0644</fileMode>
 		</fileSet>
 		<fileSet>
 			<directory>${project.basedir}\src\assembly\temp</directory>
 			<outputDirectory>/temp</outputDirectory>
+			<directoryMode>0755</directoryMode>
 		</fileSet>
 		<fileSet>
 			<directory>${project.basedir}\src\assembly\logs</directory>
 			<outputDirectory>/logs</outputDirectory>
+			<directoryMode>0755</directoryMode>
 		</fileSet>
 		<fileSet>
 			<directory>${project.basedir}\src\bin</directory>
@@ -32,13 +34,8 @@
 			<includes>
 				<include>**/*</include>
 			</includes>
-		</fileSet>
-		<fileSet>
-			<directory>${project.basedir}\src\desc</directory>
-			<outputDirectory>/</outputDirectory>
-			<includes>
-				<include>base_info.xml</include>
-			</includes>
+			<directoryMode>0755</directoryMode>
+			<fileMode>0755</fileMode>
 		</fileSet>
 		<fileSet>
 			<directory>${project.build.directory}</directory>
@@ -46,6 +43,7 @@
 			<includes>
 				<include>${project.artifactId}-${project.version}.jar</include>
 			</includes>
+			<fileMode>0755</fileMode>
 		</fileSet>
 	</fileSets>
 	<dependencySets>
@@ -53,6 +51,7 @@
 			<useProjectArtifact>false</useProjectArtifact>
 			<outputDirectory>/lib</outputDirectory>
 			<scope>runtime</scope>
+			<directoryMode>0755</directoryMode>
 		</dependencySet>
 	</dependencySets>
 </assembly>
