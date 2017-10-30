@@ -26,7 +26,7 @@
 							<tbody ng-repeat="item in viewList">
 								<tr>
 									<th>序号</th>
-									<th>产品型号</th>
+									<th style="min-width: 80px;">产品型号</th>
 									<th style="min-width: 80px;">软件名称</th>
 									<th>软件版本</th>
 									<th style="min-width: 60px;">测试类别</th>
@@ -37,7 +37,7 @@
 									<th style="min-width: 80px;">链接</th>
 									<th style="min-width: 60px;">认证机构</th>
 									<th style="min-width: 60px;">备注</th>
-									<th style="min-width: 60px;">关键字匹配数</th>
+									<th style="min-width: 60px;">匹配指数</th>
 									<th style="min-width: 50px;">操作</th>
 								</tr>
 								<tr>
@@ -62,10 +62,23 @@
 										<a href="javascript:void(0)" class="btn-link-danger" ng-click="delete(item.typeInspection.id)" ng-if="authority=='ROLE_ADMIN'">删除</a>
 									</td>
 								</tr>
-								<tr ng-if="searchInput.contentKeyword">
+								<!-- <tr ng-if="searchInput.contentKeyword">
 									<td colspan="13" style="max-height:60px; overflow:hidden;text-overflow:ellipsis;">
 										<p ng-bind-html="item.casesCut | highlight: ckeywordsList"></p>
 									</td>
+								</tr> -->
+								<tr ng-if="item.contentList">
+									<th colspan="1"> </th>
+									<th colspan="1">用例编号</th>
+									<th colspan="2">用例名称</th>
+									<th colspan="9">用例描述</th>
+									<td>操作</td>
+								</tr>
+								<tr ng-if="item.contentList" ng-repeat="case in item.contentList">
+									<th colspan="1"> </th>
+									<td colspan="1" ng-bind-html="case.caseId | highlight: ckeywordsList"></td>
+									<td colspan="2" ng-bind-html="case.caseName | highlight: ckeywordsList"></td>
+									<td colspan="9" ng-bind-html="case.caseDescription | highlight: ckeywordsList"></td>
 									<td>
 		                            	<a ng-href="#/inspections/view?id={{item.typeInspection.id}}&f={{searchField}}&kw={{searchInput.keyword}}&c={{searchInput.contentKeyword}}&v=2" target="_blank">查看</a>
 									</td>

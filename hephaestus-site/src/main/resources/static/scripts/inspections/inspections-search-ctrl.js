@@ -53,7 +53,7 @@ angular.module('enterprise-quality').controller('InspectionsSearchCtrl', ['$scop
 		            		if($scope.list[i].cases.length>500){
 		            			$scope.list[i].casesCut +='...';
 		            		}
-		            		/* 链接判断 */
+		            		
 		            		$scope.list[i].typeInspection.hasURL = /.*(http|https).*/.test($scope.list[i].typeInspection.certUrl)? true : false;  
 		            	}
 		            	$scope.viewList = $scope.list.slice(($scope.pagination.page-1)* $scope.pagination.size, ($scope.pagination.page)* $scope.pagination.size);
