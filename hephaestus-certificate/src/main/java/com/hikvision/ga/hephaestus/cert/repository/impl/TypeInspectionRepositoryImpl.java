@@ -102,7 +102,7 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
             sqlString.append(") OR ("); //TODO 这里固定或关系不合理，可能要改为INTERSECT或者UNION语句 -lyc
           for (int j = 0; j < keywords.length; j++) {
             if (j > 0)
-              sqlString.append(" OR "); //TODO 这里固定或关系不合理，可能要改为INTERSECT或者UNION语句 -lyc  
+              sqlString.append(" OR "); //TODO 这里固定或关系不合理，可能要改为INTERSECT或者UNION语句 -lyc
             sqlString.append("lower(T.").append(toUnderline(tFields[i])).append(")");
             sqlString.append(" LIKE ").append("lower('%").append(keywords[j]).append("%')");
           }
@@ -116,12 +116,14 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
           sqlString.append(" LIKE ").append("lower('%").append(keywords[j]).append("%')");
         }
       }
-      sqlString.append("))");
+      if (null != contentKeywords && contentKeywords.length > 0) 
+        sqlString.append(")");
+      sqlString.append(")");
     }else{
-      sqlString.append(") ");
+      sqlString.append(")");
     }
 
-    System.out.println(sqlString);
+    // System.out.println(sqlString);
     Query query = entityManager.createNativeQuery(sqlString.toString());
     List<Object[]> resObj = query.getResultList();
     List<TypeSearchResult> searchResults = new ArrayList<TypeSearchResult>();
@@ -246,15 +248,4 @@ public class TypeInspectionRepositoryImpl extends SimpleJpaRepository<TypeInspec
     return sb.toString();
   }
 
-/*  @SuppressWarnings("unchecked")
-  @Override
-  public List<TypeInspection> findTypeInspectionByTimeRange(Date start, Date end) {
-    Query query = entityManager.createQuery(
-        "from TypeInspection where awardDate>=:start AND awardDate<=:end ORDER BY awardDate DESC");
-    query.setParameter("start", start);
-    query.setParameter("end", end);
-    return query.getResultList();
-  }
-
-*/
 }

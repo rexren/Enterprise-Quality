@@ -1,15 +1,9 @@
 package com.hikvision.ga.hephaestus.site.controller;
 
-import com.hikvision.ga.hephaestus.site.cert.constant.BusinessType;
-import com.hikvision.ga.hephaestus.site.cert.constant.OperationAct;
-import com.hikvision.ga.hephaestus.site.logger.OperationLogBuilder;
-import com.hikvision.ga.hephaestus.site.logger.OperationLogIgnore;
-import com.hikvision.ga.hephaestus.site.security.domain.SystemUser;
-import com.hikvision.ga.hephaestus.site.security.domain.UserRole;
-import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
-import com.hikvision.ga.hephaestus.site.security.service.UserRoleService;
-import com.hikvision.hepaestus.common.constant.RetStatus;
-import com.hikvision.hepaestus.common.support.UserResult;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
+import com.hikvision.ga.hephaestus.site.logger.OperationLogIgnore;
+import com.hikvision.ga.hephaestus.site.security.domain.SystemUser;
+import com.hikvision.ga.hephaestus.site.security.domain.UserRole;
+import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
+import com.hikvision.ga.hephaestus.site.security.service.UserRoleService;
+import com.hikvision.hepaestus.common.constant.RetStatus;
+import com.hikvision.hepaestus.common.support.UserResult;
 
 
 /**
@@ -65,9 +61,8 @@ public class HomeController {
 
   /**
    * 获取当前用户
-   *
-   * @param request
-   * @return user
+   * @param user 
+   * @return UserResult
    */
   @OperationLogIgnore
   @ResponseBody
