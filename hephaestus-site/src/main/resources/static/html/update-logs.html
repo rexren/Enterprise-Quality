@@ -41,8 +41,8 @@
                             <th style="min-width: 50px;">模块</th>
                             <th style="min-width: 50px;">操作</th>
                             <th style="min-width: 80px;">内容</th>
-                            <th style="min-width: 60px;">操作结果</th>
-                            <th style="min-width: 100px;">用户ip</th>
+                            <!-- <th style="min-width: 60px;">操作结果</th>
+                            <th style="min-width: 100px;">用户ip</th> -->
                             <th>查看</th>
                         </tr>
                         </thead>
@@ -58,8 +58,8 @@
                             <td>{{item.act}}</td>
                             <td ng-if="item.href"><a ng-href="#{{item.href}}">{{item.operateObjectValues}}</a></td>
                             <td ng-if="!item.href">{{item.operateObjectValues}}</td>
-                            <td>{{item.operateResult==1?"成功":"失败"}}</td>
-                            <td>{{item.ip}}</td>
+                            <!-- <td>{{item.operateResult==1?"成功":"失败"}}</td>
+                            <td>{{item.ip}}</td> -->
                             <td>
                             	<div class="btn-group-vertical btn-group">
                             		<button class="btn btn-link" ng-click="view(item)">详情</button>

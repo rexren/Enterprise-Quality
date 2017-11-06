@@ -48,7 +48,7 @@ public class InspectContent implements Serializable{
     /**
      * 用例说明/技术标准/技术要求
      */
-    @Column
+    @Column(length=2048)
     private String caseDescription;
 
     /**

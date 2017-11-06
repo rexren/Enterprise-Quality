@@ -244,19 +244,24 @@ public class TypeInspectionService {
    */
   public TypeInspection updateTypeInspection(TypeInspection t, List<InspectContent> contentList) {
     Long inspectionId = t.getId();
-    /* 若文件名为空，删除子表 */
-    if (StringUtils.isBlank(t.getDocFilename())) {
-      inspectContentService.deleteByFK(inspectionId);
-    }
-    /* 如果contentList不为空，删除后插入 */
-    else if (contentList != null && contentList.size() > 0) {
-      List<InspectContent> listInDB = inspectContentService.getContentsByInspectionId(inspectionId);
-      if (listInDB.size() > 0) {
-        inspectContentRepository.deleteInBatch(listInDB);
+    try {
+      /* 若文件名为空，删除子表 */
+      if (StringUtils.isBlank(t.getDocFilename())) {
+        inspectContentService.deleteByFK(inspectionId);
       }
-      inspectContentRepository.save(contentList);
+      /* 如果contentList不为空，删除后插入 */
+      else if (contentList != null && contentList.size() > 0) {
+        List<InspectContent> listInDB = inspectContentService.getContentsByInspectionId(inspectionId);
+        if (listInDB.size() > 0) {
+          inspectContentRepository.deleteInBatch(listInDB);
+        }
+        inspectContentRepository.save(contentList);
+      }
+      return typeInspectionRepository.save(t);
+    } catch (Exception e) {
+      logger.error("", e);
+      throw e;
     }
-    return typeInspectionRepository.save(t);
   }
 
   /**
