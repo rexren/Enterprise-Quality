@@ -13,9 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.ldap.core.support.LdapContextSource;
-
-import com.hikvision.ga.hephaestus.site.security.service.AuthProviderBuilder;
 
 /**
  * spring security配置
@@ -68,8 +65,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // auth.userDetailsService(userDetailsService);
     // auth.authenticationProvider(authenticationProvider());
     // ldap认证
-    auth.ldapAuthentication().userSearchBase("ou=people").userSearchFilter("(uid={0})")
-    .groupSearchBase("ou=groups").groupSearchFilter("member={0}").contextSource().url("ldap://10.1.7.88:389");
+    auth
+    .ldapAuthentication()  //FIXME http://blog.csdn.net/t894690230/article/details/52928369
+    .userSearchBase("ou=people")
+    .userSearchFilter("(uid={0})")
+    .groupSearchBase("ou=groups")
+    .groupSearchFilter("member={0}")
+    .contextSource().url("ldap://10.1.7.88:389");
   }
 
 }
