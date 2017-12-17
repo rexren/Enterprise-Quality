@@ -15,7 +15,7 @@ import javax.naming.directory.InitialDirContext;
 public class AdDomain {
 
   public static void main(String[] args) {
-    // Test: add your OA user name and password
+    // Test: add your OA user name (English full name) and password
     int a = ADconnect("xxxxx", "xxxx");
     System.out.println(a);
   }

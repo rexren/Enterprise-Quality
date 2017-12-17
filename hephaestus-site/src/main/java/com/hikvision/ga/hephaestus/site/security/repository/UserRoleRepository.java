@@ -7,9 +7,15 @@ import org.springframework.stereotype.Repository;
 
 import com.hikvision.ga.hephaestus.site.security.domain.UserRole;
 
+/**
+ * @Description: UserRoleRepository
+ * @author langyicong
+ */
 @Repository
 public interface UserRoleRepository extends JpaRepository<UserRole, Long> {
 
-	List<UserRole> getRoleByUserId(Long userId);
+  List<UserRole> getRoleByUserId(Long userId);
+
+  List<UserRole> findRoleByUserName(String username);
 
 }

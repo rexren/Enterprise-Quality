@@ -1,5 +1,7 @@
 package com.hikvision.ga.hephaestus.site.security.config;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,19 +61,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .defaultSuccessUrl("/login-success", true).permitAll().and().logout().permitAll();
   }
 
+  @Resource(name="authenticatorProviderBuilder")
+  private AuthenticatorProviderBuilder authenticatorProviderBuilder; 
+
   // Whatever the Function name is
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     // auth.userDetailsService(userDetailsService);
     // auth.authenticationProvider(authenticationProvider());
     // ldap认证
-    auth
-    .ldapAuthentication()  //FIXME http://blog.csdn.net/t894690230/article/details/52928369
-    .userSearchBase("ou=people")
-    .userSearchFilter("(uid={0})")
-    .groupSearchBase("ou=groups")
-    .groupSearchFilter("member={0}")
-    .contextSource().url("ldap://10.1.7.88:389");
-  }
+    // http://blog.csdn.net/t894690230/article/details/52928369
+    auth.authenticationProvider(authenticatorProviderBuilder.getAuthenticationProvider()); 
+    }
 
 }
