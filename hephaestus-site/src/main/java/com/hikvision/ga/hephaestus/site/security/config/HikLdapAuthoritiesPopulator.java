@@ -23,11 +23,8 @@ import com.hikvision.ga.hephaestus.site.security.repository.UserRoleRepository;
 @Scope("prototype")
 public class HikLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator {
 
-  @Resource(name = "userInfoDAO")
-  private UserRoleRepository userInfoDAO;
-
   private List<UserRole> roles;
-
+  
   @Override
   public Collection<? extends GrantedAuthority> getGrantedAuthorities(DirContextOperations arg0,
       String arg1) {

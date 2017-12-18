@@ -23,13 +23,13 @@ public class UserAD {
     private static final String LDAP_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
     private static final String LDAP_URL = "ldap://10.1.7.88:389";
     private static final String LDAP_DOMAIN = "dc=***,dc=***";
-    private static final String PUBLIC_ACCOUNT = "oa-username";
-    private static final String PUBLIC_PASSWORD = "oa-password";
+    private static final String PUBLIC_ACCOUNT = "langyicong";
+    private static final String PUBLIC_PASSWORD = "xxxxx";
 
     public static void main(String[] args) throws NamingException {
         UserAD userAD = new UserAD();
 
-        NamingEnumeration<SearchResult> en = userAD.searchBySortName("kt94", 
+        NamingEnumeration<SearchResult> en = userAD.searchBySortName("langyicong", 
                 "name", "***", "***", "***", "***", "***", "***", "***");
         // NamingEnumeration<SearchResult> en = userAD.searchBySortName("kt94");
 
@@ -65,7 +65,7 @@ public class UserAD {
             }
         }
 
-        boolean authenticate = userAD.authenticate("kttt", "111");
+        boolean authenticate = userAD.authenticate("langyicong", "xxxx");
         System.out.println("authenticate: " + authenticate);
     }
 

@@ -48,11 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable(); // 禁用csrf
-    http.authorizeRequests() // 配置安全策略
-        /* ANT通配符说明:? 匹配任何单字符; * 匹配0或者任意数量的字符; ** 匹配0或者更多的目录 */
-        .antMatchers("/logout").permitAll().antMatchers("/bootstrap/**/*.*").permitAll()
-        .antMatchers("/plugins/**/*.*").permitAll().antMatchers("/dist/**/*.*").permitAll()
-        .antMatchers("/scripts/global/login-ctrl.js").permitAll().anyRequest().authenticated() // 其余的所有请求都需要验证
+    http.authorizeRequests().antMatchers("/logout").permitAll().antMatchers("/bootstrap/**/*.*")
+        .permitAll().antMatchers("/plugins/**/*.*").permitAll().antMatchers("/dist/**/*.*")
+        .permitAll().antMatchers("/scripts/global/login-ctrl.js").permitAll().anyRequest()
+        .authenticated() // 其余的所有请求都需要验证
         .and().formLogin().loginPage("/login")
         /*
          * boolean alwaysUse = true - the defaultSuccesUrl should be used after authentication
@@ -61,17 +60,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .defaultSuccessUrl("/login-success", true).permitAll().and().logout().permitAll();
   }
 
-  @Resource(name="authenticatorProviderBuilder")
-  private AuthenticatorProviderBuilder authenticatorProviderBuilder; 
+  @Resource(name = "authenticatorProviderBuilder")
+  private AuthenticatorProviderBuilder authenticatorProviderBuilder;
 
-  // Whatever the Function name is
+  /**
+   * 配置认证方式
+   * 
+   * @param auth
+   * @throws Exception Whatever the Function name is
+   */
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     // auth.userDetailsService(userDetailsService);
     // auth.authenticationProvider(authenticationProvider());
     // ldap认证
     // http://blog.csdn.net/t894690230/article/details/52928369
-    auth.authenticationProvider(authenticatorProviderBuilder.getAuthenticationProvider()); 
-    }
+    auth.authenticationProvider(authenticatorProviderBuilder.getAuthenticationProvider());
+  }
 
 }

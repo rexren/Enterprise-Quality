@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.springframework.security.core.GrantedAuthority;
-
 /**
  * 权限表
  * 用户和角色可以有一对多的关系，因此可以将用户和角色分成两张表

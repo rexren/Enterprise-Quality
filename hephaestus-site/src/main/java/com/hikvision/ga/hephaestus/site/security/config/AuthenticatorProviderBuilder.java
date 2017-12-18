@@ -2,8 +2,7 @@ package com.hikvision.ga.hephaestus.site.security.config;
 
 import java.util.Properties;
 
-import javax.annotation.Resource;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,10 +13,11 @@ import org.springframework.stereotype.Service;
 @Service("authenticatorProviderBuilder")
 @Scope("prototype")
 public class AuthenticatorProviderBuilder {
-  @Resource(name = "ldapAuthoritiesPopulator")
+  
+  @Autowired
   HikLdapAuthoritiesPopulator ldapAuthoritiesPopulator;
 
-  @Resource(name = "profileSetting")
+  @Autowired
   Properties setting;
 
   public AuthenticationProvider getAuthenticationProvider() {
