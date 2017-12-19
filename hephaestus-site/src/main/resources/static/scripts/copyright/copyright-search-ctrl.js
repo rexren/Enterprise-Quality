@@ -2,7 +2,7 @@
 
 angular.module('enterprise-quality').controller('CopyrightSearchCtrl', ['$scope','$rootScope','$location','$http','$modal','$q','toastr',
     function($scope, $rootScope, $location, $http, $modal, $q, Toastr){
-	$scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
+	$scope.authority = $rootScope.user.role;
     $scope.pagination = {
         page: 1,
         size: 20,

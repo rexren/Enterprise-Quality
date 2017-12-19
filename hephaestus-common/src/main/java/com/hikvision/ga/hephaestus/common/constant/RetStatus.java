@@ -1,4 +1,4 @@
-package com.hikvision.hepaestus.common.constant;
+package com.hikvision.ga.hephaestus.common.constant;
 
 public enum RetStatus {
 	/* 请求成功 */

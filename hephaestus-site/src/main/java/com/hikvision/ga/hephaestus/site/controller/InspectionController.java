@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,16 +39,18 @@ import com.hikvision.ga.hephaestus.cert.domain.TypeInspection;
 import com.hikvision.ga.hephaestus.cert.service.InspectContentService;
 import com.hikvision.ga.hephaestus.cert.service.TypeInspectionService;
 import com.hikvision.ga.hephaestus.cert.support.TypeSearchResult;
+import com.hikvision.ga.hephaestus.common.constant.RetStatus;
+import com.hikvision.ga.hephaestus.common.support.AjaxResult;
+import com.hikvision.ga.hephaestus.common.support.BaseResult;
+import com.hikvision.ga.hephaestus.common.support.ListContent;
+import com.hikvision.ga.hephaestus.common.support.ListResult;
 import com.hikvision.ga.hephaestus.site.cert.constant.BusinessType;
+import com.hikvision.ga.hephaestus.site.cert.constant.HikRole;
 import com.hikvision.ga.hephaestus.site.cert.constant.OperationAct;
 import com.hikvision.ga.hephaestus.site.logger.OperationLogBuilder;
 import com.hikvision.ga.hephaestus.site.logger.OperationLogIgnore;
-import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
-import com.hikvision.hepaestus.common.constant.RetStatus;
-import com.hikvision.hepaestus.common.support.AjaxResult;
-import com.hikvision.hepaestus.common.support.BaseResult;
-import com.hikvision.hepaestus.common.support.ListContent;
-import com.hikvision.hepaestus.common.support.ListResult;
+import com.hikvision.ga.hephaestus.site.security.annotation.HikRoleAccess;
+import com.hikvision.ga.hephaestus.site.security.service.HikUserService;
 
 /**
  * Created by rensu on 17/4/27.
@@ -67,7 +70,7 @@ public class InspectionController {
   private InspectContentService inspectContentService;
 
   @Autowired
-  private SystemUserService systemUserService;
+  private HikUserService hikUserService;
 
   /**
    * 获取公检&国标文件列表页
@@ -116,18 +119,19 @@ public class InspectionController {
     }
     // 如果起始和结束时间不符合要求
     try {
-       Page<TypeInspection> p = typeInspectionService.getInspectionByPage(pn, ps, sortBy, dir);
-       if (null != p) {
-         res.setListContent(new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
-       }
-       res.setCode(RetStatus.SUCCESS.getCode());
-       res.setMsg(RetStatus.SUCCESS.getInfo());
-     } catch (Exception e) {
-        logger.error("", e);
-        res.setCode(RetStatus.SYSTEM_ERROR.getCode());
-        res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
-     }
-     return res;
+      Page<TypeInspection> p = typeInspectionService.getInspectionByPage(pn, ps, sortBy, dir);
+      if (null != p) {
+        res.setListContent(
+            new ListContent(p.getSize(), p.getTotalElements(), p.getTotalPages(), p.getContent()));
+      }
+      res.setCode(RetStatus.SUCCESS.getCode());
+      res.setMsg(RetStatus.SUCCESS.getInfo());
+    } catch (Exception e) {
+      logger.error("", e);
+      res.setCode(RetStatus.SYSTEM_ERROR.getCode());
+      res.setMsg(RetStatus.SYSTEM_ERROR.getInfo());
+    }
+    return res;
   }
 
   /**
@@ -136,7 +140,7 @@ public class InspectionController {
    * @param id 型检id
    * @return 操作状态
    */
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @HikRoleAccess(roles = HikRole.ADMIN)
   @RequestMapping(value = "/delete.do", method = RequestMethod.GET)
   @ResponseBody
   public BaseResult deleteInspecionById(Long id) {
@@ -257,7 +261,7 @@ public class InspectionController {
    * @return res 返回状态
    * @author langyicong
    */
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @HikRoleAccess(roles = HikRole.ADMIN)
   @RequestMapping(value = "/save.do", method = RequestMethod.POST)
   @ResponseBody
   public BaseResult saveInspectionForm(@RequestBody MultipartFile file,
@@ -362,7 +366,7 @@ public class InspectionController {
    * @param request 其他表单参数
    * @return 成功与否的结果
    */
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @HikRoleAccess(roles = HikRole.ADMIN)
   @RequestMapping(value = "/update.do", method = RequestMethod.POST)
   @ResponseBody
   public BaseResult updateInspection(@RequestBody MultipartFile file, HttpServletRequest request) {
@@ -514,10 +518,19 @@ public class InspectionController {
       t.setCertUrl(StringUtils.trim(request.getParameter("certUrl")));
       t.setOrganization(request.getParameter("organization"));
       t.setRemarks(request.getParameter("remarks"));
-      t.setOperator(systemUserService.getCurrentUsername());
+      t.setOperator(getUserName(request));
       t.setUpdateAt(new Date());
     }
     return t;
+  }
+  
+  private static String getUserName(HttpServletRequest request){
+    if(null == request.getSession().getAttribute("SPRING_SECURITY_CONTEXT")){
+      return "";
+    }
+    SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession().getAttribute("SPRING_SECURITY_CONTEXT");
+    String userName = securityContextImpl.getAuthentication().getName();
+    return userName;
   }
 
   /**
@@ -536,8 +549,9 @@ public class InspectionController {
    */
   @RequestMapping(value = "/search.do", method = RequestMethod.GET)
   @ResponseBody
-  public ListResult searchTypeInspection(Integer field, String keyword, String searchRelation, String contentKeyword, String contentKeywordRelation,
-      Integer pageNum, Integer pageSize, String sortBy, Integer direction) {
+  public ListResult searchTypeInspection(Integer field, String keyword, String searchRelation,
+      String contentKeyword, String contentKeywordRelation, Integer pageNum, Integer pageSize,
+      String sortBy, Integer direction) {
     int pn = pageNum == null ? 0 : pageNum.intValue() - 1;
     int ps = pageSize == null ? 20 : pageSize.intValue(); // 默认20条/页
     int dir = direction == null ? 0 : (direction.intValue() <= 0 ? 0 : 1); // 默认为降序
@@ -577,7 +591,7 @@ public class InspectionController {
           break;
       }
     }
-    
+
     if (StringUtils.isBlank(keyword)) {
       keyword = "";
     }
@@ -586,12 +600,12 @@ public class InspectionController {
     }
     if (StringUtils.equalsIgnoreCase(searchRelation, "OR")) {
       searchRelation = "OR";
-    } else{
+    } else {
       searchRelation = "AND";
     }
     if (StringUtils.equalsIgnoreCase(contentKeywordRelation, "OR")) {
       contentKeywordRelation = "OR";
-    } else{
+    } else {
       contentKeywordRelation = "AND";
     }
 

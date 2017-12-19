@@ -1,0 +1,48 @@
+{
+	"authorities": [],
+	"details": {
+		"remoteAddress": "10.6.130.16",
+		"sessionId": "171f0256-34fa-47ab-97bf-70957129fb24"
+	},
+	"authenticated": true,
+	"credentials": "ST-3875822-0TFYUEviTvPeVEmitKQ5-sso.hikvision.com",
+	"principal": {
+		"id": null,
+		"name": null,
+		"username": "langyicong",
+		"password": "ST-3875822-0TFYUEviTvPeVEmitKQ5-sso.hikvision.com",
+		"authorities": [],
+		"enabled": true,
+		"accountNonLocked": true,
+		"accountNonExpired": true,
+		"credentialsNonExpired": true
+	},
+	"userDetails": {
+		"id": null,
+		"name": null,
+		"username": "langyicong",
+		"password": "ST-3875822-0TFYUEviTvPeVEmitKQ5-sso.hikvision.com",
+		"authorities": [],
+		"enabled": true,
+		"accountNonLocked": true,
+		"accountNonExpired": true,
+		"credentialsNonExpired": true
+	},
+	"keyHash": -489966553,
+	"assertion": {
+		"validFromDate": 1513576961818,
+		"validUntilDate": null,
+		"authenticationDate": 1513576961818,
+		"attributes": {
+			
+		},
+		"principal": {
+			"name": "langyicong",
+			"attributes": {
+				
+			}
+		},
+		"valid": true
+	},
+	"name": "langyicong"
+}

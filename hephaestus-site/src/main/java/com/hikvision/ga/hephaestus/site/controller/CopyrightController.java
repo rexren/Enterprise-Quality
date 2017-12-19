@@ -18,18 +18,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hikvision.ga.hephaestus.cert.domain.Copyright;
 import com.hikvision.ga.hephaestus.cert.service.CopyrightService;
+import com.hikvision.ga.hephaestus.common.constant.RetStatus;
+import com.hikvision.ga.hephaestus.common.support.AjaxResult;
+import com.hikvision.ga.hephaestus.common.support.BaseResult;
+import com.hikvision.ga.hephaestus.common.support.ListContent;
+import com.hikvision.ga.hephaestus.common.support.ListResult;
 import com.hikvision.ga.hephaestus.site.cert.constant.BusinessType;
+import com.hikvision.ga.hephaestus.site.cert.constant.HikRole;
 import com.hikvision.ga.hephaestus.site.cert.constant.OperationAct;
 import com.hikvision.ga.hephaestus.site.logger.OperationLogBuilder;
-import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
-import com.hikvision.hepaestus.common.constant.RetStatus;
-import com.hikvision.hepaestus.common.support.AjaxResult;
-import com.hikvision.hepaestus.common.support.BaseResult;
-import com.hikvision.hepaestus.common.support.ListContent;
-import com.hikvision.hepaestus.common.support.ListResult;
+import com.hikvision.ga.hephaestus.site.security.annotation.HikRoleAccess;
+import com.hikvision.ga.hephaestus.site.security.service.HikUserService;
 
 /**
- * 双证controller TODO 完善日志操作
+ * 双证controller
  * 
  * @author langyicong
  *
@@ -46,7 +48,7 @@ public class CopyrightController {
   private CopyrightService copyrightService;
 
   @Autowired
-  private SystemUserService systemUserService;
+  private HikUserService hikUserService;
 
   /**
    * 获取双证列表页
@@ -90,7 +92,7 @@ public class CopyrightController {
    * @param id 型检id
    * @return 操作状态
    */
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @HikRoleAccess(roles = HikRole.ADMIN)
   @RequestMapping(value = "/delete.do", method = RequestMethod.GET)
   @ResponseBody
   public BaseResult deleteCopyrightById(Long id) {
@@ -172,7 +174,7 @@ public class CopyrightController {
    * @return res 返回状态
    * @author langyicong
    */
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @HikRoleAccess(roles = HikRole.ADMIN)
   @RequestMapping(value = "/save.do", method = RequestMethod.POST)
   @ResponseBody
   public BaseResult saveCopyright(HttpServletRequest request) {
@@ -225,7 +227,7 @@ public class CopyrightController {
    * @return res 返回状态
    * @author langyicong
    */
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @HikRoleAccess(roles = HikRole.ADMIN)
   @RequestMapping(value = "/update.do", method = RequestMethod.POST)
   @ResponseBody
   public BaseResult updateCopyright(HttpServletRequest request) {
@@ -331,7 +333,7 @@ public class CopyrightController {
     c.setCdOrganization(StringUtils.trim(request.getParameter("cdOrganization")));
     c.setModel(StringUtils.trim(request.getParameter("model")));
     c.setCharge(StringUtils.trim(request.getParameter("charge")));
-    c.setOperator(systemUserService.getCurrentUsername());
+    c.setOperator(hikUserService.getCurrentUsername(request));
 
     return c;
   }

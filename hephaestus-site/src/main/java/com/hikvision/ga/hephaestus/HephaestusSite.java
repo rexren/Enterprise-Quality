@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * 主类
  *
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "com.hikvision.ga.common.boot", "com.hikvision.ga.hephaestus"})
 @EnableTransactionManagement // 启动事务管理
 @EnableWebSecurity // 启用web安全
 public class HephaestusSite implements CommandLineRunner {

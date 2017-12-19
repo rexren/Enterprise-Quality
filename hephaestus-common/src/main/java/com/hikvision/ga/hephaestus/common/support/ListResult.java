@@ -1,4 +1,4 @@
-package com.hikvision.hepaestus.common.support;
+package com.hikvision.ga.hephaestus.common.support;
 
 public class ListResult extends BaseResult {
 	private ListContent list; //返回的数据内容

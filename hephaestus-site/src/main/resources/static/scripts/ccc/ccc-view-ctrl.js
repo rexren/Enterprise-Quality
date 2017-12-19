@@ -3,7 +3,7 @@
 angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootScope','$location','$http','$q','toastr',
     function($scope, $rootScope, $location, $http, $q, Toastr){
 	/*initialization*/
-	$scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
+	$scope.authority = $rootScope.user.role;
 	$scope.isLoading = false;
     $scope.digest = {
 		"docNo":"",

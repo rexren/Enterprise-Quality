@@ -5,15 +5,15 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.hikvision.ga.hephaestus.site.security.domain.UserRole;
+import com.hikvision.ga.hephaestus.site.security.domain.HikUser;
 
 /**
  * @Description: UserRoleRepository
  * @author langyicong
  */
 @Repository
-public interface UserRoleRepository extends JpaRepository<UserRole, Long> {
+public interface HikUserRepository extends JpaRepository<HikUser, Long> {
 
-  List<UserRole> getRoleByUserId(Long userId);
-
+  List<HikUser> findByUserName(String userName);
+  
 }

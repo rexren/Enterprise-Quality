@@ -1,4 +1,4 @@
-package com.hikvision.hepaestus.common.support;
+package com.hikvision.ga.hephaestus.common.support;
 
 /**
  * 文件成功上传后的结果，包括基本返回信息和三张表的导入数据量

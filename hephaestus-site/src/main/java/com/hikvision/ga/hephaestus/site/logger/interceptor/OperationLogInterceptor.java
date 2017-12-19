@@ -64,8 +64,7 @@ public class OperationLogInterceptor extends HandlerInterceptorAdapter {
     OperationLogIgnore methodAnnotation = method.getMethodAnnotation(OperationLogIgnore.class);
 
     OperationLog OperationLog = OperationLogHolder.getOperationLog();
-    // 类和方法上都没有配置ignore的注解，则记录日志；
-    //TODO 能够过滤/error等配置忽略url
+    // 类和方法上都没有配置ignore的注解，则记录日志
     if (null == classAnnotation && null == methodAnnotation && null != OperationLog) {
       // 开始记录日志
       // 如果必填信息没有填写，则拦截的URL以便定位日志来源模块
@@ -80,8 +79,7 @@ public class OperationLogInterceptor extends HandlerInterceptorAdapter {
         if (context != null) {
           operationLogService = context.getBean(OperationLogService.class);
         }
-      }
-      if (operationLogService != null) {
+      } else {
         operationLogService.save(OperationLog);
       }
 
@@ -95,13 +93,11 @@ public class OperationLogInterceptor extends HandlerInterceptorAdapter {
    * @return
    */
   private static String getUserName(HttpServletRequest request){
-    System.out.println(request.getRequestURL());
     if(null == request.getSession().getAttribute("SPRING_SECURITY_CONTEXT")){
       return "";
     }
     SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession().getAttribute("SPRING_SECURITY_CONTEXT");
     String userName = securityContextImpl.getAuthentication().getName();
-    System.out.println("Username: " + userName);
     return userName;
   }
 

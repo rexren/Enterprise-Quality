@@ -3,7 +3,7 @@
 angular.module('enterprise-quality')
     .controller('CopyrightCtrl',['$scope','$rootScope','$location','$http','$modal','$q','toastr','FileUploadService',
         function($scope, $rootScope, $location, $http, $modal, $q, Toastr, FileUploadService){
-    	$scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
+    	$scope.authority = $rootScope.user.role;
     	$scope.pagination = {
             page: 1,
             size: 10,

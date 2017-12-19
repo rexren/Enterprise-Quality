@@ -1,18 +1,13 @@
-package com.hikvision.hepaestus.common.support;
+package com.hikvision.ga.hephaestus.common.support;
 
 import java.util.List;
 
 public class UserResult extends BaseResult{
-	private long id;
+  
 	private String name;
+	
 	private List<String> roles;
 	
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
 	public String getName() {
 		return name;
 	}
@@ -28,5 +23,9 @@ public class UserResult extends BaseResult{
 	public UserResult() {
 		super();
 	}
-	
+  public UserResult(String name, List<String> roles) {
+    super();
+    this.name = name;
+    this.roles = roles;
+  }
 }

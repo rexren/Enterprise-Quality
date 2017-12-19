@@ -2,7 +2,7 @@
 
 angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope','$rootScope', '$location', '$http', '$q', 'toastr', 'FileUploadService', 'common',
     function($scope,$rootScope, $location, $http, $q, Toastr, FileUploadService, Common) {
-		$scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
+		$scope.authority = $rootScope.user.role;
 		$scope.isLoading = false;
     	if($scope.authority!='ROLE_ADMIN'){
 			$location.path('/unauthorized');
@@ -127,12 +127,7 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
                     	Toastr.success('保存成功');
                     	$location.url('/inspections');
                     } else {
-                    	if(res.msg){
-        	        		Toastr.error(res.msg);
-        	        	} else {
-        	        		Toastr.error('登录过期，请刷新重新登录');
-        	        		window.location.href='/login';
-        	        	}
+                    	Toastr.error(res.msg);
                     }
                     $scope.isLoading = false;
                 }).error(function(res, status, headers, config){

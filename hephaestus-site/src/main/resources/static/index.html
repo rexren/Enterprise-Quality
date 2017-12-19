@@ -134,7 +134,7 @@
 	        })
 	    ).then(function(res){
 	    	if(res.code == 0){
-	    		window.user = res; //用户全部信息
+	    		window.user = res.data; //用户全部信息
 	 	        angular.bootstrap(document.body, ['enterprise-quality']);  // 手动初始化angular
 	    	} else{
 	    		alert('网站初始化失败：'+res.msg);

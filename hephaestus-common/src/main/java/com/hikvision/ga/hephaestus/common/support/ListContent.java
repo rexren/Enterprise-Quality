@@ -1,4 +1,4 @@
-package com.hikvision.hepaestus.common.support;
+package com.hikvision.ga.hephaestus.common.support;
 
 import java.util.List;
 

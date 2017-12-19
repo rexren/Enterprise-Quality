@@ -2,7 +2,7 @@
 
 angular.module('enterprise-quality').controller('CopyrightViewCtrl', ['$scope', '$rootScope', '$location', '$http', '$q', 'toastr',
     function($scope, $rootScope, $location, $http, $q, Toastr) {
-	$scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
+	$scope.authority = $rootScope.user.role;
 	$scope.isLoading = false;
     /*initialization*/
     $scope.digest = {

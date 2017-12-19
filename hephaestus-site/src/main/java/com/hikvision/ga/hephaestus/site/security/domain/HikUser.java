@@ -9,11 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * 权限表
- * 用户和角色可以有一对多的关系，因此可以将用户和角色分成两张表
+ * 用户权限表
 */
 @Entity
-public class UserRole implements Serializable {
+public class HikUser implements Serializable {
 	
 	/**
 	 * serialVersionUID
@@ -27,11 +26,14 @@ public class UserRole implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	/**
+	 * 用户角色，只有一个
+	 */
 	@Column
 	private String role;
 	
 	@Column
-	private Long userId;
+	private String userName;
 	
 	public Long getId() {
 		return id;
@@ -44,22 +46,26 @@ public class UserRole implements Serializable {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	
-	public Long getUserId() {
-		return userId;
-	}
-	
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
 
-	public UserRole() {
-	}
-	
-	public UserRole(UserRole userRole) {
-		this.id=userRole.getId();
-		this.role = userRole.getRole();
-		this.userId = userRole.getUserId();
-	}
-	
+	public String getUserName() {
+    return userName;
+  }
+
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public HikUser() {
+    super();
+  }
+
+  public HikUser(String role, String userName) {
+    super();
+    this.role = role;
+    this.userName = userName;
+  }
 }

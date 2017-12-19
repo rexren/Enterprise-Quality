@@ -2,7 +2,8 @@
 
 angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$rootScope','$location','$http','$modal','$q','toastr','FileUploadService','common',
     function($scope, $rootScope, $location, $http, $modal, $q, Toastr, FileUploadService, Common){
-        $scope.authority = $rootScope.user.roles?$rootScope.user.roles[0]: null;
+
+        $scope.authority = $rootScope.user.role;
         $scope.isLoading = false;
 		$scope.pagination = {
             page: 1,
@@ -15,7 +16,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
         	"keyword":"",
         	"searchRelation":"AND",
         	"contentKeyword":"",
-        	"contentKeywordRelation":"AND"  //默认是与关系
+        	"contentKeywordRelation":"AND"  // 默认是与关系
         };
         
         $scope.timeRange = {
@@ -151,16 +152,18 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
                 	if(res.msg){
     	        		Toastr.error(res.msg);
     	        	} else {
+    	        	    console.log(res);
     	        		Toastr.error('登录过期，请刷新重新登录');
-    	        		window.location.href='/login';
+    	        		//window.location.href='/';
     	        	}
                 }
             	$scope.isLoading = false;
             }).error(function(res) {
             	$scope.isLoading = false;
+            	console.log(res);
             	Toastr.error('网络错误');
                 defer.reject();
-                window.location.href='/login';
+                //window.location.href='/login';
             });
             return defer.promise;
         };
@@ -191,6 +194,7 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
 				// $modalInstance.close
 				$scope.isLoading = false;
 				$http.get('/inspections/delete.do',{params:{id:itemId}}).success(function(res){
+					console.log(res);
 					if(res.code == 0){
 						Toastr.success('删除成功');
 						getList($scope.pagination.page, $scope.pagination.size);

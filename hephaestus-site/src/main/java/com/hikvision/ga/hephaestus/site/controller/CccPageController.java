@@ -18,16 +18,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hikvision.ga.hephaestus.cert.domain.CccPage;
 import com.hikvision.ga.hephaestus.cert.service.CccPageService;
+import com.hikvision.ga.hephaestus.common.constant.RetStatus;
+import com.hikvision.ga.hephaestus.common.support.AjaxResult;
+import com.hikvision.ga.hephaestus.common.support.BaseResult;
+import com.hikvision.ga.hephaestus.common.support.ListContent;
+import com.hikvision.ga.hephaestus.common.support.ListResult;
 import com.hikvision.ga.hephaestus.site.cert.constant.BusinessType;
+import com.hikvision.ga.hephaestus.site.cert.constant.HikRole;
 import com.hikvision.ga.hephaestus.site.cert.constant.OperationAct;
 import com.hikvision.ga.hephaestus.site.logger.OperationLogBuilder;
 import com.hikvision.ga.hephaestus.site.logger.OperationLogIgnore;
-import com.hikvision.ga.hephaestus.site.security.service.SystemUserService;
-import com.hikvision.hepaestus.common.constant.RetStatus;
-import com.hikvision.hepaestus.common.support.AjaxResult;
-import com.hikvision.hepaestus.common.support.BaseResult;
-import com.hikvision.hepaestus.common.support.ListContent;
-import com.hikvision.hepaestus.common.support.ListResult;
+import com.hikvision.ga.hephaestus.site.security.annotation.HikRoleAccess;
+import com.hikvision.ga.hephaestus.site.security.service.HikUserService;
 
 
 /**
@@ -47,7 +49,7 @@ public class CccPageController {
   private CccPageService cccPageService;
 
   @Autowired
-  private SystemUserService systemUserService;
+  private HikUserService hikUserService;
 
   /**
    * CCC列表页
@@ -91,7 +93,7 @@ public class CccPageController {
    * @param id 型检id
    * @return 操作状态
    */
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @HikRoleAccess(roles = HikRole.ADMIN)
   @RequestMapping(value = "/delete.do", method = RequestMethod.GET)
   @ResponseBody
   public BaseResult deleteCopyrightById(Long id) {
@@ -174,7 +176,7 @@ public class CccPageController {
    * @return res 返回状态
    * @author langyicong
    */
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @HikRoleAccess(roles = HikRole.ADMIN)
   @RequestMapping(value = "/save.do", method = RequestMethod.POST)
   @ResponseBody
   public BaseResult saveCccPage(HttpServletRequest request) {
@@ -232,7 +234,7 @@ public class CccPageController {
    * @return res 返回状态
    * @author langyicong
    */
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @HikRoleAccess(roles = HikRole.ADMIN)
   @RequestMapping(value = "/update.do", method = RequestMethod.POST)
   @ResponseBody
   public BaseResult updateCccPage(HttpServletRequest request) {
@@ -330,7 +332,7 @@ public class CccPageController {
     c.setOrganization(StringUtils.trim(request.getParameter("organization")));
     c.setRemarks(StringUtils.trim(request.getParameter("remarks")));
     c.setUrl(StringUtils.trim(request.getParameter("url")));
-    c.setOperator(systemUserService.getCurrentUsername());
+    c.setOperator(hikUserService.getCurrentUsername(request));
     return c;
   }
 
