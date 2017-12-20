@@ -36,15 +36,17 @@ angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScop
             } else {
             	if(res.msg){
 	        		Toastr.error(res.msg);
-	        	} else {
-	        		Toastr.error('登录过期，请刷新重新登录');
-	        		window.location.href='/login';
 	        	}
             }
             $scope.isLoading = false;
         }).error(function(res, status) {
-        	Toastr.error("getListByAjax error: " + status);
-        	$scope.isLoading = false;
+            $scope.isLoading = false;
+            if(status==401 && res && res.type == -1){
+                Toastr.error('登录过期，请刷新重新登录');
+                window.location.href='/';
+            } else{                 
+                Toastr.error("系统错误");
+            }
         })
     }
 
@@ -134,8 +136,13 @@ angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScop
             }
             $scope.isLoading = false;
         }).error(function(res) {
-            Toastr.error('Submit ajax failure');
             $scope.isLoading = false;
+            if(status==401 && res && res.type == -1){
+                Toastr.error('登录过期，请刷新重新登录');
+                window.location.href='/';
+            } else{                 
+                Toastr.error("系统错误");
+            }
         });
         return defer.promise;
     };
@@ -178,8 +185,13 @@ angular.module('enterprise-quality').controller('CccCtrl', ['$scope', '$rootScop
 		        	}
 				}
 			}).error(function(res, status, headers, config) {
-            	Toastr.error("AjaxError: "+ status);
-            	$scope.isLoading = false;
+			    $scope.isLoading = false;
+                if(status==401 && res && res.type == -1){
+                    Toastr.error('登录过期，请刷新重新登录');
+                    window.location.href='/';
+                } else{                 
+                    Toastr.error("系统错误");
+                }
             });
 		}, function () {
 			// $modalInstance.dismiss 

@@ -2,7 +2,8 @@
 
 angular.module('enterprise-quality').controller('sideBarCtrl',
     function($scope, $rootScope, $http, $location){
-		$scope.userName = $rootScope.user.name;
+    
+		$scope.userName = $rootScope.user? $rootScope.user.userName:null;
 
     	$rootScope.menu = [
     		{

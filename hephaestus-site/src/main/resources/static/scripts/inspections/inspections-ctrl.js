@@ -53,14 +53,18 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
             		if(res.msg){
     	        		Toastr.error(res.msg);
     	        	} else {
-    	        		Toastr.error('登录过期，请刷新重新登录');
-    	        		window.location.href='/login';
+    	        		window.location.href='/';
     	        	}
             	}
             	$scope.isLoading = false;
             }).error(function(res, status, headers, config){
-            	Toastr.error("网络错误");
-            	$scope.isLoading = false;
+                $scope.isLoading = false;
+            	if(status==401 && res && res.type == -1){
+            	    Toastr.error('登录过期，请刷新重新登录');
+                    window.location.href='/';
+            	} else{            	    
+            	    Toastr.error("系统错误");
+            	}
             })
         };
         
@@ -75,8 +79,8 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
         }
         
         /**
-		 * 编辑单条数据
-		 */
+         * 编辑单条数据
+         */
         $scope.edit = function(item){
             if(item){
                 $location.url('/inspections/edit?id='+item.id);
@@ -87,15 +91,15 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
         };
         
         /**
-		 * 查看详情
-		 */
+         * 查看详情
+         */
         $scope.view = function(item){
         	$location.url('/inspections/view?id='+item.id);
         }
         
         /**
-		 * 搜索
-		 */
+         * 搜索
+         */
         $scope.search = function (input) {
         	if($scope.searchInput.keyword==''&&$scope.searchInput.contentKeyword=='')
         		Toastr.error('请输入至少一个关键字');
@@ -112,8 +116,8 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
         }
         
         /**
-		 * 导入excel文件列表
-		 */
+         * 导入excel文件列表
+         */
         $scope.importList = function () {
             var defer = $.Deferred();
 	         defer.progress(function(file){
@@ -128,8 +132,8 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
         };
         
         /**
-		 * file upload
-		 */
+         * file upload
+         */
         $scope.submit = function () {
         	$scope.isLoading = true;
             var defer = $q.defer();
@@ -154,16 +158,19 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
     	        	} else {
     	        	    console.log(res);
     	        		Toastr.error('登录过期，请刷新重新登录');
-    	        		//window.location.href='/';
+    	        		// window.location.href='/';
     	        	}
                 }
             	$scope.isLoading = false;
             }).error(function(res) {
-            	$scope.isLoading = false;
-            	console.log(res);
-            	Toastr.error('网络错误');
+                $scope.isLoading = false;
+                if(status==401 && res && res.type == -1){
+                    Toastr.error('登录过期，请刷新重新登录');
+                    window.location.href='/';
+                } else{                 
+                    Toastr.error("系统错误");
+                }
                 defer.reject();
-                //window.location.href='/login';
             });
             return defer.promise;
         };
@@ -174,8 +181,8 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
 		};
 		
 		/**
-		 * 删除条目
-		 */
+         * 删除条目
+         */
 		$scope.delete = function(itemId) {
 			// 打开弹窗
 			var modalInstance = $modal.open({
@@ -207,8 +214,13 @@ angular.module('enterprise-quality').controller('InspectionsCtrl', ['$scope','$r
 						$scope.isLoading = false;
 					}
 				}).error(function(res, status, headers, config) {
-	            	Toastr.error("AjaxError: "+ status);
-	            	$scope.isLoading = false;
+				    $scope.isLoading = false;
+	                if(status==401 && res && res.type == -1){
+	                    Toastr.error('登录过期，请刷新重新登录');
+	                    window.location.href='/';
+	                } else{                 
+	                    Toastr.error("系统错误");
+	                }
 	            });
 			}, function () {
 				// $modalInstance.dismiss

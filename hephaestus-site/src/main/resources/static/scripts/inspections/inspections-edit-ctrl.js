@@ -63,8 +63,13 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
             	}
             	$scope.isLoading = false;
             }).error(function(res, status, headers, config) {
-            	Toastr.error("AjaxError: "+ status);
-            	$scope.isLoading = false;
+                $scope.isLoading = false;
+                if(status==401 && res && res.type == -1){
+                    Toastr.error('登录过期，请刷新重新登录');
+                    window.location.href='/';
+                } else{                 
+                    Toastr.error("系统错误");
+                }
             });
             targetUrl = '/inspections/update.do';
         }
@@ -131,9 +136,13 @@ angular.module('enterprise-quality').controller('InspectionsEditCtrl',['$scope',
                     }
                     $scope.isLoading = false;
                 }).error(function(res, status, headers, config){
-                	Toastr.error("AjaxError: "+ status);
-                	defer.reject();
-                	$scope.isLoading = false;
+                    $scope.isLoading = false;
+                    if(status==401 && res && res.type == -1){
+                        Toastr.error('登录过期，请刷新重新登录');
+                        window.location.href='/';
+                    } else{                 
+                        Toastr.error("系统错误");
+                    }
                 })
             }
         };

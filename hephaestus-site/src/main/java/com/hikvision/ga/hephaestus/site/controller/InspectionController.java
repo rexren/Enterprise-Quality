@@ -518,19 +518,10 @@ public class InspectionController {
       t.setCertUrl(StringUtils.trim(request.getParameter("certUrl")));
       t.setOrganization(request.getParameter("organization"));
       t.setRemarks(request.getParameter("remarks"));
-      t.setOperator(getUserName(request));
+      t.setOperator(hikUserService.getCurrentUsername(request));
       t.setUpdateAt(new Date());
     }
     return t;
-  }
-  
-  private static String getUserName(HttpServletRequest request){
-    if(null == request.getSession().getAttribute("SPRING_SECURITY_CONTEXT")){
-      return "";
-    }
-    SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession().getAttribute("SPRING_SECURITY_CONTEXT");
-    String userName = securityContextImpl.getAuthentication().getName();
-    return userName;
   }
 
   /**

@@ -56,7 +56,7 @@ public class HikRoleAccessInterceptor extends HandlerInterceptorAdapter {
           hikUserService = context.getBean(HikUserService.class);
         }
       }
-      HikUser user = hikUserService.getCurrentHikUser();
+      HikUser user = hikUserService.getCurrentHikUser(request);
       if (user != null && roleSet.contains(user.getRole())) {
         return true;
       }

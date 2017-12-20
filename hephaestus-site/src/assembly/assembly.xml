@@ -6,13 +6,14 @@
 	<formats>
 		<format>zip</format>
 	</formats>
-	<includeBaseDirectory>true</includeBaseDirectory>
+	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
 			<directory>${project.basedir}\src\main\resources</directory>
 			<outputDirectory>/config</outputDirectory>
 			<includes>
 				<include>application.properties</include>
+				<include>cas-client.properties</include>
 				<include>logback.xml</include>
 			</includes>
 			<directoryMode>0755</directoryMode>

@@ -78,8 +78,8 @@ angular.module('enterprise-quality',[
 .run(['$rootScope', 'toastr','$http','$location', function ($rootScope, Toastr, $http,$location) {
 	$rootScope.user = window.user;
 	delete window.user;
+	console.log($rootScope.user);
 	$rootScope.$on('$routeChangeStart', function(event, toState, toParams, fromState, fromParams){
-		//TODO 取得用户当前登录状态
 		if(!$rootScope.user){
 			event.preventDefault();		// 取消默认跳转行为
 			$location.path("/login"); 	// 跳转到登录界面

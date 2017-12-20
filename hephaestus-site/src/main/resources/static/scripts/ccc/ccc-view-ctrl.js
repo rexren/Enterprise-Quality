@@ -43,15 +43,17 @@ angular.module('enterprise-quality').controller('CccViewCtrl', ['$scope','$rootS
         	}else{
         		if(res.msg){
 	        		Toastr.error(res.msg);
-	        	} else {
-	        		Toastr.error('登录过期，请刷新重新登录');
-	        		window.location.href='/login';
 	        	}
         	}
         	$scope.isLoading = false;
 	    }).error(function(res, status, headers, config){
-	        Toastr.error("Ajax error: "+status);
 	        $scope.isLoading = false;
+            if(status==401 && res && res.type == -1){
+                Toastr.error('登录过期，请刷新重新登录');
+                window.location.href='/';
+            } else{                 
+                Toastr.error("系统错误");
+            }
 	    })
     }
 
